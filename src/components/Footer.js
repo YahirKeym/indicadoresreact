@@ -4,7 +4,7 @@ class Footer extends React.Component
     render()
     {
         return (
-            <div className="bg-primary">
+            <div className=" col-12">
                 <h3>Footer</h3>
             </div>
         );
