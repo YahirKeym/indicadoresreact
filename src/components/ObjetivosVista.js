@@ -1,6 +1,7 @@
 import React from 'react';
 import './styles/ObjetivosVista.css';
 import SinDatos from "../components/SinDatos.js";
+import {Link} from "react-router-dom";
 class ObjetivosVista extends React.Component
 {
     render() 
@@ -23,17 +24,21 @@ class ObjetivosVista extends React.Component
                           </h3>
                         </div>
                         <div className="col-12">
-                          <span>Inicio: 2019-03-01</span>
-                          <span>Finaliza: 2019-12-30</span>
+                          <p name='titulo' value={objetivo.descripcion}>
+                            {objetivo.descripcion}
+                          </p>
+                        </div>
+                        <div className="col-12">
+                          <span>Inicio: {objetivo.inicia}</span>
+                          <span>Finaliza: {objetivo.finaliza}</span>
                         </div>
                         <div className="col-12 mt-2">
-                          <button
+                          <Link
+                            to={`/objetivos/${objetivo.id}/edit`}
                             className="btn btn-success"
-                            name={"objetivo_" + objetivo.id}
-                            onClick={this.props.onClick}
                           >
                             {this.props.textButton}
-                          </button>
+                          </Link>
                         </div>
                       </div>
                     );

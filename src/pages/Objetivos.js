@@ -21,6 +21,7 @@ class Objetivos extends React.Component
             error: false,
         };
         this.handleEditar = this.handleEditar.bind(this);
+        console.log(this.props)
     }
     /**
      * Nos ayudara a montar el componente
@@ -35,7 +36,7 @@ class Objetivos extends React.Component
     traeObjetivos = async () => 
     {
         try {
-            const response = await fetch('http://localhost/indicadores/api/controller/objetivos.php?action=view');
+            const response = await fetch(`${this.props.urlObjetivos}&action=view`);
             const datos = await response.json();
             this.setState(
                 {
@@ -74,10 +75,6 @@ class Objetivos extends React.Component
                 error: null,
                 data: [
                     ...this.state.data,
-                    {
-                        id: 2,
-                        titulo: "hola"
-                    }
                 ]
             }
             );
@@ -101,12 +98,11 @@ class Objetivos extends React.Component
             );
         }
         return (
-            <div className="col-12">
-                <Link className="btn btn-success" to="/objetivos/add">Añadir Objetivo</Link>
-                {this.state.editar && (
-                <h4>Estas editando</h4>
-                )}
-                <ObjetivosVista data={this.state.data} textButton="Ver más" onClick={this.handleEditar}/>
+            <div className="col-12 row">
+                <div className="col-md-8 col-sm-12 mx-auto">
+                    <Link className="btn btn-success col-12" to="/objetivos/add">Añadir Objetivo</Link>
+                </div>
+                <ObjetivosVista data={this.state.data} textButton="Editar" onClick={this.handleEditar}/>
             </div>
         );
     }
