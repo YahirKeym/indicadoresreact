@@ -1,6 +1,6 @@
 <?php
-$cRuta = "/indicadoresweb";
-require_once $_SERVER["DOCUMENT_ROOT"] . $cRuta . "/sources/class/dependencias.php";
+$cRuta = "/indicadores/api";
+require_once $_SERVER["DOCUMENT_ROOT"] . $cRuta . "/class/dependencias.php";
 $cDatos = $_REQUEST['datos'];
 switch ($cDatos) {
     case 'close':

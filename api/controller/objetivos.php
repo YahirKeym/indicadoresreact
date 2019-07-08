@@ -1,8 +1,9 @@
 <?php
-$cRuta = "/indicadoresweb";
-require_once $_SERVER["DOCUMENT_ROOT"] . $cRuta . "/sources/class/dependencias.php";
-require_once $_SERVER["DOCUMENT_ROOT"] . $cRuta . "/sources/class/objetivos.php";
-if ($oAutentica->lAutenticado) {
+
+$cRuta = "/indicadores/api";
+require_once $_SERVER["DOCUMENT_ROOT"] . $cRuta . "/class/dependencias.php";
+require_once $_SERVER["DOCUMENT_ROOT"] . $cRuta . "/class/objetivos.php";
+// if ($oAutentica->lAutenticado) {
     $cAccion = isset($_REQUEST['action']) ? $_REQUEST['action'] : '';
     $cDatos = isset($_REQUEST['data']) ? $_REQUEST['data'] : '';
     $aDatos = json_decode($cDatos);
@@ -28,6 +29,5 @@ if ($oAutentica->lAutenticado) {
             $cRegreso = json_encode($aRegreso);
             break;
     }
-    echo "Hola";
     echo $cRegreso;
-}
+// }

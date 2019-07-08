@@ -7,7 +7,7 @@ function Layout(props)
     return (
         <React.Fragment>
             <Navbar />
-            <div className="mt-5">
+            <div className="mt-5 mb-5">
                 {Children}
             </div>
             <Footer />

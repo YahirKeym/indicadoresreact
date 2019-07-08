@@ -9,7 +9,7 @@ class Navbar extends React.Component
             <header className="bg-secondary text-center p-3">
                 <div className="row">
                     <figure className="col-lg-4 col-sm-12">
-                        <img src={imageLogo}/>
+                        <img src={imageLogo} alt=""/>
                     </figure>
                     <ul className="col-lg-8 col-sm-12">
                         <Link to="/" className="navbar-brand text-white" >Inicio</Link>
