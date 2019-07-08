@@ -54,10 +54,9 @@ class Autenticacion
     /**
      * Nos ayudara a iniciar la autenticación para poder obtener datos de usuario o bien, validar si su sesión se encuentra activa.
      */
-    public function __construct()
+    public function __construct($cToken = "")
     {
         $this->oConexion = new Conexion();
-        $this->validarCookie();
     }
     /**
      * Nos ayudara a validar los datos del usuario para saber si es correcto el logueo o no
@@ -78,7 +77,7 @@ class Autenticacion
         ];
         $aDatos['condicionDb'] = $cCondicion;
         $aDatosDeLaBaseDeDatos = $this->oConexion->selectDatos($aSearch);
-        return $this->comparadorDedatos($aDatosDeLaBaseDeDatos, $aDatos);
+        return $this->comparadorDedatos($aDatosDeLaBaseDeDatos, $aDatos, $cToken);
     }
     /**
      * Nos ayudara a hacer comprobación de las credenciales de los usuarios con lo que trae de la base de datos
@@ -121,9 +120,12 @@ class Autenticacion
     /**
      * Nos ayudara a validar la cookie del usuario, para así loguearlo o no
      */
-    private function validarCookie()
+    public function validarCookie($cToken = "")
     {
-        $cCookie = isset($_COOKIE['indicadores_i']) ? $_COOKIE['indicadores_i'] : '';
+        $cCookie = !empty($cToken) ? $cToken : '';
+        $aRegreso = [
+            'autenticado' => false
+        ];
         if (!empty($cCookie)) {
             $aSearch = [
                 'tabla' => 'users',
@@ -134,10 +136,11 @@ class Autenticacion
                 if ($aUsuario['cookie'] === $cCookie) {
                     $this->lAutenticado = true;
                     $this->saveData($aUsuario);
+                    $aRegreso['autenticado'] = true;
                 }
             }
         }
-
+        return $aRegreso;
     }
     /**
      * Guardara los datos del usuario

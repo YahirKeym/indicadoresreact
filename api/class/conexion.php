@@ -40,7 +40,7 @@ class Conexion
      * Nos ayudara a guardar el objeto de conexión
      * @var Object
      */
-    private $oConexion = null;
+    public $oConexion = null;
     /**
      * Nos ayudara a declarar la conexión a la base de datos
      */
@@ -218,6 +218,7 @@ class Conexion
         var_dump($cArmadoInner);
         echo '</pre>';
     }
+
     public function addInner($cTablaName = "")
     {
         array_push($this->aTablasForInner, $cTablaName);

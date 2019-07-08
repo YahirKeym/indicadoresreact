@@ -1,15 +1,21 @@
 import React from 'react';
-import ReactDom from 'react-dom';
-import Navbar from '../components/Navbar.js';
-class Login extends React.Component
+class UserLogin extends React.Component
 {
+    handleSubmit(e)
+    {
+        e.preventDefault();
+    }
     render()
     {
         return (
-            <div>
-                <Navbar />
-            </div>
+            <React.Fragment>
+                <form>
+                    <input name="nombre" type="text" />
+                    <input name="password" type="password" />
+                    <button onSubmit={this.handleSubmit} className="btn btn-success">Iniciar Sesión</button>
+                </form>
+            </React.Fragment>
         );
     };
 }
-export default Login;
+export default UserLogin;

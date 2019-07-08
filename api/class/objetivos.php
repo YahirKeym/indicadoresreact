@@ -37,27 +37,27 @@ class Objetivos
             'tabla' => 'objetivos',
             'datos' => [
                 'nombre' => [
-                    'valor' => $aDatos['cNombre'],
+                    'valor' => $aDatos['titulo'],
                     'tipo' => 'string',
                 ],
                 'descripcion' => [
-                    'valor' => $aDatos['cDescripcion'],
+                    'valor' => $aDatos['descripcion'],
                     'tipo' => 'string',
                 ],
                 'paisalcanceid' => [
-                    'valor' => $aDatos['iAlcance'],
+                    'valor' => $aDatos['paisAlcance'],
                     'tipo' => 'integer',
                 ],
                 'paisiniciativaid' => [
-                    'valor' => $aDatos['iIniciativa'],
+                    'valor' => $aDatos['paisIniciativa'],
                     'tipo' => 'integer',
                 ],
                 'inicio' => [
-                    'valor' => $aDatos['cInicio'],
+                    'valor' => $aDatos['inicia'],
                     'tipo' => 'string',
                 ],
                 'finaliza' => [
-                    'valor' => $aDatos['cFinaliza'],
+                    'valor' => $aDatos['finaliza'],
                     'tipo' => 'string',
                 ],
                 'finalizo' => [
@@ -86,21 +86,9 @@ class Objetivos
             'status' => false,
         ];
         if ($this->oConexion->addConsult($aAdd) === true) {
-            $aSelect = [
-                'tabla' => 'objetivos',
-                'condiciones' => 'ORDER BY id DESC LIMIT 1',
+            $aDatos = [
+                'status' => true
             ];
-            $aDatosBaseDeDatos = $this->oConexion->selectDatos($aSelect);
-            foreach ($aDatosBaseDeDatos as $aIndicadores) {
-                $aDatos['status'] = true;
-                $aDatos['datos'][0]['iId'] = $aIndicadores['id'];
-                $aDatos['datos'][0]['cNombre'] = $aIndicadores['nombre'];
-                $aDatos['datos'][0]['cDescripcion'] = $aIndicadores['descripcion'];
-                $aDatos['datos'][0]['iAlcance'] = $aIndicadores['paisalcanceid'];
-                $aDatos['datos'][0]['iIniciativa'] = $aIndicadores['paisiniciativaid'];
-                $aDatos['datos'][0]['cInicio'] = $aIndicadores['inicio'];
-                $aDatos['datos'][0]['cFinaliza'] = $aIndicadores['finaliza'];
-            }
         }
         return json_encode($aDatos);
     }
@@ -212,5 +200,32 @@ class Objetivos
         }
         return json_encode($aDatos);
     }
-
+    /**
+     * Nos ayudara a seleccionar un solo objetivo
+     * @param integer $iIdObjetive
+     * @return string tipo Json.
+     */
+    public function selectOneObjetive($iIdObjetive = 0)
+    {
+        $aSelect = [
+            'tabla' => 'objetivos',
+            'condiciones' => "WHERE id={$iIdObjetive}",
+        ];
+        $aDatosBaseDeDatos = $this->oConexion->selectDatos($aSelect);
+        $aDatos = [
+            'status' => false,
+        ];
+        foreach ($aDatosBaseDeDatos as $aIndicadores) {
+            $aDatos['status'] = true;
+            $aDatos['view'] = true;
+            $aDatos['datos']['id'] = $aIndicadores['id'];
+            $aDatos['datos']['titulo'] = $aIndicadores['nombre'];
+            $aDatos['datos']['descripcion'] = $aIndicadores['descripcion'];
+            $aDatos['datos']['alcance'] = $aIndicadores['paisalcanceid'];
+            $aDatos['datos']['iniciativa'] = $aIndicadores['paisiniciativaid'];
+            $aDatos['datos']['inicia'] = $aIndicadores['inicio'];
+            $aDatos['datos']['finaliza'] = $aIndicadores['finaliza'];
+        }
+        return json_encode($aDatos);
+    }
 }

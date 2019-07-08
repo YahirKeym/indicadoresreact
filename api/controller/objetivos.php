@@ -1,11 +1,13 @@
 <?php
-
-$cRuta = "/indicadores/api";
+$cRuta = "/indicadoresreact/api";
 require_once $_SERVER["DOCUMENT_ROOT"] . $cRuta . "/class/dependencias.php";
 require_once $_SERVER["DOCUMENT_ROOT"] . $cRuta . "/class/objetivos.php";
-// if ($oAutentica->lAutenticado) {
+$cToken = isset($_REQUEST['token']) ? $_REQUEST['token'] :'';
+$oAutentica->validarCookie($cToken);
+if ($oAutentica->lAutenticado) {
     $cAccion = isset($_REQUEST['action']) ? $_REQUEST['action'] : '';
     $cDatos = isset($_REQUEST['data']) ? $_REQUEST['data'] : '';
+    $iIdObjetive = isset($_REQUEST['id']) ? $_REQUEST['id'] : 0;
     $aDatos = json_decode($cDatos);
     $oObjetivos = new Objetivos($oAutentica);
     $aDatos = json_decode($cDatos, true);
@@ -22,6 +24,9 @@ require_once $_SERVER["DOCUMENT_ROOT"] . $cRuta . "/class/objetivos.php";
         case 'view':
             $cRegreso = $oObjetivos->selectObjectives();
             break;
+        case 'select':
+            $cRegreso = $oObjetivos->selectoneObjetive($iIdObjetive);
+            break;
         default:
             $aRegreso = [
                 'status' => 'error',
@@ -30,4 +35,4 @@ require_once $_SERVER["DOCUMENT_ROOT"] . $cRuta . "/class/objetivos.php";
             break;
     }
     echo $cRegreso;
-// }
+}
