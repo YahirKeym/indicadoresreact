@@ -1,8 +1,9 @@
 import React from 'react';
-import Formulario from '../components/Formulario.js';
+// import Formulario from '../components/Formulario.js';
 class ObjetivosAdd extends React.Component{
-    constructor()
+    constructor(props)
     {
+        super(props)
         this.formulario = [
             {}
         ]
