@@ -5,7 +5,7 @@ class Footer extends React.Component
     {
         return (
             <div className=" col-12">
-                <h3>Footer</h3>
+                <h3></h3>
             </div>
         );
     }
