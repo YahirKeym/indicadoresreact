@@ -9,22 +9,22 @@ import UserLogin from "../pages/UserLogin.js";
 import Mandos from "../pages/Mandos.js";
 import MandosAdd from "../pages/MandosAdd.js";
 import Alcance from "../pages/Alcance.js";
+import AlcanceAdd from "../pages/AlcanceAdd.js";
+import Paises from "../pages/Paises.js";
+import PaisesAdd from "../pages/PaisesAdd.js";
+import PaisesEdit from '../pages/PaisesEdit.js';
+import PaisesDelete from '../pages/PaisesDeleted.js';
 /**
  * Nos ayudara a ajustar las opciones de la web
  */
 class App extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            isLogged: false
-        };
         this.varyfiLogged = this.veryfiLogged.bind(this);
-        this.veryfiLogged();
-        this.urlObjetivos = `http://localhost/indicadoresreact/api/controller/objetivos.php?token=${
-            this.session
-        }`;
+        this.state = {
+            isLogged: undefined
+        };
     }
-
     veryfiLogged = async () => {
         this.session = this.getCookie("indicadores_i");
         const response = await fetch(
@@ -33,10 +33,20 @@ class App extends React.Component {
             }`
         );
         const datos = await response.json();
+        this.urlObjetivos = `http://localhost/indicadoresreact/api/controller/objetivos.php?token=${
+            this.session
+        }`;
+        this.urlAlcance = `http://localhost/indicadoresreact/api/controller/alcance.php?token=${
+            this.session
+        }`;
+        this.urlPaises = `http://localhost/indicadoresreact/api/controller/paises.php?token=${this.session}`;
         this.setState({
             isLogged: datos.autenticado
         });
     };
+    componentDidMount() {
+        this.veryfiLogged();
+    }
     /**
      * Nos ayudara a encontrar la cookie de sesión
      * @param {string} nombreCookie Será el nombre de la cookie que buscaremos
@@ -60,6 +70,12 @@ class App extends React.Component {
      *
      */
     render() {
+        if(this.state.isLogged === undefined)
+        {
+            return (
+                <div></div>
+            );
+        }
         return (
             <BrowserRouter>
                 <Layout>
@@ -133,7 +149,73 @@ class App extends React.Component {
                                     <Alcance
                                         history={history}
                                         match={match}
-                                        urlObjetivos={this.urlObjetivos}
+                                        url={this.urlAlcance}
+                                    />
+                                )}
+                            />
+                            <Route
+                                exact
+                                path="/tipos/alcance/add"
+                                component={({ match, history }) => (
+                                    <AlcanceAdd
+                                        history={history}
+                                        match={match}
+                                        url={this.urlAlcance}
+                                    />
+                                )}
+                            />
+                            <Route
+                                exact
+                                path="/tipos/alcance/:alcanceAction"
+                                component={({ match, history }) => (
+                                    <Alcance
+                                        history={history}
+                                        match={match}
+                                        url={this.urlAlcance}
+                                    />
+                                )}
+                            />
+                            <Route
+                                exact
+                                path="/paises"
+                                component={({ match, history }) => (
+                                    <Paises
+                                        history={history}
+                                        match={match}
+                                        url={this.urlPaises}
+                                    />
+                                )}
+                            />
+                            <Route
+                                exact
+                                path="/paises/add"
+                                component={({ match, history }) => (
+                                    <PaisesAdd
+                                        history={history}
+                                        match={match}
+                                        url={this.urlPaises}
+                                    />
+                                )}
+                            />
+                            <Route
+                                exact
+                                path="/paises/:paisId/edit"
+                                component={({ match, history }) => (
+                                    <PaisesEdit
+                                        history={history}
+                                        match={match}
+                                        url={this.urlPaises}
+                                    />
+                                )}
+                            />
+                            <Route
+                                exact
+                                path="/paises/:paisId/delete"
+                                component={({ match, history }) => (
+                                    <PaisesDelete
+                                        history={history}
+                                        match={match}
+                                        url={this.urlPaises}
                                     />
                                 )}
                             />
