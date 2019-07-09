@@ -6,7 +6,7 @@ class Navbar extends React.Component
     render() 
     {
         return (
-            <header className="bg-secondary text-center p-3 col-12">
+            <header className="bg-header text-center p-3 col-12">
                 <div className="row">
                     <figure className="col-lg-4 col-sm-12">
                         <img src={imageLogo} alt=""/>
