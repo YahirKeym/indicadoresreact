@@ -24,6 +24,7 @@ class ObjetivosEdit extends React.Component
     }
     handleChange = (e) => 
     {
+        alert("hola")
         this.setState(
             {
                 datos: {
@@ -32,6 +33,14 @@ class ObjetivosEdit extends React.Component
                 }
             }
         )
+    }
+    /**
+     * Nos ayudara a regresar a la página de objetivos
+     */
+    handleBack = e => 
+    {
+        e.preventDefault();
+        this.props.history.push("/objetivos");
     }
     /**
      * Nos traera los primeros datos del objetivo
@@ -54,7 +63,7 @@ class ObjetivosEdit extends React.Component
      */
     render()
     {
-        return (<FormularioObjetivos successButton="Editar" onChange={this.handleChange} back={this.handleBack} onClick={this.handleSubmit} formulario={this.state.datos}/>);
+        return (<FormularioObjetivos successButton="Editar" handleChange={this.handleChange} back={this.handleBack} onClick={this.handleSubmit} formulario={this.state.datos}/>);
     }
 }
 export default ObjetivosEdit;

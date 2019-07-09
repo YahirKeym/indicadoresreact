@@ -9,11 +9,11 @@ function Formulario(props) {
             <div className="col-8">
                 <input
                     type="text"
-                    onChange={props.onChange}
                     className="form-control"
                     name="titulo"
                     placeholder="Título"
-                    value={props.formulario ? props.formulario.titulo : ''}
+                    defaultValue={props.formulario ? props.formulario.titulo : ''}
+                    onChange={props.onChange}
                 />
             </div>
             <div className="col-11 mt-3">
@@ -22,8 +22,8 @@ function Formulario(props) {
                     onChange={props.onChange}
                     className="form-control"
                     name="descripcion"
-                    value={props.formulario ? props.formulario.descripcion : ''}
-                >{props.formulario ? props.formulario.descripcion : ''}</textarea>
+                    defaultValue={props.formulario ? props.formulario.descripcion : ''}
+                ></textarea>
             </div>
             <div className="col-6 mt-3 row">
                 <div className="col-6">
@@ -31,9 +31,9 @@ function Formulario(props) {
                         className="form-control"
                         onChange={props.onChange}
                         name="tipoAlcance"
-                        value={props.formulario ? props.formulario.tipoAlcance : ''}
+                        defaultValue={props.formulario ? props.formulario.tipoAlcance : ''}
                     >
-                        <option disabled selected>
+                        <option disabled>
                             Tipo de alcance
                         </option>
                         <option value="Global">Global</option>
@@ -44,9 +44,9 @@ function Formulario(props) {
                         className="form-control"
                         onChange={props.onChange}
                         name="paisAlcance"
-                        value={props.formulario ? props.formulario.paisAlcance : ''}
+                        defaultValue={props.formulario ? props.formulario.paisAlcance : ''}
                     >
-                        <option disabled selected>
+                        <option disabled>
                             Seleccionar país
                         </option>
                         <option value="0">México</option>
@@ -59,9 +59,9 @@ function Formulario(props) {
                         className="form-control"
                         onChange={props.onChange}
                         name="paisIniciativa"
-                        value={props.formulario ? props.formulario.paisIniciativa : ''}
+                        defaultValue={props.formulario ? props.formulario.paisIniciativa : ''}
                     >
-                        <option disabled selected>
+                        <option disabled>
                             Seleccionar país Iniciativa
                         </option>
                         <option value="0">México</option>
@@ -70,23 +70,23 @@ function Formulario(props) {
             </div>
             <div className="col-12 mt-3 row">
                 <div className="col-6 form-group">
-                    <label for="inicia">Fecha cuando inicia</label>
+                    <label htmlFor="inicia">Fecha cuando inicia</label>
                     <input
                         type="date"
                         onChange={props.onChange}
                         className="form-control"
                         name="inicia"
-                        value={props.formulario ? props.formulario.inicia : ''}
+                        defaultValue={props.formulario ? props.formulario.inicia : ''}
                     />
                 </div>
                 <div className="col-6 form-group">
-                    <label for="finaliza">Fecha cuando finaliza</label>
+                    <label htmlFor="finaliza">Fecha cuando finaliza</label>
                     <input
                         type="date"
                         onChange={props.onChange}
                         className="form-control"
                         name="finaliza"
-                        value={props.formulario ? props.formulario.finaliza : ''}
+                        defaultValue={props.formulario ? props.formulario.finaliza : ''}
                     />
                 </div>
             </div>

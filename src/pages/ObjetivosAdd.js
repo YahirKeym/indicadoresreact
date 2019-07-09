@@ -13,8 +13,8 @@ class ObjetivosAdd extends React.Component {
                 tipoAlcance: "",
                 paisAlcance: "",
                 paisIniciativa: "",
-                inicia: "",
-                finaliza: ""
+                inicia: "1999-05-11",
+                finaliza: "1999-05-11"
             },
             validarCampos: {
                 titulo: true,
@@ -79,7 +79,7 @@ class ObjetivosAdd extends React.Component {
         if (this.state.redirect) {
             return <Redirect to="/objetivos" />;
         }
-        return (<FormularioObjetivos onChange={this.handleChange} back={this.handleBack} onClick={this.handleSubmit} successButton="Agregar" />);
+        return (<FormularioObjetivos onChange={this.handleChange} formulario={this.state.datos} back={this.handleBack} onClick={this.handleSubmit} successButton="Agregar" />);
     }
 }
 export default ObjetivosAdd;
