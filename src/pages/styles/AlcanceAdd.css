@@ -1,0 +1,7 @@
+.field-empty
+{
+    border-radius: 10px;
+}
+input.field-empty{
+    border: 1px solid red;
+}
