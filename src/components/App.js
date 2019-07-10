@@ -19,6 +19,7 @@ import PaisesDelete from '../pages/PaisesDeleted.js';
 import Jerarquias from "../pages/Jerarquias.js";
 import JerarquiasAdd from '../pages/JerarquiasAdd.js';
 import JerarquiasMove from '../pages/JerarquiasMove.js';
+import JerarquiaRangoAdd from '../pages/JerarquiaRangoAdd.js';
 /**
  * Nos ayudara a ajustar las opciones de la web
  */
@@ -42,6 +43,7 @@ class App extends React.Component {
         this.urlAlcance = `http://localhost/indicadoresreact/api/controller/alcance.php?token=${this.session}`;
         this.urlPaises = `http://localhost/indicadoresreact/api/controller/paises.php?token=${this.session}`;
         this.urlJerarquias = `http://localhost/indicadoresreact/api/controller/jerarquias.php?token=${this.session}`;
+        this.urlRango = `http://localhost/indicadoresreact/api/controller/rango.php?token=${this.session}`;
         this.setState({
             isLogged: datos.autenticado
         });
@@ -240,6 +242,7 @@ class App extends React.Component {
                                         history={history}
                                         match={match}
                                         url={this.urlJerarquias}
+                                        urlRango={this.urlRango}
                                     />
                                 )}
                             />
@@ -262,6 +265,18 @@ class App extends React.Component {
                                         history={history}
                                         match={match}
                                         url={this.urlJerarquias}
+                                    />
+                                )}
+                            />
+                            <Route
+                                exact
+                                path="/jerarquia/rango/add"
+                                component={({ match, history }) => (
+                                    <JerarquiaRangoAdd
+                                        history={history}
+                                        match={match}
+                                        url={this.urlRango}
+                                        urlJerarquias = {this.urlJerarquias}
                                     />
                                 )}
                             />
