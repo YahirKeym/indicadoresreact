@@ -65,7 +65,7 @@ class MandosAdd extends React.Component
                         <label for="etapas">Etapas que tendra este mando </label>
                     </div>
                     <div className="col-6">
-                        <input type="number" onChange={this.handleChange} className="form-control" name="etapas" value="12"/>
+                        <input type="number" onChange={this.handleChange} className="form-control" name="etapas" defaultValue="12"/>
                     </div>
                     <div className="col-6">
                         <select className="form-control" onChange={this.handleChange}>
