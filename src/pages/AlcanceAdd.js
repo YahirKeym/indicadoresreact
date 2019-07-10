@@ -55,7 +55,7 @@ class AlcanceAdd extends React.Component{
         }
         if(data.status && !data.empty)
         {
-            this.props.history.push("/tipos/alcance/success");
+            this.props.history.push("/tipos/alcance");
         }
         
     }
@@ -73,7 +73,7 @@ class AlcanceAdd extends React.Component{
     render()
     {
         return (
-            <FormularioAlcance state={this.state} onClick={this.handleAdd} handleBack={this.handleBack} textAction="Agregar" />
+            <FormularioAlcance state={this.state} onClick={this.handleAdd} handleBack={this.handleBack} textAction="Agregar" onChange={this.handleChange} />
         );
         // return (
         //     <React.Fragment>

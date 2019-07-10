@@ -20,7 +20,7 @@ function FormularioAlcance(props)
             }
             <div className="col-12">
                 {props.state.empty && (
-                <input type="text" name="nombre" className="form-control field-empty" placeholder="Nombre del alcance" onChange={props.handleChange}/>
+                <input type="text" name="nombre" className="form-control field-empty" placeholder="Nombre del alcance" onChange={props.onChange}/>
                 )}
                 {!props.state.empty && (
                 <input type="text" name="nombre" className="form-control" placeholder="Nombre del alcance" onChange={props.onChange}/>
@@ -28,10 +28,10 @@ function FormularioAlcance(props)
             </div>
             <div className="col-12 mt-3">
                 {props.state.empty && (
-                    <input type="text" name="nombreinterno" className="form-control field-empty" placeholder="Nombre Interno y unico que llevara el alcance"  onChange={props.handleChange}/>
+                    <input type="text" name="nombreinterno" className="form-control field-empty" placeholder="Nombre Interno y unico que llevara el alcance"  onChange={props.onChange}/>
                 )}
                 {!props.state.empty && (
-                    <input type="text" name="nombreinterno" className="form-control" placeholder="Nombre Interno y unico que llevara el alcance"  onChange={props.handleChange}/>
+                    <input type="text" name="nombreinterno" className="form-control" placeholder="Nombre Interno y unico que llevara el alcance"  onChange={props.onChange}/>
                 )}
             </div>
             <div className="col-12 mt-3">

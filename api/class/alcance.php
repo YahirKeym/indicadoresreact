@@ -83,6 +83,66 @@ class Alcance
         }
         return json_encode($aDatos);
     }
+    /**
+     * Nos ayudara a seleccionar a solo un elemento de alcance
+     * @param integer $iId Será el id del elemento
+     * @return string Regresara un string tipo Json con los datos de la consulta si fue exitosa o si no
+     */
+    public function select($iId = 0)
+    {
+        $cQuery = "SELECT * FROM alcance WHERE id={$iId}";
+        $oConsulta = $this->oConexion->query($cQuery);
+        $aStatus = [
+            'status' => false,
+            'error' => false
+        ];
+        if($oConsulta != false){
+            $aStatus['status'] = true;
+            $aDatos = $oConsulta->fetch(PDO::FETCH_ASSOC);
+            $aStatus['datos']['id'] = $aDatos['id'];
+            $aStatus['datos']['nombre'] = $aDatos['nombre'];
+            $aStatus['datos']['nombreinterno'] = $aDatos['nombreinterno'];
+        }
+        return json_encode($aStatus);
+    }
+    /**
+     * Nos ayudara a editar el alcance que le pedimos
+     * @param array $aDatos Son los datos del alcance que editaremos
+     * @return string Regresara un string tipo Json que nos dirá si la consulta fue correcta o no
+     */
+    public function edit($aDatos = [])
+    {
+        $cQuery = "UPDATE alcance SET nombre='{$aDatos['nombre']}', nombreinterno='{$aDatos['nombreinterno']}' WHERE id={$aDatos['id']}";
+        $oConsulta = $this->oConexion->query($cQuery);
+        $aStatus = [
+            'status' => false,
+            'error' => false
+        ];
+        if($oConsulta != false){
+            $aStatus['status'] = true;
+        }
+        return json_encode($aStatus);
+
+    }
+    /**
+     * Eliminara el alcance que le pedimos
+     * @param integer $iId 
+     * @return string Regresara un string tipo Json con el estado de si fue exitosa o no la consulta
+     */
+    public function delete($iId = 0)
+    {
+        $cQuery = "DELETE FROM alcance WHERE id=${iId}";        
+        $oConsulta = $this->oConexion->query($cQuery);
+        $aStatus = [
+            'status' => false,
+            'error' => false
+        ];
+        if($oConsulta != false)
+        {
+            $aStatus['status'] = true;
+        }
+        return json_encode($aStatus);
+    }
 }
 
 ?>

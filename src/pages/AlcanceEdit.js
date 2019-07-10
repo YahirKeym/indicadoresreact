@@ -1,5 +1,6 @@
 import React from 'react';
 import './styles/AlcanceAdd.css';
+import {Link} from 'react-router-dom';
 class AlcanceEdit extends React.Component{
     constructor(props)
     {
@@ -9,12 +10,21 @@ class AlcanceEdit extends React.Component{
             data :{
                 nombre: '',
                 nombreinterno: ''
-            },
-            repetido: false,
-            nombre : '',
+            }
         }
-        console.log(this.state.data)
     }
+    componentDidMount()
+    {
+        this.obtenerOneAlcance();
+    }
+    obtenerOneAlcance = async () =>
+    {
+        const req = await fetch(`${this.props.url}&action=select&id=${this.props.match.params.alcanceId}`);
+        const response = await req.json();
+        this.setState({
+            data:response.datos
+        });
+    } 
     /**
      * Nos ayudara a guardar los inputs
      */
@@ -32,11 +42,11 @@ class AlcanceEdit extends React.Component{
     /**
      * Nos ayudara a enviar los datos del alcance
      */
-    handleAdd = async (e) =>
+    handleEdit = async (e) =>
     {
         e.preventDefault();
         const cDatos = JSON.stringify(this.state.data);
-        const response = await fetch(`${this.props.url}&action=add&data=${cDatos}`);
+        const response = await fetch(`${this.props.url}&action=edit&data=${cDatos}`);
         const data = await response.json();
         if(data.empty)
         {
@@ -81,22 +91,23 @@ class AlcanceEdit extends React.Component{
                     }
                     <div className="col-12">
                         {this.state.empty && (
-                        <input type="text" name="nombre" className="form-control field-empty" placeholder="Nombre del alcance" onChange={this.handleChange}/>
+                        <input type="text" name="nombre" className="form-control field-empty" placeholder="Nombre del alcance" onChange={this.handleChange} defaultValue={this.state.data.nombre}/>
                         )}
                         {!this.state.empty && (
-                        <input type="text" name="nombre" className="form-control" placeholder="Nombre del alcance" onChange={this.handleChange}/>
+                        <input type="text" name="nombre" className="form-control" placeholder="Nombre del alcance" onChange={this.handleChange} defaultValue={this.state.data.nombre}/>
                         )}
                     </div>
                     <div className="col-12 mt-3">
                         {this.state.empty && (
-                            <input type="text" name="nombreinterno" className="form-control field-empty" placeholder="Nombre Interno y unico que llevara el alcance"  onChange={this.handleChange}/>
+                            <input type="text" name="nombreinterno" className="form-control field-empty" placeholder="Nombre Interno y unico que llevara el alcance"  defaultValue={this.state.data.nombreinterno} onChange={this.handleChange}/>
                         )}
                         {!this.state.empty && (
-                            <input type="text" name="nombreinterno" className="form-control" placeholder="Nombre Interno y unico que llevara el alcance"  onChange={this.handleChange}/>
+                            <input type="text" name="nombreinterno" className="form-control" placeholder="Nombre Interno y unico que llevara el alcance"  defaultValue={this.state.data.nombreinterno} onChange={this.handleChange}/>
                         )}
                     </div>
                     <div className="col-12 mt-3">
-                        <button className="btn btn-success" onClick={this.handleAdd}>Agregar</button>
+                        <button className="btn btn-success" onClick={this.handleEdit}>Agregar</button>
+                        <Link to="/tipos/alcance" className="btn btn-danger ml-3">Volver</Link>
                     </div>
                 </form>
             </React.Fragment>

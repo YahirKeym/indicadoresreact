@@ -59,8 +59,8 @@ class Alcance extends React.Component{
                         return (
                             <div key={alcance.id} className="col-md-3 col-11 col-sm-11 bg-header text-white text-center alcance p-3 mt-2 ml-3">
                                 <h4>{alcance.nombre}</h4>
-                                <button className="btn btn-editar mr-3">Editar</button>
-                                <button className="btn btn-danger mt-1">Eliminar</button>
+                                <Link className="btn btn-editar mr-3" to={`/tipos/alcance/${alcance.id}/edit`}>Editar</Link>
+                                <Link className="btn btn-danger mt-1" to={`/tipos/alcance/${alcance.id}/delete`}>Eliminar</Link>
                             </div>
                         );
                     })}
