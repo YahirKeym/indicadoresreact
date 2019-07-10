@@ -67,6 +67,8 @@ export default class Jerarquias extends React.Component{
                             <div className="col-12 row p-2 jerarquia d-flex justify-content-center text-center" key={jerarquia.id}>
                                 <div className="col-12">
                                     <h4>{jerarquia.nombre}</h4>
+                                </div>
+                                <div className="col-12 row">
                                     {this.state.rangos.map(rango=>{
                                         if(jerarquia.id === rango.idJerarquia){
 
