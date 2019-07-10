@@ -8,12 +8,14 @@ export default class Jerarquias extends React.Component{
         super(props);
         this.state ={
             loading: true,
-            datos:[]
+            datos:[],
+            rangos:[]
         }
     }
     componentDidMount()
     {
         this.traerJerarquias();
+        this.traerRangos();
     }
     /**
      * traera todas las jerarquias disponibles
@@ -28,6 +30,18 @@ export default class Jerarquias extends React.Component{
                 datos: response.datos
             })
         }
+    }
+    traerRangos = async () => 
+    {
+        const req = await fetch(`${this.props.urlRango}&action=view`);
+        const response = await req.json();
+        if(response.status)
+        {
+            this.setState({
+                loading: false,
+                rangos: response.datos
+            })
+        }  
     }
     render()
     {
@@ -53,6 +67,16 @@ export default class Jerarquias extends React.Component{
                             <div className="col-12 row p-2 jerarquia d-flex justify-content-center text-center" key={jerarquia.id}>
                                 <div className="col-12">
                                     <h4>{jerarquia.nombre}</h4>
+                                    {this.state.rangos.map(rango=>{
+                                        if(jerarquia.id === rango.idJerarquia){
+
+                                            return(
+                                                <div className="bg-primary col-3 rank mx-auto p-3 text-white" key={rango.id}>
+                                                    {rango.nombre}
+                                                </div>
+                                            );
+                                        }
+                                    })}
                                 </div>
                             </div>
                             )
