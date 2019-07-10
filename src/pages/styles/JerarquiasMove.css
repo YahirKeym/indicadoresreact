@@ -1,0 +1,12 @@
+.jerarquia{
+    border-top: 1px solid rgba(200,200,200,.5);
+    border-bottom: 1px solid rgba(200, 200, 200, .5);
+}
+.jerarquia:last-child
+{
+    border-bottom: 2px solid rgba(200, 200, 200, .5);
+}
+.jerarquia:first-child
+{
+    border-top: 2px solid rgba(200, 200, 200, .5);
+}
