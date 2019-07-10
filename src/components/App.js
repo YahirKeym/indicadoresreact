@@ -10,6 +10,8 @@ import Mandos from "../pages/Mandos.js";
 import MandosAdd from "../pages/MandosAdd.js";
 import Alcance from "../pages/Alcance.js";
 import AlcanceAdd from "../pages/AlcanceAdd.js";
+import AlcanceEdit from "../pages/AlcanceEdit.js";
+import AlcanceDelete from "../pages/AlcanceDelete.js";
 import Paises from "../pages/Paises.js";
 import PaisesAdd from "../pages/PaisesAdd.js";
 import PaisesEdit from '../pages/PaisesEdit.js';
@@ -166,9 +168,20 @@ class App extends React.Component {
                             />
                             <Route
                                 exact
-                                path="/tipos/alcance/:alcanceAction"
+                                path="/tipos/alcance/:alcanceId/edit"
                                 component={({ match, history }) => (
-                                    <Alcance
+                                    <AlcanceEdit
+                                        history={history}
+                                        match={match}
+                                        url={this.urlAlcance}
+                                    />
+                                )}
+                            />
+                            <Route
+                                exact
+                                path="/tipos/alcance/:alcanceId/delete"
+                                component={({ match, history }) => (
+                                    <AlcanceDelete
                                         history={history}
                                         match={match}
                                         url={this.urlAlcance}
