@@ -11,12 +11,12 @@ export default class JerarquiaRangoAdd extends React.Component
             datos : [],
             data : {
                 nombre: "",
-                jerarquia: "",
-                agregaObjetivos: false,
-                agregaMandos: false,
-                agregaPais : false,
-                agregaJerarquias: false,
-                agregaRangos: false
+                jerarquia: 0,
+                agregaObjetivos: "false",
+                agregaMandos: "false",
+                agregaPais : "false",
+                agregaJerarquias: "false",
+                agregaRangos: "false"
             }
         }
     }
