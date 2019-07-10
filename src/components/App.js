@@ -16,6 +16,9 @@ import Paises from "../pages/Paises.js";
 import PaisesAdd from "../pages/PaisesAdd.js";
 import PaisesEdit from '../pages/PaisesEdit.js';
 import PaisesDelete from '../pages/PaisesDeleted.js';
+import Jerarquias from "../pages/Jerarquias.js";
+import JerarquiasAdd from '../pages/JerarquiasAdd.js';
+import JerarquiasMove from '../pages/JerarquiasMove.js';
 /**
  * Nos ayudara a ajustar las opciones de la web
  */
@@ -35,13 +38,10 @@ class App extends React.Component {
             }`
         );
         const datos = await response.json();
-        this.urlObjetivos = `http://localhost/indicadoresreact/api/controller/objetivos.php?token=${
-            this.session
-        }`;
-        this.urlAlcance = `http://localhost/indicadoresreact/api/controller/alcance.php?token=${
-            this.session
-        }`;
+        this.urlObjetivos = `http://localhost/indicadoresreact/api/controller/objetivos.php?token=${this.session}`;
+        this.urlAlcance = `http://localhost/indicadoresreact/api/controller/alcance.php?token=${this.session}`;
         this.urlPaises = `http://localhost/indicadoresreact/api/controller/paises.php?token=${this.session}`;
+        this.urlJerarquias = `http://localhost/indicadoresreact/api/controller/jerarquias.php?token=${this.session}`;
         this.setState({
             isLogged: datos.autenticado
         });
@@ -229,6 +229,39 @@ class App extends React.Component {
                                         history={history}
                                         match={match}
                                         url={this.urlPaises}
+                                    />
+                                )}
+                            />
+                            <Route
+                                exact
+                                path="/jerarquia"
+                                component={({ match, history }) => (
+                                    <Jerarquias
+                                        history={history}
+                                        match={match}
+                                        url={this.urlJerarquias}
+                                    />
+                                )}
+                            />
+                            <Route
+                                exact
+                                path="/jerarquia/add"
+                                component={({ match, history }) => (
+                                    <JerarquiasAdd
+                                        history={history}
+                                        match={match}
+                                        url={this.urlJerarquias}
+                                    />
+                                )}
+                            />
+                            <Route
+                                exact
+                                path="/jerarquia/move"
+                                component={({ match, history }) => (
+                                    <JerarquiasMove
+                                        history={history}
+                                        match={match}
+                                        url={this.urlJerarquias}
                                     />
                                 )}
                             />
