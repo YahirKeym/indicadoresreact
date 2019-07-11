@@ -80,12 +80,11 @@ class Mandos
                     INNER JOIN mando_formula formula ON mando.id = formula.idmando
                     INNER JOIN rangos_mando rango ON mando.id = rango.idmando
                     INNER JOIN variables_mandos variables ON mando.id = variables.idMando
-                    INNER JOIN valor_variables_mandos valorVariable ON mando.id = valorVariable.idmando
                     {$cWhereId}";
         $oConsulta = $this->oConexion->query($cQuery);
-        $oConsulta->fetch(PDO::FETCH_ASSOC);
+
         echo '<pre>';
-        var_dump($oConsulta->fetch(PDO::FETCH_ASSOC));
+        var_dump($oConsulta);
         echo '</pre>';
         foreach($oConsulta as $aDatos)
         {
