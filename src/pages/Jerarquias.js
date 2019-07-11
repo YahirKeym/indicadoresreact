@@ -25,6 +25,10 @@ export default class Jerarquias extends React.Component{
         const response = await req.json();
         if(response.status)
         {
+            if(response.datos === undefined)
+            {
+                response.datos = [];
+            }
             this.setState({
                 loading: false,
                 datos: response.datos
@@ -37,6 +41,10 @@ export default class Jerarquias extends React.Component{
         const response = await req.json();
         if(response.status)
         {
+            if(response.datos === undefined)
+            {
+                response.datos = [];
+            }
             this.setState({
                 loading: false,
                 rangos: response.datos

@@ -24,6 +24,10 @@ export default class JerarquiasMove extends React.Component
         const response = await req.json();
         if(response.status)
         {
+            if(response.datos === undefined)
+            {
+                response.datos = [];
+            }
             this.setState({
                 loading: false,
                 datos: response.datos
