@@ -37,11 +37,11 @@ class Mandos
         return json_encode($aStatus);
     }
     /**
-     * Undocumented function
-     *
+     * Nos ayudara a agregar los datos faltantes, variables, rangos, etc
      * @param array $aDatos
-     * @param [type] $oConsultaInsertFormula
-     * @return void
+     * @param object $oConsultaInsertFormula
+     * @param array $aDatosDeMando
+     * @return array Regresara un array con el estado del funcionamiento
      */
     private function agregaDatos($aDatos = [],$oConsultaInsertFormula = null, $aDatosDeMando = [])
     {
@@ -68,6 +68,36 @@ class Mandos
             $aStatus['status'] = true;
         }
         return $aStatus;
+    }
+    private function unionDeTablas($iId = 0)
+    {
+        $cWhereId = "";
+        if ($iId !=0) {
+            $cWhereId = "WHERE id={$iId}";
+        }
+        $cQuery = "SELECT mando.id, mando.idobjetivo, mando.etapas, mando.tipoDeEtapa, formula.formula, rango.idrango, variables.idVariable
+                    FROM mandos_objetivos mando
+                    INNER JOIN mando_formula formula ON mando.id = formula.idmando
+                    INNER JOIN rangos_mando rango ON mando.id = rango.idmando
+                    INNER JOIN variables_mandos variables ON mando.id = variables.idMando
+                    INNER JOIN valor_variables_mandos valorVariable ON mando.id = valorVariable.idmando
+                    {$cWhereId}";
+        $oConsulta = $this->oConexion->query($cQuery);
+        $oConsulta->fetch(PDO::FETCH_ASSOC);
+        echo '<pre>';
+        var_dump($oConsulta->fetch(PDO::FETCH_ASSOC));
+        echo '</pre>';
+        foreach($oConsulta as $aDatos)
+        {
+            echo '<pre>';
+            var_dump($aDatos);
+            echo '</pre>';
+        }
+    }
+    public function view()
+    {
+        echo "hola";
+        $this->unionDeTablas();
     }
 }
 ?>
