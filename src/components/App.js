@@ -20,6 +20,8 @@ import Jerarquias from "../pages/Jerarquias.js";
 import JerarquiasAdd from '../pages/JerarquiasAdd.js';
 import JerarquiasMove from '../pages/JerarquiasMove.js';
 import JerarquiaRangoAdd from '../pages/JerarquiaRangoAdd.js';
+import JerarquiaRangoEdit from '../pages/JerarquiaRangoEdit.js';
+
 /**
  * Nos ayudara a ajustar las opciones de la web
  */
@@ -147,6 +149,7 @@ class App extends React.Component {
                                         history={history}
                                         match={match}
                                         urlObjetivos={this.urlObjetivos}
+                                        urlRangos={this.urlRango}
                                     />
                                 )}
                             />
@@ -277,6 +280,18 @@ class App extends React.Component {
                                 path="/jerarquia/rango/add"
                                 component={({ match, history }) => (
                                     <JerarquiaRangoAdd
+                                        history={history}
+                                        match={match}
+                                        url={this.urlRango}
+                                        urlJerarquias = {this.urlJerarquias}
+                                    />
+                                )}
+                            />
+                            <Route
+                                exact
+                                path="/jerarquia/:rangoId"
+                                component={({ match, history }) => (
+                                    <JerarquiaRangoEdit
                                         history={history}
                                         match={match}
                                         url={this.urlRango}
