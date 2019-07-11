@@ -6,7 +6,7 @@ class ObjetivosVista extends React.Component
 {
     render() 
     {
-        if (this.props.data.length === 0) {
+        if (this.props.data === 0) {
           return <SinDatos />
         }
         return (

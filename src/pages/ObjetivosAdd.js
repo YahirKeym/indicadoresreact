@@ -10,12 +10,14 @@ class ObjetivosAdd extends React.Component {
             datos: {
                 titulo: "",
                 descripcion: "",
-                tipoAlcance: "",
-                paisAlcance: "",
-                paisIniciativa: "",
-                inicia: "1999-05-11",
-                finaliza: "1999-05-11"
+                tipoAlcance: 0,
+                paisAlcance:0,
+                paisIniciativa: 0,
+                inicia: "2019-05-11",
+                finaliza: "2019-12-31"
             },
+            paises: [],
+            alcance:[],
             validarCampos: {
                 titulo: true,
                 descripcion: true,
@@ -32,9 +34,23 @@ class ObjetivosAdd extends React.Component {
      * Nos ayudara a montar el componente
      */
     componentDidMount() {
-        this.setState({
-            loading: false
-        });
+        this.traeDatos();
+    }
+    traeDatos = async () => {
+        const [alcances, paises] = await Promise.all([
+            fetch(`${this.props.urlAlcance}&action=view`),
+            fetch(`${this.props.urlPais}&action=view`)
+        ])
+        const responseAlcances = await alcances.json();
+        const responsePaises = await paises.json();
+        if(responseAlcances.status && responsePaises)
+        {
+            this.setState({
+                loading: false,
+                alcance: responseAlcances.datos,
+                paises: responsePaises.datos
+            })
+        }
     }
     /**
      * Guardara los datos del formulario
@@ -54,7 +70,7 @@ class ObjetivosAdd extends React.Component {
         e.preventDefault();
         const jsonEnviar = JSON.stringify(this.state.datos);
         const response = await fetch(
-            `${this.props.urlObjetivos}&action=add&data=${jsonEnviar}`
+            `${this.props.url}&action=add&data=${jsonEnviar}`
         );
         const respuesta = await response.json();
         if (respuesta.status) {
@@ -63,6 +79,9 @@ class ObjetivosAdd extends React.Component {
             });
         }
     };
+    /**
+     * 
+     */
     handleBack = e => {
         e.preventDefault();
         this.setState({
@@ -79,7 +98,7 @@ class ObjetivosAdd extends React.Component {
         if (this.state.redirect) {
             return <Redirect to="/objetivos" />;
         }
-        return (<FormularioObjetivos onChange={this.handleChange} formulario={this.state.datos} back={this.handleBack} onClick={this.handleSubmit} successButton="Agregar" />);
+        return (<FormularioObjetivos onChange={this.handleChange} formulario={this.state} back={this.handleBack} onClick={this.handleSubmit} successButton="Agregar" />);
     }
 }
 export default ObjetivosAdd;

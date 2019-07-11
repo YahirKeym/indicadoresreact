@@ -21,7 +21,6 @@ class Objetivos extends React.Component
             error: false,
         };
         this.handleEditar = this.handleEditar.bind(this);
-        console.log(this.props)
     }
     /**
      * Nos ayudara a montar el componente
@@ -38,6 +37,10 @@ class Objetivos extends React.Component
         try {
             const response = await fetch(`${this.props.urlObjetivos}&action=view`);
             const datos = await response.json();
+            if(datos.datos === undefined)
+            {
+                datos.datos = [];
+            }
             this.setState(
                 {
                     loading: false,
@@ -61,14 +64,6 @@ class Objetivos extends React.Component
     }
     handleEditar(e)
     {
-        const ObjetivoId = e.target.getAttribute("name");
-        const $valores = document.querySelectorAll(`#${ObjetivoId} [value]`);
-        $valores.forEach(($Elementos) =>
-        {
-            const elemento = $Elementos.getAttribute("name");
-            const valor = $Elementos.getAttribute("value");
-            console.log(elemento+" / "+valor);
-        });
         this.setState(
             { 
                 editar: true,

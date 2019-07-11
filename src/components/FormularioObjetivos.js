@@ -12,7 +12,7 @@ function Formulario(props) {
                     className="form-control"
                     name="titulo"
                     placeholder="Título"
-                    defaultValue={props.formulario ? props.formulario.titulo : ''}
+                    defaultValue={props.formulario ? props.formulario.datos.titulo : ''}
                     onChange={props.onChange}
                 />
             </div>
@@ -22,8 +22,10 @@ function Formulario(props) {
                     onChange={props.onChange}
                     className="form-control"
                     name="descripcion"
-                    defaultValue={props.formulario ? props.formulario.descripcion : ''}
-                ></textarea>
+                    defaultValue={props.formulario ? props.formulario.datos.descripcion : ''}
+                    value={props.formulario ? props.formulario.datos.descripcion : ""}
+                >
+                </textarea>
             </div>
             <div className="col-6 mt-3 row">
                 <div className="col-6">
@@ -31,12 +33,17 @@ function Formulario(props) {
                         className="form-control"
                         onChange={props.onChange}
                         name="tipoAlcance"
-                        defaultValue={props.formulario ? props.formulario.tipoAlcance : ''}
+                        defaultValue={props.formulario ? props.formulario.datos.tipoAlcance : 0}
+                        value={props.formulario ? props.formulario.datos.tipoAlcance : 0}
                     >
-                        <option disabled>
+                        <option disabled defaultValue="0">
                             Tipo de alcance
                         </option>
-                        <option value="Global">Global</option>
+                        {props.formulario.alcance.map(alcance=>{
+                            return(
+                                <option key={alcance.id} value={alcance.id}>{alcance.nombre}</option>
+                            );
+                        })}
                     </select>
                 </div>
                 <div className="col-6">
@@ -44,12 +51,17 @@ function Formulario(props) {
                         className="form-control"
                         onChange={props.onChange}
                         name="paisAlcance"
-                        defaultValue={props.formulario ? props.formulario.paisAlcance : ''}
+                        defaultValue={props.formulario ? props.formulario.datos.paisAlcance : 0}
+                        value={props.formulario ? props.formulario.datos.paisAlcance : 0}
                     >
-                        <option disabled>
+                        <option disabled defaultValue="0">
                             Seleccionar país
                         </option>
-                        <option value="0">México</option>
+                        {props.formulario.paises.map(pais=>{
+                            return(
+                                <option key={pais.id} value={pais.id}>{pais.nombre}</option>
+                            );
+                        })}
                     </select>
                 </div>
             </div>
@@ -59,11 +71,17 @@ function Formulario(props) {
                         className="form-control"
                         onChange={props.onChange}
                         name="paisIniciativa"
-                        defaultValue={props.formulario ? props.formulario.paisIniciativa : ''}
-                    >
-                        <option disabled>
+                        defaultValue={props.formulario ? props.formulario.datos.paisIniciativa : 0}
+                        value={props.formulario ? props.formulario.datos.paisIniciativa : 0}
+                        >
+                        <option disabled defaultValue="0">
                             Seleccionar país Iniciativa
                         </option>
+                        {props.formulario.paises.map(pais=>{
+                            return(
+                                <option key={pais.id} value={pais.id}>{pais.nombre}</option>
+                            );
+                        })}
                         <option value="0">México</option>
                     </select>
                 </div>
@@ -76,7 +94,7 @@ function Formulario(props) {
                         onChange={props.onChange}
                         className="form-control"
                         name="inicia"
-                        defaultValue={props.formulario ? props.formulario.inicia : ''}
+                        defaultValue={props.formulario ? props.formulario.datos.inicia : ''}
                     />
                 </div>
                 <div className="col-6 form-group">
@@ -86,7 +104,7 @@ function Formulario(props) {
                         onChange={props.onChange}
                         className="form-control"
                         name="finaliza"
-                        defaultValue={props.formulario ? props.formulario.finaliza : ''}
+                        defaultValue={props.formulario ? props.formulario.datos.finaliza : ''}
                     />
                 </div>
             </div>
