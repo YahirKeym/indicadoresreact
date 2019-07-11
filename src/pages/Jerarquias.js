@@ -51,7 +51,7 @@ export default class Jerarquias extends React.Component{
         return(
             <div>
                 <div className="col-12 row">
-                    <div className="col-12 row mb-3">
+                    <div className="col-12 row mb-3 text-center">
                         <div className="col-4">
                             <Link to="/jerarquia/rango/add" className="btn btn-success">Agregar Encargado</Link>
                         </div>
