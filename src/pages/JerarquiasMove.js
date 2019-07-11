@@ -7,6 +7,7 @@ export default class JerarquiasMove extends React.Component
     {
         super(props);
         this.state = {
+            loading: true,
             datos: [],
             loadingJerarquia: false
         }
@@ -21,6 +22,7 @@ export default class JerarquiasMove extends React.Component
         if(response.status)
         {
             this.setState({
+                loading: false,
                 datos: response.datos
             })
         }
@@ -95,6 +97,11 @@ export default class JerarquiasMove extends React.Component
     }
     render()
     {
+        if(this.state.loading){
+            return(
+                <Loader />
+            );
+        }
         this.state.datos.sort((a,b)=>{
             return a.orden - b.orden;
         })
