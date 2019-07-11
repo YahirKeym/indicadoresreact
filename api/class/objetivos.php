@@ -85,7 +85,7 @@ class Objetivos
      */
     public function selectObjectives()
     {
-        $cQuery = "SELECT * FROM objetivos";
+        $cQuery = "SELECT * FROM objetivos WHERE deleted=0";
         $oConsulta = $this->oConexion->query($cQuery);
         $aStatus = [
             'status' => false,

@@ -118,6 +118,9 @@ function Formulario(props) {
                 >
                     Volver
                 </button>
+                {props.edit && (
+                    <button className="btn btn-danger ml-3" onClick={props.onDelete}>Eliminar</button>
+                )}
             </div>
         </form>
     );
