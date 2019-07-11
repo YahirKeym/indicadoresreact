@@ -42,6 +42,7 @@ class App extends React.Component {
         );
         const datos = await response.json();
         this.urlObjetivos = `http://localhost/indicadoresreact/api/controller/objetivos.php?token=${this.session}`;
+        this.urlMandos = `http://localhost/indicadoresreact/api/controller/mandos.php?token=${this.session}`;
         this.urlAlcance = `http://localhost/indicadoresreact/api/controller/alcance.php?token=${this.session}`;
         this.urlPaises = `http://localhost/indicadoresreact/api/controller/paises.php?token=${this.session}`;
         this.urlJerarquias = `http://localhost/indicadoresreact/api/controller/jerarquias.php?token=${this.session}`;
@@ -148,6 +149,7 @@ class App extends React.Component {
                                     <MandosAdd
                                         history={history}
                                         match={match}
+                                        url={this.urlMandos}
                                         urlObjetivos={this.urlObjetivos}
                                         urlRangos={this.urlRango}
                                     />
