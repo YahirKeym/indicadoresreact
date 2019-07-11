@@ -109,7 +109,9 @@ class App extends React.Component {
                                 path="/objetivos/add"
                                 component={() => (
                                     <ObjetivosAdd
-                                        urlObjetivos={this.urlObjetivos}
+                                        url={this.urlObjetivos}
+                                        urlAlcance={this.urlAlcance}
+                                        urlPais={this.urlPaises}
                                     />
                                 )}
                             />
@@ -120,7 +122,9 @@ class App extends React.Component {
                                     <ObjetivosEdit
                                         history={history}
                                         match={match}
-                                        urlObjetivos={this.urlObjetivos}
+                                        url={this.urlObjetivos}
+                                        urlAlcance={this.urlAlcance}
+                                        urlPais={this.urlPaises}
                                     />
                                 )}
                             />
