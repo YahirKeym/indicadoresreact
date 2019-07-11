@@ -22,7 +22,7 @@ function Formulario(props) {
                     onChange={props.onChange}
                     className="form-control"
                     name="descripcion"
-                    defaultValue={props.formulario ? props.formulario.datos.descripcion : ''}
+                    
                     value={props.formulario ? props.formulario.datos.descripcion : ""}
                 >
                 </textarea>
@@ -33,7 +33,6 @@ function Formulario(props) {
                         className="form-control"
                         onChange={props.onChange}
                         name="tipoAlcance"
-                        defaultValue={props.formulario ? props.formulario.datos.tipoAlcance : 0}
                         value={props.formulario ? props.formulario.datos.tipoAlcance : 0}
                     >
                         <option disabled defaultValue="0">
@@ -51,7 +50,6 @@ function Formulario(props) {
                         className="form-control"
                         onChange={props.onChange}
                         name="paisAlcance"
-                        defaultValue={props.formulario ? props.formulario.datos.paisAlcance : 0}
                         value={props.formulario ? props.formulario.datos.paisAlcance : 0}
                     >
                         <option disabled defaultValue="0">
@@ -71,7 +69,6 @@ function Formulario(props) {
                         className="form-control"
                         onChange={props.onChange}
                         name="paisIniciativa"
-                        defaultValue={props.formulario ? props.formulario.datos.paisIniciativa : 0}
                         value={props.formulario ? props.formulario.datos.paisIniciativa : 0}
                         >
                         <option disabled defaultValue="0">
