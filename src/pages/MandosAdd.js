@@ -17,14 +17,24 @@ class MandosAdd extends React.Component
                 }
             ],
             datos:{
-                variables:[]
+                variables:[],
+                rangos:[],
+                objetivo: "",
+                formula: "",
+                etapas: 12,
+                tipoDeEtapa: "meses"
             },
             objetivos: [],
             rangos:[]
         }
     }
-    handleChangeVariable = e => {
-
+    handleChange= e => {
+        this.setState({
+            datos:{
+                ...this.state.datos,
+                [e.target.name] : e.target.value
+            }
+        })
     }
     /**
      * Nos ayudara a agregar más variables de así requerirlo
@@ -43,10 +53,16 @@ class MandosAdd extends React.Component
             }
         )
     }
+    /**
+     * 
+     */
     componentDidMount()
     {
         this.traerDatos();
     }
+    /**
+     * 
+     */
     traerDatos = async () =>
     {
         const [objetivos,rangos] = await Promise.all(
@@ -81,20 +97,58 @@ class MandosAdd extends React.Component
             )
         }
     }
-    handleAddMando = e =>
+    handleAddMando = async e =>
     {
         e.preventDefault();
+        
+        const cambioEstado = await this.setState({
+            datos:{
+                ...this.state.datos,
+                variables:[],
+                rangos:[]
+            }
+        })
+        const asignaValores = await this.asignarValores();
+        const Datos = JSON.stringify(this.state.datos);
+        const req = await fetch(`${this.props.url}&action=add&data=${Datos}`);
+        const response = await req.json();
+    }
+    /**
+     * Asignara los valores de los rangos y de las vriables
+     */
+    asignarValores = () =>{
         const $Rangos = document.querySelectorAll("select [rango]");
         const $Variables = document.querySelectorAll("[tipo='variable']");
+        var aVariables = [];
+        var aRangos = [];
         for (let index = 0; index < $Rangos.length; index++) {
             if($Rangos[index].selected){
-                console.log($Rangos[index])
+                aRangos = [
+                    ...aRangos,
+                    {
+                        id: $Rangos[index].value
+                    }
+                ]
             }
         }
         for (let index = 0; index < $Variables.length; index++) {
-            console.log($Variables[index])
-            
+            if($Variables[index].value.length !== 0)
+            {
+                aVariables = [
+                    ...aVariables,
+                    {
+                        nombre: $Variables[index].value
+                    }
+                ]
+            }
         }
+        this.setState({
+            datos:{
+                ...this.state.datos,
+                variables: aVariables,
+                rangos: aRangos
+            }
+        })
     }
     /**
      * Se encargara de llevarnos hacía la página de los mandos
