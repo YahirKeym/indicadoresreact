@@ -55,7 +55,6 @@ class Alcance extends React.Component{
                 </div>    
                 <div className="mt-3 row d-block d-sm-block d-md-flex justify-content-center">
                     {this.state.data.map(alcance=>{
-                        console.log(alcance)
                         return (
                             <div key={alcance.id} className="col-md-3 col-11 col-sm-11 bg-header text-white text-center alcance p-3 mt-2 ml-3">
                                 <h4>{alcance.nombre}</h4>
