@@ -73,9 +73,9 @@ export default class Jerarquias extends React.Component{
                                         if(jerarquia.id === rango.idJerarquia){
 
                                             return(
-                                                <div className="bg-primary col-3 rank mx-auto p-3 text-white" key={rango.id}>
+                                                <Link to={`/jerarquia/${rango.id}`} className="bg-primary col-3 rank mx-auto p-3 text-white" key={rango.id}>
                                                     {rango.nombre}
-                                                </div>
+                                                </Link>
                                             );
                                         }
                                     })}

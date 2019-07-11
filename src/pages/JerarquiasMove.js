@@ -16,6 +16,9 @@ export default class JerarquiasMove extends React.Component
     {
         this.traerJerarquias();
     }
+    /**
+     * 
+     */
     traerJerarquias = async () => {
         const req = await fetch(`${this.props.url}&action=view`);
         const response = await req.json();
@@ -26,8 +29,6 @@ export default class JerarquiasMove extends React.Component
                 datos: response.datos
             })
         }
-        console.log(this.state.datos)
-
     }
     /**
      * Movera la jerarquia hacía arriba
@@ -84,6 +85,9 @@ export default class JerarquiasMove extends React.Component
         })
         this.enviarPosicion();
     }
+    /**
+     * 
+     */
     enviarPosicion = async () => {
         const datos = JSON.stringify(this.state.datos);
         const req = await fetch(`${this.props.url}&action=updatemove&data=${datos}`);
