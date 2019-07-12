@@ -1,0 +1,21 @@
+.mando{
+    background: #289c7c;
+    border: 2px solid #fff;
+    border-radius: 10px;
+}
+.mando .mando-text{
+    background: #376f60;
+    border-radius: 10px;
+}
+.mando .etapa{
+    border: 1px solid #289c7c;
+    background: #376f60;
+}
+.mando .btn-success{
+    background: #193a20 !important;
+    border: 1px solid #154e22 !important;
+}
+.mando .btn-success:hover{
+    background: #234e2c !important;
+    border: 1px solid #154e22 !important;
+}
