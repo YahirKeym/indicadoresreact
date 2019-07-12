@@ -21,6 +21,7 @@ import JerarquiasAdd from '../pages/JerarquiasAdd.js';
 import JerarquiasMove from '../pages/JerarquiasMove.js';
 import JerarquiaRangoAdd from '../pages/JerarquiaRangoAdd.js';
 import JerarquiaRangoEdit from '../pages/JerarquiaRangoEdit.js';
+import MandosProfile from '../pages/MandosProfile.js';
 
 /**
  * Nos ayudara a ajustar las opciones de la web
@@ -138,6 +139,19 @@ class App extends React.Component {
                                     <Mandos
                                         history={history}
                                         match={match}
+                                        url={this.urlMandos}
+                                        urlObjetivos={this.urlObjetivos}
+                                    />
+                                )}
+                            />
+                            <Route
+                                exact
+                                path="/mandos/:mandoId"
+                                component={({ match, history }) => (
+                                    <MandosProfile
+                                        history={history}
+                                        match={match}
+                                        url={this.urlMandos}
                                         urlObjetivos={this.urlObjetivos}
                                     />
                                 )}
