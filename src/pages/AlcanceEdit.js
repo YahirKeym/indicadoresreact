@@ -75,7 +75,7 @@ class AlcanceEdit extends React.Component{
     {
         return (
             <React.Fragment>
-                <form className="row col-md-8 col-sm-12 mx-auto">
+                <form className="row col-md-8 col-sm-12 m-0 mx-auto  p-3">
                     {this.state.empty && (
                         <div className="bg-danger text-white mb-3 text-center col-12 field-empty p-2">
                             <h5>Un campo está vacio</h5>

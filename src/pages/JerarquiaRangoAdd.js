@@ -72,7 +72,7 @@ export default class JerarquiaRangoAdd extends React.Component
             return(<Loader />);
         }
         return(
-            <form className="col-12 row d-flex justify-content-center">
+            <form className="col-12 row d-flex justify-content-center p-3 m-0">
                 <div className="col-12">
                     <input type="text" name="nombre" placeholder="Nombre del rango a ocupar" onChange={this.handleChange} className="form-control" required/>
                 </div>

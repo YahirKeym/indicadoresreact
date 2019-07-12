@@ -3,7 +3,7 @@ import {Link} from 'react-router-dom';
 function FormularioPaises(props)
 {
     return (
-        <form className="row">
+        <form className="row m-0 p-3">
                 <div className="col-12">
                     <input type="text" className="form-control" name="nombre" onChange={props.handleChange} placeholder="Nombre" defaultValue={props.state.edit.nombre}/>
                 </div>

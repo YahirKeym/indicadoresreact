@@ -2,7 +2,7 @@ import React from 'react';
 function FormularioAlcance(props)
 {
     return(
-        <form className="row col-md-8 col-sm-12 mx-auto">
+        <form className="row col-md-8 col-sm-12 mx-auto m-0 p-3">
             {
                 props.state.empty && (
                     <div className="bg-danger text-white mb-3 text-center col-12 field-empty p-2">

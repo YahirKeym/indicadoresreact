@@ -32,7 +32,7 @@ export default class JerarquiasAdd extends React.Component{
     render()
     {
         return(
-            <form className="d-flex row justify-content-center col-12">
+            <form className="d-flex p-3 m-0 row justify-content-center col-12">
                 <div className="col-7">
                     <input type="text" name="nombre" className="col-12 form-control" onChange={this.handleChage} placeholder="Nombre"/>
                 </div>

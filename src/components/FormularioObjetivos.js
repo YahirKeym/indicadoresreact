@@ -5,7 +5,7 @@ import React from "react";
  */
 function Formulario(props) {
     return (
-        <form className="form row col-md-8 col-sm-12 mx-auto">
+        <form className="form row m-0 p-3 col-md-8 col-sm-12 mx-auto">
             <div className="col-8">
                 <input
                     type="text"
