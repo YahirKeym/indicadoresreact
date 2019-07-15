@@ -11,6 +11,9 @@
     border: 1px solid #289c7c;
     background: #376f60;
 }
+.mando .variable:nth-child(+n+3){
+    display: none;
+}
 .mando .btn-success{
     background: #193a20 !important;
     border: 1px solid #154e22 !important;

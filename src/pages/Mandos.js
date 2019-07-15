@@ -21,6 +21,9 @@ class Mandos extends React.Component{
         const responseObjetivos = await reqObjetivos.json();
         if(response.status && responseObjetivos.status)
         {
+            if(response.datos.length === 0){
+                response.datos = [];
+            }
             this.setState({
                 data: response.datos,
                 objetivos: responseObjetivos.datos
@@ -39,8 +42,8 @@ class Mandos extends React.Component{
                                 {this.state.objetivos.map(objetivo => {
                                     if(mando.datos.objetivo === objetivo.id){
                                         return(
-                                            <React.Fragment>
-                                                <div className="col-12 text-center">
+                                            <React.Fragment key={objetivo.id}>
+                                                <div  className="col-12 text-center">
                                                     <h4>{objetivo.titulo}</h4>
                                                 </div>
                                                 <div className="col-12 p-2 mando-text">
@@ -49,11 +52,11 @@ class Mandos extends React.Component{
                                                 <div className="col-12 p-2 mando-control">
                                                 {mando.variables.map(variable =>{
                                                     return(
-                                                        <div className="col-12 row" key={variable.id}>
+                                                        <div className="col-12 row variable" key={variable.id}>
                                                             <div className="col-12">
                                                                 {variable.nombre}
                                                             </div>
-                                                            <div className="col-8 row">
+                                                            <div className="col-10 row">
                                                                 {variable.etapas.map(etapa =>{
                                                                     return(
                                                                     <div className="col-2 text-center etapa" key={etapa.id}>
@@ -62,7 +65,7 @@ class Mandos extends React.Component{
                                                                     )
                                                                 })}
                                                             </div>
-                                                            <div className="col-4">
+                                                            <div className="col-2">
                                                                 Total: {variable.valorTotal}
                                                             </div>
                                                         </div>
@@ -73,22 +76,20 @@ class Mandos extends React.Component{
                                         )
                                     }
                                     return(
-                                        <span></span>
+                                        <span key={objetivo.id}></span>
                                     );
                                 })}
                                 <div className="col-12">
                                     {mando.datos.rangos.map(rangoMando=>{
                                         return(
-                                            <React.Fragment>
+                                            <React.Fragment key={rangoMando.id}>
                                                 {mando.rangos.map(rango => {
+                                                    var Element = <span key={rango.id}></span>;
                                                     if(rangoMando.id === rango.id){
-                                                        
-                                                        return(
-                                                            <span className="badge badge-light mt-3 mb-3 mr-3">{rango.nombre}</span>
-                                                            );
+                                                       Element = <span key={rango.id} className="badge badge-light mt-3 mb-3 mr-3">{rango.nombre}</span>;
                                                         }
                                                         return(
-                                                            <span></span>
+                                                            Element
                                                             );
                                                         })}
                                             </React.Fragment>

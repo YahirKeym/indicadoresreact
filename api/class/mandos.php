@@ -44,7 +44,8 @@ class Mandos
         $cQuery = "SELECT * FROM mandos";
         $oConsulta = $this->oConexion->query($cQuery);
         $aStatus =[
-            'status' => false
+            'status' => false,
+            'datos' => []
         ];
         if($oConsulta !== false)
         {
