@@ -48,7 +48,7 @@ class MandosAdd extends React.Component
                 tipoDeEtapa: "meses",
                 titulo: "",
                 unidadDeMedida: "",
-                AceptacinBuena: "",
+                AceptacionBuena: "",
                 AceptacionMedia: "",
                 AceptacionMala: "",
             },
@@ -146,7 +146,11 @@ class MandosAdd extends React.Component
             var valor = e.target.value;
             if(valor.length === 0)
             {
-                valor = 1;
+                valor = "";
+                if(nombre === "etapas")
+                {
+                    valor = 1;
+                }
             }
             if(nombre === "etapas" && valor > 500)
             {
@@ -414,20 +418,20 @@ class MandosAdd extends React.Component
                         <div className="col-12">
                             <label htmlFor="unidadDeMedida">UDM</label>
                         </div>
-                        <input type="text" placeholder="Unidad de medida" className="form-control" name="unidadDeMedida"/>
+                        <input type="text" placeholder="Unidad de medida" onChange={this.handleChange} className="form-control" name="unidadDeMedida"/>
                     </div>
                     <div className="col-6 row">
                         <div className="col-12">
                             <label htmlFor="AceptacionBuena">Aceptación %</label>
                         </div>
                         <div className="col-4">
-                            <input type="number" min="1" name="AceptacionBuena" className="form-control border border-success" placeholder="Buena" />
+                            <input type="number" onChange={this.handleChange} min="1" name="AceptacionBuena" className="form-control border border-success" placeholder="Buena" />
                         </div>
                         <div className="col-4">
-                            <input type="number" min="1" name="AceptacionMedia" className="form-control border border-warning" placeholder="Media" />
+                            <input type="number" onChange={this.handleChange} min="1" name="AceptacionMedia" className="form-control border border-warning" placeholder="Media" />
                         </div>
                         <div className="col-4">
-                            <input type="number" min="1" name="AceptacionMala" className="form-control border border-danger"  placeholder="Mala" />
+                            <input type="number" onChange={this.handleChange} min="1" name="AceptacionMala" className="form-control border border-danger"  placeholder="Mala" />
                         </div>
                     </div>
                 </div>
@@ -446,7 +450,7 @@ class MandosAdd extends React.Component
                                             })}
                                         </div>
                                         <div className="col-12 col-lg-4 text-center">
-                                            <h5>{variable.nombre}: <span style={{fontWeight:100}}>{variable.valorTotal}</span></h5>
+                                            <h5>{variable.nombre}: <span style={{fontWeight:100}}>{variable.valorTotal} {this.state.datos.unidadDeMedida}</span></h5>
                                         </div>
                                     </div>
                                 )
