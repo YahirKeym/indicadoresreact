@@ -146,6 +146,19 @@ class App extends React.Component {
                             />
                             <Route
                                 exact
+                                path="/mandos/add"
+                                component={({ match, history }) => (
+                                    <MandosAdd
+                                    history={history}
+                                    match={match}
+                                    url={this.urlMandos}
+                                    urlObjetivos={this.urlObjetivos}
+                                    urlRangos={this.urlRango}
+                                    />
+                                    )}
+                            />
+                            <Route
+                                exact
                                 path="/mandos/:mandoId"
                                 component={({ match, history }) => (
                                     <MandosProfile
@@ -153,19 +166,6 @@ class App extends React.Component {
                                         match={match}
                                         url={this.urlMandos}
                                         urlObjetivos={this.urlObjetivos}
-                                    />
-                                )}
-                            />
-                            <Route
-                                exact
-                                path="/mandos/add"
-                                component={({ match, history }) => (
-                                    <MandosAdd
-                                        history={history}
-                                        match={match}
-                                        url={this.urlMandos}
-                                        urlObjetivos={this.urlObjetivos}
-                                        urlRangos={this.urlRango}
                                     />
                                 )}
                             />
