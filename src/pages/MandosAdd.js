@@ -38,7 +38,6 @@ class MandosAdd extends React.Component
                 }
             ],
             datos:{
-                objetivo: "",
                 formula: "(100*Variable_2)/Variable_1",
                 etapas: 12,
                 tipoDeEtapa: "meses",
