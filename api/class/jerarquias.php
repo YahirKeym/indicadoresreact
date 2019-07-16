@@ -17,7 +17,7 @@ class Jerarquias
      */
     public function view()
     {
-        $cQuery = "SELECT * FROM jerarquias ORDER BY orden ASC";
+        $cQuery = "SELECT * FROM general_area ORDER BY orden ASC";
         $oConsulta = $this->oConexion->query($cQuery);
         $aStatus = [
             'status' => false,
@@ -28,9 +28,9 @@ class Jerarquias
             $aStatus['status'] = true;
             $iContadorDeDatos = 0;
             foreach ($oConsulta as $aDatos) {
-                $aStatus['datos'][$iContadorDeDatos]['id'] = $aDatos['id'];
-                $aStatus['datos'][$iContadorDeDatos]['nombre'] = $aDatos['nombre'];
-                $aStatus['datos'][$iContadorDeDatos]['orden'] = $aDatos['orden'];
+                $aStatus['datos'][$iContadorDeDatos]['id'] = $aDatos['IdArea'];
+                $aStatus['datos'][$iContadorDeDatos]['nombre'] = $aDatos['Area'];
+                $aStatus['datos'][$iContadorDeDatos]['orden'] = $aDatos['Orden'];
                 $iContadorDeDatos++;
             }
         }
@@ -49,7 +49,7 @@ class Jerarquias
         ];
         foreach($aDatos as $aData)
         {
-            $cQuery = "UPDATE jerarquias SET orden={$aData['orden']} WHERE id={$aData['id']}";
+            $cQuery = "UPDATE general_area SET Orden={$aData['orden']} WHERE IdArea='{$aData['id']}'";
             $oConsulta = $this->oConexion->query($cQuery);
         }
         if($oConsulta != false)

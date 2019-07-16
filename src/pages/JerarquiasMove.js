@@ -93,7 +93,8 @@ export default class JerarquiasMove extends React.Component
      * 
      */
     enviarPosicion = async () => {
-        const datos = JSON.stringify(this.state.datos);
+        let datos = JSON.stringify(this.state.datos);
+            datos = datos.replace(/&/gi,"%26");
         const req = await fetch(`${this.props.url}&action=updatemove&data=${datos}`);
         const response = await req.json();
         if(response.status)
