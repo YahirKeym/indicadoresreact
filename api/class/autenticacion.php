@@ -51,12 +51,14 @@ class Autenticacion
      * @var string
      */
     private $cArea = "";
+    private $oNewConexion = null;
     /**
      * Nos ayudara a iniciar la autenticación para poder obtener datos de usuario o bien, validar si su sesión se encuentra activa.
      */
     public function __construct($cToken = "")
     {
         $this->oConexion = new Conexion();
+        $this->oNewConexion = $this->oConexion->oConexion;
     }
     /**
      * Nos ayudara a validar los datos del usuario para saber si es correcto el logueo o no
@@ -72,7 +74,7 @@ class Autenticacion
             $cCondicion = "nickname ='{$aDatos['usuario']}'";
         }
         $aSearch = [
-            'tabla' => 'users',
+            'tabla' => 'general_empleado',
             'condiciones' => "WHERE {$cCondicion}",
         ];
         $aDatos['condicionDb'] = $cCondicion;
@@ -128,7 +130,7 @@ class Autenticacion
         ];
         if (!empty($cCookie)) {
             $aSearch = [
-                'tabla' => 'users',
+                'tabla' => 'general_empleado',
                 'condiciones' => "WHERE cookie = '{$cCookie}'",
             ];
             $aDatosDeLaBaseDeDatos = $this->oConexion->selectDatos($aSearch);
@@ -148,9 +150,9 @@ class Autenticacion
      */
     private function saveData($aUsuario = [])
     {
-        $this->iUserId = $aUsuario['id'];
-        $this->cUserNombre = $aUsuario['nombre'];
-        $this->cNombreCompleto = $aUsuario['nombre']." ".$aUsuario['apellidopaterno']." ".$aUsuario['apellidomaterno'];
+        $this->iUserId = $aUsuario['IdEmpleado'];
+        $this->cUserNombre = $aUsuario['Nombre'];
+        $this->cNombreCompleto = $aUsuario['Nombre']." ".$aUsuario['ApellidoP']." ".$aUsuario['ApellidoM'];
     }
     /**
      * Nos ayudara a obtener el id del usuario
@@ -189,6 +191,27 @@ class Autenticacion
         return [
             'session' => false 
         ];        
+    }
+    public function selectForMandos($cId = "")
+    {
+        $cQuery = "SELECT IdEmpleado, Nombre, ApellidoP, ApellidoM FROM general_empleado WHERE IdDepto = '{$cId}'";
+        $oConsulta = $this->oNewConexion->query($cQuery);
+        $aStatus = [
+            'status' => false,
+            'datos' => []
+        ];
+        if($oConsulta != false){
+            $aStatus['status'] = true;
+            $iContadorUsers = 0;
+            foreach ($oConsulta as $aUsuario) {
+                $aStatus['datos'][$iContadorUsers]['nombre'] = $aUsuario['Nombre'];
+                $aStatus['datos'][$iContadorUsers]['apellidoP'] = $aUsuario['ApellidoP'];
+                $aStatus['datos'][$iContadorUsers]['apellidoM'] = $aUsuario['ApellidoM'];
+                $aStatus['datos'][$iContadorUsers]['id'] = $aUsuario['IdEmpleado'];
+                $iContadorUsers++;
+            }
+        }
+        return $aStatus;
     }
     /**
      * Nos ayudara a implementar el login donde lo ocupemos

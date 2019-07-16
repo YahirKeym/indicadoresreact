@@ -1,14 +1,21 @@
 <?php
 $cRuta = "/indicadoresreact/api";
 require_once $_SERVER["DOCUMENT_ROOT"] . $cRuta . "/class/dependencias.php";
-$cDatos = isset($_REQUEST['datos']) ? $_REQUEST['datos'] : '';
+$cAction = isset($_REQUEST['action']) ? $_REQUEST['action'] : '';
+$cId = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
 $cToken = $_REQUEST['token'];
-switch ($cDatos) {
+switch ($cAction) {
     case 'close':
     $aRegreso = $oAutentica->closeSession();
     break;
     case 'valida':
-    $aRegreso = $oAutentica->validarLogin($cDatos,$cToken);
+    $aRegreso = $oAutentica->validarLogin($cAction,$cToken);
+    break;
+    case 'selectForMandos':
+    $oAutentica->validarCookie($cToken);
+    if($oAutentica->lAutenticado){
+        $aRegreso = $oAutentica->selectForMandos($cId);
+    }
     break;
     default:
     $aRegreso = $oAutentica->validarCookie($cToken);
