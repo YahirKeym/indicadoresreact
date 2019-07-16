@@ -12,7 +12,7 @@ class Rango {
     }
     public function view()
     {
-        $cQuery = "SELECT * FROM rangos";
+        $cQuery = "SELECT * FROM general_departamento";
         $oConsulta = $this->oConexion->query($cQuery);
         $aStatus=[
             'status' => false,
@@ -23,14 +23,9 @@ class Rango {
             $aStatus['status'] = true;
             $iContadorRangos = 0;
             foreach ($oConsulta as $aDatos) {
-                $aStatus['datos'][$iContadorRangos]['id'] = $aDatos['id'];
-                $aStatus['datos'][$iContadorRangos]['nombre'] = $aDatos['nombre'];
-                $aStatus['datos'][$iContadorRangos]['idJerarquia'] = $aDatos['idJerarquia'];
-                $aStatus['datos'][$iContadorRangos]['agregaObjetivos'] = $aDatos['agregaObjetivos'];
-                $aStatus['datos'][$iContadorRangos]['agregaMandos'] = $aDatos['agregaMandos'];
-                $aStatus['datos'][$iContadorRangos]['agregaPais'] = $aDatos['agregaPais'];
-                $aStatus['datos'][$iContadorRangos]['agregaJerarquias'] = $aDatos['agregaJerarquias'];
-                $aStatus['datos'][$iContadorRangos]['agregaRangos'] = $aDatos['agregaRangos'];
+                $aStatus['datos'][$iContadorRangos]['id'] = $aDatos['IdDepto'];
+                $aStatus['datos'][$iContadorRangos]['nombre'] = $aDatos['Departamento'];
+                $aStatus['datos'][$iContadorRangos]['idJerarquia'] = $aDatos['IdArea'];
                 $iContadorRangos++;
             }
         }
@@ -61,9 +56,26 @@ class Rango {
         }
         return json_encode($aStatus);
     }
-    public function select()
+    public function selectForMandos($cId = "")
     {
-
+        $cQuery = "SELECT IdDepto,IdArea,Departamento FROM general_departamento WHERE IdArea='{$cId}'";
+        $oConsulta = $this->oConexion->query($cQuery);
+        $aStatus = [
+            'status' => false,
+            'datos' => [],
+        ];
+        if($oConsulta != false)
+        {
+            $aStatus['status'] = true;
+            $iContadorDeDatos = 0;
+            foreach ($oConsulta as $aDatos) {
+                $aStatus['datos'][$iContadorDeDatos]['nombre'] = $aDatos['Departamento'];
+                $aStatus['datos'][$iContadorDeDatos]['id'] = $aDatos['IdDepto'];
+                $aStatus['datos'][$iContadorDeDatos]['idArea'] = $aDatos['IdArea']; 
+                $iContadorDeDatos++;
+            }
+        }
+        return json_encode($aStatus);
     }
     public function delete()
     {

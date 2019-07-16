@@ -4,7 +4,7 @@ require_once $_SERVER["DOCUMENT_ROOT"] . $cRuta . "/class/dependencias.php";
 require_once $_SERVER["DOCUMENT_ROOT"] . $cRuta . "/class/rango.php";
     $cAccion = isset($_REQUEST['action']) ? $_REQUEST['action'] : '';   
     $cDatos = isset($_REQUEST['data']) ? $_REQUEST['data'] : '';
-    $iIdObjetive = isset($_REQUEST['id']) ? $_REQUEST['id'] : 0;
+    $iId = isset($_REQUEST['id']) ? $_REQUEST['id'] : 0;
     $aDatos = json_decode($cDatos);
     $oRangos = new Rango($oAutentica);
     $aDatos = json_decode($cDatos, true);
@@ -22,8 +22,11 @@ require_once $_SERVER["DOCUMENT_ROOT"] . $cRuta . "/class/rango.php";
             $cRegreso = $oRangos->view();
             break;
         case 'select':
-            $cRegreso = $oRangos->select($iIdObjetive);
+            $cRegreso = $oRangos->select($iId);
             break;
+        case 'selectForMandos':
+            $cRegreso = $oRangos->selectForMandos($iId);
+        break;
         default:
             $aRegreso = [
                 'status' => 'error',
