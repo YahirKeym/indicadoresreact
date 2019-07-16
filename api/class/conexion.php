@@ -24,7 +24,7 @@ class Conexion
      * Será la base de datos que ocuparemos para está conexión
      * @var string
      */
-    private $cDatabase = "indicadores";
+    private $cDatabase = "catalogos_generales";
     /**
      * Guardara el tipo de codificación que usaremos
      *
