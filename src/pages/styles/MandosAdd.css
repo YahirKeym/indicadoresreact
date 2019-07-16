@@ -2,3 +2,10 @@ form{
     background:rgba(200, 200, 200, .4);
     border-radius: 10px
 }
+a.accion:hover{
+    text-decoration: underline !important;
+    cursor: grab;
+}
+a.accion:active{
+    cursor: grabbing;
+}
