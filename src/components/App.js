@@ -36,11 +36,8 @@ class App extends React.Component {
     }
     veryfiLogged = async () => {
         this.session = this.getCookie("indicadores_i");
-        const response = await fetch(
-            `http://localhost/indicadoresreact/api/controller/autentica.php?token=${
-                this.session
-            }`
-        );
+        this.urlAutentica = `http://localhost/indicadoresreact/api/controller/autentica.php?token=${this.session}`;
+        const response = await fetch(this.urlAutentica);
         const datos = await response.json();
         this.urlObjetivos = `http://localhost/indicadoresreact/api/controller/objetivos.php?token=${this.session}`;
         this.urlMandos = `http://localhost/indicadoresreact/api/controller/mandos.php?token=${this.session}`;
@@ -154,6 +151,8 @@ class App extends React.Component {
                                     url={this.urlMandos}
                                     urlObjetivos={this.urlObjetivos}
                                     urlRangos={this.urlRango}
+                                    urlJerarquias={this.urlJerarquias}
+                                    urlAutentica={this.urlAutentica}
                                     />
                                     )}
                             />
