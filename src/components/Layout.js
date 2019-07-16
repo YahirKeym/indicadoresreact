@@ -8,10 +8,10 @@ function Layout(props)
     return (
         <div className="col-12 row p-0 m-0">
             <Navbar />
-            <div className="d-none d-md-block col-md-12  mt-5 mb-5">
+            <div className="col-md-12  mt-5">
                 <SideBar />
             </div>
-            <div className="col-sm-12 col-md-12 mt-5 mb-5">
+            <div className="col-sm-12 col-md-12 mt-5">
                 {Children}
             </div>
             <Footer />
