@@ -1,7 +1,7 @@
 import React from 'react';
 import './styles/MandosAdd.css';
 function Formula(props){
-    var _self= props.this;
+    let _self= props.this;
     let onChange = props.onChange
     if(_self.state.errors.formulaNoCoincideConVariables)
     {
@@ -259,8 +259,12 @@ class MandosAdd extends React.Component
                                    try{
                                     var formula = ${formulaString};
                                     let porcentaje = formula;
-                                    if(idEtapa === 0 && idVariable === 0){
+                                    if(idVariable === 0){
                                         porcentaje = 100;
+                                    }
+                                    const variableValor = parseInt(nuevoStado.variables[idVariable]['etapas'][idEtapa]['valor']);
+                                    if(idVariable > 1 ){
+                                        porcentaje = (100*variableValor)/Variable_1;
                                     }
                                     nuevoStado.variables[idVariable]['etapas'][idEtapa]['porcentaje'] = porcentaje;
                                     this.setState(nuevoStado)
@@ -318,14 +322,28 @@ class MandosAdd extends React.Component
     handleAddVariable = (e) =>
     {
         e.preventDefault();
+        let aEtapas = [];
+        const idVariable = this.state.variables.length;
+        for (let indexEtapas = 1; indexEtapas <= this.state.datos.etapas; indexEtapas++) {
+            aEtapas = [
+                ...aEtapas,
+                {
+                    id: `${idVariable}_${indexEtapas}`,
+                    valor: 0,
+                    idEtapa: indexEtapas,
+                    porcentaje: 100,
+                    procentajeApp: 100
+                }
+            ]
+        }
         this.setState(
             {
                 variables:[
                     ...this.state.variables,
                     {
-                        ...this.state.variables[1],
-                         id: this.state.variables.length +1,
-                         nombre: `Variable ${this.state.variables.length + 1}`
+                        etapas: aEtapas,
+                        id: this.state.variables.length +1,
+                        nombre: `Variable_${this.state.variables.length + 1}`
                     }
                 ]
             }
@@ -443,13 +461,20 @@ class MandosAdd extends React.Component
         const cambioEstado = await this.setState({
             datos:{
                 ...this.state.datos,
-                rangos:[]
+                rangos:[],
+                jerarquias:[],
+                usuarios:[],
             }
         })
         const asignaValores = await this.asignarValores();
         const Datos = JSON.stringify(this.state);
-        const req = await fetch(`${this.props.url}&action=add&data=${Datos}`);
+        const cadenaLimpia = Datos.replace(/&/gi,"%26");
+        const req = await fetch(`${this.props.url}&action=add&data=${cadenaLimpia}`);
         const response = await req.json();
+        if(response.status)
+        {
+            this.props.history.push("/mandos")
+        }
     }
     /**
      * Agregara una acción de así requerirlo.
@@ -486,8 +511,8 @@ class MandosAdd extends React.Component
      * Asignara los valores de los rangos y de las vriables
      */
     asignarValores = () =>{
-        const $Rangos = document.querySelectorAll("select [rango]");
-        var aRangos = [];
+        const $Rangos = document.querySelectorAll("select [tipo='rango']");
+        let aRangos = [];
         for (let index = 0; index < $Rangos.length; index++) {
             if($Rangos[index].selected){
                 aRangos = [
@@ -498,10 +523,51 @@ class MandosAdd extends React.Component
                 ]
             }
         }
+        const $Jerarquias = document.querySelectorAll("select [tipo='jerarquia']");
+        let aJerarquias = [];
+        for (let index = 0; index < $Jerarquias.length; index++) {
+            if($Jerarquias[index].selected){
+                aJerarquias = [
+                    ...aJerarquias,
+                    {
+                        id: $Jerarquias[index].value
+                    }
+                ]
+            }
+        }
+        const $Usuarios = document.querySelectorAll("select [tipo='user']");
+        let aUsers = [];
+        for (let index = 0; index < $Usuarios.length; index++) {
+            if($Usuarios[index].selected){
+                aUsers = [
+                    ...aUsers,
+                    {
+                        id: $Usuarios[index].value
+                    }
+                ]
+            }
+        }
+        let globalRangos = true, globalJerarquia = true;
+        if(aRangos.length > 0){
+            globalRangos = false;
+        }
+        if(aJerarquias > 0){
+            globalJerarquia = false;
+        }
         this.setState({
             datos:{
                 ...this.state.datos,
-                rangos: aRangos
+                rangos: {
+                    datos: aRangos,
+                    global: globalRangos
+                },
+                jerarquias: {
+                    datos: aJerarquias,
+                    global: globalJerarquia
+                },
+                usuarios: {
+                    datos: aUsers,
+                }
             }
         })
     }
@@ -605,7 +671,7 @@ class MandosAdd extends React.Component
                     <div className="col-6 mt-3">
                         {this.state.users.length > 0  && (<select multiple className="form-control" name="rangos">
                             {this.state.users.map(user => {
-                                return(<option rango="true" value={user.id} key={user.id}>{`${user.nombre} ${user.apellidoP} ${user.apellidoM}`}</option>)
+                                return(<option rango="true" tipo="user" value={user.id} key={user.id}>{`${user.nombre} ${user.apellidoP} ${user.apellidoM}`}</option>)
                             })}
                         </select>)}
                     </div>
@@ -640,7 +706,16 @@ class MandosAdd extends React.Component
                                         </div>
                                         <div className="col-12 p-0 col-lg-8 row">
                                             {variable.etapas.map(etapa=>{
-                                                return(<input type="number" idetapa={etapa.idEtapa} onChange={this.handleChange} tipo="etapa" name={etapa.id} idvariable={variable.id} className="col-2 form-control" key={etapa.id} />)
+                                                let color = "border border-success";
+                                                if(etapa.porcentaje < this.state.datos.AceptacionBuena)
+                                                {
+                                                    color = "border border-warning";
+                                                }
+                                                if(etapa.porcentaje < this.state.datos.AceptacionMedia)
+                                                {
+                                                    color = "border border-danger";
+                                                }
+                                                return(<input type="number" idetapa={etapa.idEtapa} onChange={this.handleChange} tipo="etapa" name={etapa.id} idvariable={variable.id} className={`col-2 form-control ${color}`} key={etapa.id} />)
                                             })}
                                         </div>
                                         <div className="col-12 col-lg-4 text-center">

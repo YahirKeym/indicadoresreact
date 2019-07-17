@@ -1,6 +1,29 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import './styles/Mandos.css';
+function DescripcionMando(props){
+    let Descripcion = props.descripcion;
+    if(Descripcion.length === 0){
+        Descripcion = "Este indicador no cuenta con una descripción, por favor de agregar una";
+    }
+    return(
+        <div className="col-12 p-2 mando-text">
+            <p>{Descripcion}</p>
+        </div>
+    )
+}
+function TituloMando(props)
+{
+    let MuestraTitulo = props.titulo;
+    if(MuestraTitulo.length === 0){
+        MuestraTitulo = props.objetivo
+    }
+    return(
+    <div  className="col-12 text-center">
+        <h4>{MuestraTitulo}</h4>
+    </div>
+    );
+}
 class Mandos extends React.Component{
     constructor(props)
     {
@@ -32,6 +55,7 @@ class Mandos extends React.Component{
     } 
     render()
     {
+        console.log(this.state)
         return (
             <React.Fragment>
                 <Link to="/mandos/add" className="btn btn-success">Añadir nuevo mando</Link>
@@ -39,48 +63,33 @@ class Mandos extends React.Component{
                     {this.state.data.map(mando => {
                         return(
                             <div className="col-12 p-3 col-md-6 row mando mx-auto text-white" key={mando.id}>
-                                {this.state.objetivos.map(objetivo => {
-                                    if(mando.datos.objetivo === objetivo.id){
-                                        return(
-                                            <React.Fragment key={objetivo.id}>
-                                                <div  className="col-12 text-center">
-                                                    <h4>{objetivo.titulo}</h4>
-                                                </div>
-                                                <div className="col-12 p-2 mando-text">
-                                                    <p>{objetivo.descripcion}</p>
-                                                </div>
-                                                <div className="col-12 p-2 mando-control">
-                                                {mando.variables.map(variable =>{
-                                                    return(
-                                                        <div className="col-12 row variable" key={variable.id}>
-                                                            <div className="col-12">
-                                                                {variable.nombre}
-                                                            </div>
-                                                            <div className="col-10 row">
-                                                                {variable.etapas.map(etapa =>{
-                                                                    return(
-                                                                    <div className="col-2 text-center etapa" key={etapa.id}>
-                                                                        {etapa.valor}
-                                                                    </div>
-                                                                    )
-                                                                })}
-                                                            </div>
-                                                            <div className="col-2">
-                                                                Total: {variable.valorTotal}
-                                                            </div>
-                                                        </div>
-                                                    );
-                                                })}
-                                                </div>
-                                            </React.Fragment>
-                                        )
-                                    }
+                                <TituloMando titulo={mando.datos.titulo} objetivo={mando.objetivosData.titulo} />
+                                <DescripcionMando descripcion={mando.objetivosData.descripcion} />
+                                <div className="col-12 p-2 mando-control">
+                                {mando.variables.map(variable =>{
                                     return(
-                                        <span key={objetivo.id}></span>
+                                        <div className="col-12 row variable" key={variable.id}>
+                                            <div className="col-12">
+                                                {variable.nombre}
+                                            </div>
+                                            <div className="col-10 row">
+                                                {variable.etapas.map(etapa =>{
+                                                    return(
+                                                    <div className="col-2 text-center etapa" key={etapa.id}>
+                                                        {etapa.valor}
+                                                    </div>
+                                                    )
+                                                })}
+                                            </div>
+                                            <div className="col-2">
+                                                Total: {variable.valorTotal}
+                                            </div>
+                                        </div>
                                     );
                                 })}
+                                </div>
                                 <div className="col-12">
-                                    {mando.datos.rangos.map(rangoMando=>{
+                                    {mando.datos.jerarquias.datos.map(rangoMando=>{
                                         return(
                                             <React.Fragment key={rangoMando.id}>
                                                 {mando.rangos.map(rango => {
