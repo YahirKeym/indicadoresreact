@@ -14,7 +14,7 @@ class Navbar extends React.Component
                     <ul className="col-lg-8 col-sm-12">
                         <Link to="/" className="navbar-brand text-white" >Inicio</Link>
                         <Link to="/objetivos" className="navbar-brand text-white" >Objetivos</Link>
-                        <Link to="/mandos" className="navbar-brand text-white" >Mando</Link>
+                        <Link to="/mandos" className="navbar-brand text-white" >Indicadores</Link>
                     </ul>
                 </div>
             </header>
