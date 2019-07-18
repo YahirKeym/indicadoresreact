@@ -1,6 +1,6 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
-import ObjetivosVista from '../components/ObjetivosVista.js';
+import CuerpoObjetivosMandos from '../components/CuerpoObjetivosMandos.js';
 import Loader from '../components/Loader.js';
 
 /**
@@ -92,12 +92,26 @@ class Objetivos extends React.Component
             </div>
             );
         }
+        console.log(this.props.history)
         return (
             <div className="col-12 row">
-                <div className="col-md-8 col-sm-12 mx-auto">
+                <div className="col-md-4 col-sm-12 mx-auto mb-3">
                     <Link className="btn btn-success col-12" to="/objetivos/add">Añadir Objetivo</Link>
                 </div>
-                <ObjetivosVista data={this.state.data} textButton="Editar" onClick={this.handleEditar}/>
+                <div className="col-12 row">
+                    {this.state.data.map(objetivo => {
+                        return(
+                            <CuerpoObjetivosMandos titulo={objetivo.titulo} textSuccess="Editar" 
+                            url={`/objetivos/${objetivo.id}/edit`} descripcion={objetivo.descripcion} 
+                            key={objetivo.id}>
+                                <div className="col-12 mt-3">
+                                    <p>Inicia: <span>{objetivo.inicia}</span></p>
+                                    <p>Finaliza: <span>{objetivo.finaliza}</span></p>
+                                </div>
+                            </CuerpoObjetivosMandos>
+                        )
+                    })}
+                </div>
             </div>
         );
     }

@@ -35,8 +35,7 @@ class ObjetivosVista extends React.Component
                         <div className="col-12 mt-2">
                           <Link
                             to={`/objetivos/${objetivo.id}/edit`}
-                            className="btn btn-success"
-                          >
+                            className="btn btn-success">
                             {this.props.textButton}
                           </Link>
                         </div>
