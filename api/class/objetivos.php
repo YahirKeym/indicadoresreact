@@ -59,15 +59,16 @@ class Objetivos
     public function modifyObjective($aDatos = [], $lDeleted = false)
     {
         $cDate = date("Y-m-d H:i:s");
-        $cQuery = "UPDATE objetivos 
-        SET
-        nombre='{$aDatos['titulo']}',descripcion='{$aDatos['descripcion']}',alcanceId={$aDatos['tipoAlcance']},paisalcanceid={$aDatos['paisAlcance']},paisiniciativaid={$aDatos['paisIniciativa']},inicio='{$aDatos['inicia']}',finaliza='{$aDatos['finaliza']}',modificado='{$cDate}'
-        WHERE id={$aDatos['id']}";
        if($lDeleted)
        {
            $cQuery ="UPDATE objetivos 
            SET
-            deleted=1 WHERE id={$aDatos['id']}";
+            deleted=1 WHERE id={$aDatos}";
+       }else{
+            $cQuery = "UPDATE objetivos 
+            SET
+            nombre='{$aDatos['titulo']}',descripcion='{$aDatos['descripcion']}',alcanceId={$aDatos['tipoAlcance']},paisalcanceid={$aDatos['paisAlcance']},paisiniciativaid={$aDatos['paisIniciativa']},inicio='{$aDatos['inicia']}',finaliza='{$aDatos['finaliza']}',modificado='{$cDate}'
+            WHERE id={$aDatos['id']}";
        }
        $oConsulta = $this->oConexion->query($cQuery);
        $aStatus = [

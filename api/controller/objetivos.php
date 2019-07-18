@@ -18,8 +18,8 @@ if ($oAutentica->lAutenticado) {
         case 'edit':
             $cRegreso = $oObjetivos->modifyObjective($aDatos);
             break;
-        case 'deleted':
-            $cRegreso = $oObjetivos->modifyObjective($aDatos, true);
+        case 'delete':
+            $cRegreso = $oObjetivos->modifyObjective($iIdObjetive, true);
             break;
         case 'view':
             $cRegreso = $oObjetivos->selectObjectives();

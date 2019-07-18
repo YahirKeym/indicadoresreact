@@ -1,6 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import './styles/Mandos.css';
+import DeleteAction from './Delete.js';
 /**
  * Cambiara los acentos que vengan con codificación java
  */
@@ -56,7 +57,9 @@ function CuerpoObjetivosMandos(props){
     const descripcion = props.descripcion;
     const url = props.url;
     const textSuccess = props.textSuccess;
-    const urlDelete = props.delete;
+    const Delete = props.Delete;
+    const id = props.id;
+    const history = props.history;
     return(
         <div className="col-12 p-3 col-md-6 row mando mx-auto text-white">
             <div  className="col-12 text-center">
@@ -68,7 +71,11 @@ function CuerpoObjetivosMandos(props){
             {props.children}
             <div className="col-12 mt-3">
                 <Link className="btn btn-success" to={url}>{textSuccess}</Link>
-                <Link className="btn btn-danger ml-3" to="">Eliminar</Link>
+                <DeleteAction 
+                url={Delete} 
+                id={id} 
+                oneProfile={false}  
+                history={history}/>
             </div>
         </div>
     )

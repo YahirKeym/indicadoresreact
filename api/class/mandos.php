@@ -82,5 +82,18 @@ class Mandos
         }
         return json_encode($aStatus);
     }
+    public function delete($iIdMando = 0)
+    {
+        $cQuery = "DELETE FROM mandos WHERE id={$iIdMando}";
+        $oConsulta = $this->oConexion->query($cQuery);
+        $aStatus = [
+            'status' => false
+        ];
+        if($oConsulta != false)
+        {
+            $aStatus['status'] = true;
+        }
+        return json_encode($aStatus);
+    }
 }
 ?>

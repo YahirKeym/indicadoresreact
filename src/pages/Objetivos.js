@@ -35,7 +35,7 @@ class Objetivos extends React.Component
     traeObjetivos = async () => 
     {
         try {
-            const response = await fetch(`${this.props.urlObjetivos}&action=view`);
+            const response = await fetch(`${this.props.url}&action=view`);
             const datos = await response.json();
             if(datos.datos === undefined)
             {
@@ -92,7 +92,6 @@ class Objetivos extends React.Component
             </div>
             );
         }
-        console.log(this.props.history)
         return (
             <div className="col-12 row">
                 <div className="col-md-4 col-sm-12 mx-auto mb-3">
@@ -102,7 +101,11 @@ class Objetivos extends React.Component
                     {this.state.data.map(objetivo => {
                         return(
                             <CuerpoObjetivosMandos titulo={objetivo.titulo} textSuccess="Editar" 
-                            url={`/objetivos/${objetivo.id}/edit`} descripcion={objetivo.descripcion} 
+                            url={`/objetivos/${objetivo.id}/edit`} 
+                            Delete={this.props.url}
+                            descripcion={objetivo.descripcion} 
+                            id={objetivo.id}
+                            history={this.props.history}
                             key={objetivo.id}>
                                 <div className="col-12 mt-3">
                                     <p>Inicia: <span>{objetivo.inicia}</span></p>

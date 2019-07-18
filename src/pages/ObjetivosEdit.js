@@ -73,7 +73,7 @@ class ObjetivosEdit extends React.Component
         e.preventDefault();
         const jsonEnviar = JSON.stringify(this.state.datos);
         const response = await fetch(
-            `${this.props.url}&action=deleted&data=${jsonEnviar}`
+            `${this.props.url}&action=deleted&id=${jsonEnviar}`
         );
         const respuesta = await response.json();
         if (respuesta.status) {

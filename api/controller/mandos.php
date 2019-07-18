@@ -4,7 +4,7 @@ require_once $_SERVER["DOCUMENT_ROOT"] . $cRuta . "/class/dependencias.php";
 require_once $_SERVER["DOCUMENT_ROOT"] . $cRuta . "/class/mandos.php";
     $cAccion = isset($_REQUEST['action']) ? $_REQUEST['action'] : '';   
     $cDatos = isset($_REQUEST['data']) ? $_REQUEST['data'] : '';
-    $iIdObjetive = isset($_REQUEST['id']) ? $_REQUEST['id'] : 0;
+    $iIdMando = isset($_REQUEST['id']) ? $_REQUEST['id'] : 0;
     $aDatos = json_decode($cDatos);
     $oMandos = new Mandos($oAutentica);
     $aDatos = json_decode($cDatos, true);
@@ -15,14 +15,14 @@ require_once $_SERVER["DOCUMENT_ROOT"] . $cRuta . "/class/mandos.php";
         case 'edit':
             $cRegreso = $oMandos->modify($aDatos);
             break;
-        case 'deleted':
-            $cRegreso = $oMandos->delete($aDatos, true);
+        case 'delete':
+            $cRegreso = $oMandos->delete($iIdMando, true);
             break;
         case 'view':
             $cRegreso = $oMandos->view();
             break;
         case 'select':
-            $cRegreso = $oMandos->select($iIdObjetive);
+            $cRegreso = $oMandos->select($iIdMando);
             break;
         default:
             $aRegreso = [

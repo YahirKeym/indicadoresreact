@@ -1,14 +1,24 @@
 import React from 'react';
-function Delete(props)
+export default class DeleteAction extends React.Component
 {
-    return (
-        <div className="col-12 row">
-            <div className="col-7 mx-auto">
-                <h5>¿Estás seguro de eliminar a {this.state.deleted.nombre}?</h5>
-            </div>
-            <div className="col-7 mx-auto">
-                <Link className="btn btn-success" to="/tipos/alcance">No</Link>
-                <button className="btn btn-danger ml-3" onClick={this.handleDelete}>Si</button>
-            </div>
-        </div>
+    constructor(props){
+        super(props);
+    }
+    handleDelete = async () =>{
+        const req = await fetch(`${this.props.url}&action=delete&id=${this.props.id}`);
+        const response = await req.json();
+        if(response.status && this.props.oneProfile){
+            this.props.history.goBack();
+        }
+        if(response.status && !this.props.oneProfile)
+        {
+            this.props.history.push("/empty");
+            this.props.history.goBack();
+        }
+    }
+    render(){
+        return (
+                <button className="btn btn-danger ml-3" onClick={this.handleDelete}>eliminar</button>
+            )
+    }
 }

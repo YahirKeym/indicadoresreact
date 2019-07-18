@@ -101,7 +101,7 @@ class App extends React.Component {
                                 path="/objetivos"
                                 component={({match,history}) => (
                                     <Objetivos
-                                        urlObjetivos={this.urlObjetivos}
+                                        url={this.urlObjetivos}
                                         match={match}
                                         history={history}
                                     />
