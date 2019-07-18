@@ -99,9 +99,11 @@ class App extends React.Component {
                             <Route
                                 exact
                                 path="/objetivos"
-                                component={() => (
+                                component={({match,history}) => (
                                     <Objetivos
                                         urlObjetivos={this.urlObjetivos}
+                                        match={match}
+                                        history={history}
                                     />
                                 )}
                             />
