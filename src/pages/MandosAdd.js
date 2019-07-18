@@ -7,13 +7,13 @@ function Formula(props){
     {
         return(
             <div className="col-7 mt-3">
-                <input className="form-control is-invalid" onChange={onChange} name="formula" type="text" defaultValue={_self.state.datos.formula} placeholder="Formula etapas" />
+                <input className="form-control is-invalid" disabled={true} onChange={onChange} name="formula" type="text" defaultValue={_self.state.datos.formula} placeholder="Formula etapas" />
             </div>
         ) 
     }
     return(
             <div className="col-7 mt-3">
-                <input className="form-control" onChange={onChange} name="formula" type="text" defaultValue={_self.state.datos.formula} placeholder="Formula etapas" />
+                <input className="form-control" disabled={true} onChange={onChange} name="formula" type="text" defaultValue={_self.state.datos.formula} placeholder="Formula etapas" />
             </div>
     )
 }
@@ -38,7 +38,7 @@ class MandosAdd extends React.Component
                 }
             ],
             datos:{
-                formula: "(100*Variable_2)/Variable_1",
+                formula: "",
                 etapas: 12,
                 tipoDeEtapa: "meses",
                 titulo: "",
@@ -68,6 +68,19 @@ class MandosAdd extends React.Component
     {   
         this.crearEtapas();
         this.traerDatos();
+        this.creaFormula();
+    }
+    creaFormula = () => 
+    {
+        const Variable_1 = this.state.variables[0].nombre;
+        const Variable_2 = this.state.variables[1].nombre;
+        const formula = `(100*${Variable_2})/${Variable_1}`;
+        this.setState({
+            datos:{
+                ...this.state.datos,
+                formula: formula
+            }
+        })
     }
     /**
      * 
@@ -266,6 +279,9 @@ class MandosAdd extends React.Component
                                     if(idVariable > 1 ){
                                         porcentaje = (100*variableValor)/Variable_1;
                                     }
+                                    if(porcentaje === infinity){
+                                        porcentaje = 100;
+                                    }
                                     nuevoStado.variables[idVariable]['etapas'][idEtapa]['porcentaje'] = porcentaje;
                                     this.setState(nuevoStado)
                                    }catch(e)
@@ -315,6 +331,7 @@ class MandosAdd extends React.Component
         const cadenaLimpia = this.quitaAcentos(cambioEspaciosEnBlanco);
         nuevoStado.variables[id-1]['nombre'] = cadenaLimpia;
         this.setState(nuevoStado);
+        this.creaFormula();
     }
     /**
      * Nos ayudara a agregar más variables de así requerirlo
@@ -452,12 +469,11 @@ class MandosAdd extends React.Component
         this.setState(nuevoStado);
     }
     /**
-     * 
+     * Añadira el mando haciendo los cambios de estados necesarios a empty, le asignara los valores correctos, limpiara las cadenas y realizara la petición del usuario.
      */
     handleAddMando = async e =>
     {
         e.preventDefault();
-        
         const cambioEstado = await this.setState({
             datos:{
                 ...this.state.datos,
@@ -468,7 +484,7 @@ class MandosAdd extends React.Component
         })
         const asignaValores = await this.asignarValores();
         const Datos = JSON.stringify(this.state);
-        const cadenaLimpia = Datos.replace(/&/gi,"%26");
+        let cadenaLimpia = Datos.replace(/&/gi,"%26");
         const req = await fetch(`${this.props.url}&action=add&data=${cadenaLimpia}`);
         const response = await req.json();
         if(response.status)
