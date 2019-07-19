@@ -77,14 +77,40 @@ class Mandos
         if($oConsulta != false){
             $aStatus['status'] = true;
             $aDatos = $oConsulta->fetch(PDO::FETCH_ASSOC);
-            $aStatus['datos']['id'] = $aDatos['id'];
             $aStatus['datos'] = json_decode($aDatos['datosmando'], true);
+            $aStatus['datos']['id'] = $aDatos['id'];
         }
         return json_encode($aStatus);
     }
+    /**
+     * Eliminaremos el mando - indicador
+     *
+     * @param integer $iIdMando Será el id del mando que eliminaremos
+     * @return string Regresa un string tipo json con el estado de la consulta.
+     */
     public function delete($iIdMando = 0)
     {
         $cQuery = "DELETE FROM mandos WHERE id={$iIdMando}";
+        $oConsulta = $this->oConexion->query($cQuery);
+        $aStatus = [
+            'status' => false
+        ];
+        if($oConsulta != false)
+        {
+            $aStatus['status'] = true;
+        }
+        return json_encode($aStatus);
+    }
+    /**
+     * Undocumented function
+     *
+     * @param array $aDatos
+     * @param string $cDatos
+     * @return void
+     */
+    public function modify($aDatos = [],$cDatos = "")
+    {
+        $cQuery = "UPDATE mandos SET datosmando='{$cDatos}' WHERE id={$aDatos['id']}";
         $oConsulta = $this->oConexion->query($cQuery);
         $aStatus = [
             'status' => false

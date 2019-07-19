@@ -5,7 +5,6 @@ require_once $_SERVER["DOCUMENT_ROOT"] . $cRuta . "/class/mandos.php";
     $cAccion = isset($_REQUEST['action']) ? $_REQUEST['action'] : '';   
     $cDatos = isset($_REQUEST['data']) ? $_REQUEST['data'] : '';
     $iIdMando = isset($_REQUEST['id']) ? $_REQUEST['id'] : 0;
-    $aDatos = json_decode($cDatos);
     $oMandos = new Mandos($oAutentica);
     $aDatos = json_decode($cDatos, true);
     switch ($cAccion) {
@@ -13,7 +12,7 @@ require_once $_SERVER["DOCUMENT_ROOT"] . $cRuta . "/class/mandos.php";
             $cRegreso = $oMandos->add($aDatos);
             break;
         case 'edit':
-            $cRegreso = $oMandos->modify($aDatos);
+            $cRegreso = $oMandos->modify($aDatos, $cDatos);
             break;
         case 'delete':
             $cRegreso = $oMandos->delete($iIdMando, true);
