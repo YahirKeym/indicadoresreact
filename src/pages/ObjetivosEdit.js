@@ -69,23 +69,26 @@ class ObjetivosEdit extends React.Component
         e.preventDefault();
         this.props.history.push("/objetivos");
     }
-    handleDelete = async e => {
-        e.preventDefault();
-        const jsonEnviar = JSON.stringify(this.state.datos);
-        const response = await fetch(
-            `${this.props.url}&action=deleted&id=${jsonEnviar}`
-        );
-        const respuesta = await response.json();
-        if (respuesta.status) {
-            this.props.history.push("/objetivos");
-        }
-    }
     /**
      * Nos ayudara a renderizar el componente
      */
     render()
     {
-        return (<FormularioObjetivos edit="true" onDelete={this.handleDelete} successButton="Editar" onChange={this.handleChange} back={this.handleBack} onClick={this.handleSubmit} formulario={this.state}/>);
+        const Delete = {
+            url: this.props.url,
+            id: this.state.datos.id,
+            history: this.props.history,
+            oneProfile: true,
+        }
+        return (
+        <FormularioObjetivos 
+        edit="true" 
+        successButton="Editar"
+        onChange={this.handleChange}
+        back={this.handleBack}
+        onClick={this.handleSubmit}
+        formulario={this.state}
+        Delete={Delete} />);
     }
 }
 export default ObjetivosEdit;

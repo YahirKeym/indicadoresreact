@@ -2,6 +2,7 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 import CuerpoObjetivosMandos from '../components/CuerpoObjetivosMandos.js';
 import Loader from '../components/Loader.js';
+import ButtonDirectTop from '../components/ButtonDirectTop.js';
 
 /**
  * Será la clase que nos ayudara a pintar los objetivos
@@ -94,9 +95,7 @@ class Objetivos extends React.Component
         }
         return (
             <div className="col-12 row">
-                <div className="col-md-4 col-sm-12 mx-auto mb-3">
-                    <Link className="btn btn-success col-12" to="/objetivos/add">Añadir Objetivo</Link>
-                </div>
+                <ButtonDirectTop to="/objetivos/add" text="Añadir objetivo" />
                 <div className="col-12 row">
                     {this.state.data.map(objetivo => {
                         return(

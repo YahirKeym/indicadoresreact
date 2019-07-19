@@ -1,18 +1,18 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import './styles/Mandos.css';
-import DeleteAction from './Delete.js';
+import DeleteAction from './DeleteAction.js';
 /**
  * Cambiara los acentos que vengan con codificación java
  */
 function acentosEncodeJava(cadena = ""){
-    cadena = cadena.replace(/u00E1/gi,"á");
+    cadena = cadena.replace(/u00e1/gi,"á");
     cadena = cadena.replace(/u00C1/gi,"Á");
     cadena = cadena.replace(/u00E9/gi,"é");
     cadena = cadena.replace(/u00C9/gi,"É");
     cadena = cadena.replace(/u00ED/gi,"í");
     cadena = cadena.replace(/u00CD/gi,"Í");
-    cadena = cadena.replace(/u00F3/gi,"ó");
+    cadena = cadena.replace(/u00f3/gi,"ó");
     cadena = cadena.replace(/u00D3/gi,"Ó");
     cadena = cadena.replace(/u00D3/gi,"ú");
     cadena = cadena.replace(/u00DA/gi,"Ú");
@@ -39,9 +39,9 @@ function Descripcion(props){
  */
 function Titulo(props)
 {
-    let MuestraTitulo = props.titulo;
+    let MuestraTitulo = acentosEncodeJava(props.titulo);
     if(MuestraTitulo.length === 0){
-        MuestraTitulo = props.objetivo
+        MuestraTitulo = acentosEncodeJava(props.objetivo)
     }
     return(
         <h4>{MuestraTitulo}</h4>
@@ -60,6 +60,13 @@ function CuerpoObjetivosMandos(props){
     const Delete = props.Delete;
     const id = props.id;
     const history = props.history;
+    const oneProfile = props.oneProfile;
+    const onClickSave = props.save;
+    let isProfile = false;
+    if(props.isProfile)
+    {
+        isProfile = true;
+    }
     return(
         <div className="col-12 p-3 col-md-6 row mando mx-auto text-white">
             <div  className="col-12 text-center">
@@ -70,11 +77,12 @@ function CuerpoObjetivosMandos(props){
             </div>
             {props.children}
             <div className="col-12 mt-3">
-                <Link className="btn btn-success" to={url}>{textSuccess}</Link>
+                {isProfile && (<button className="btn btn-success" onClick={onClickSave}>Guardar</button>)}                
+                {!isProfile && (<Link className="btn btn-success" to={url}>{textSuccess}</Link>)}
                 <DeleteAction 
                 url={Delete} 
                 id={id} 
-                oneProfile={false}  
+                oneProfile={oneProfile}  
                 history={history}/>
             </div>
         </div>

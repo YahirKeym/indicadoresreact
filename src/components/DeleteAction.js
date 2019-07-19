@@ -4,7 +4,8 @@ export default class DeleteAction extends React.Component
     constructor(props){
         super(props);
     }
-    handleDelete = async () =>{
+    handleDelete = async (e) =>{
+        e.preventDefault();
         const req = await fetch(`${this.props.url}&action=delete&id=${this.props.id}`);
         const response = await req.json();
         if(response.status && this.props.oneProfile){

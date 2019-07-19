@@ -1,9 +1,12 @@
 import React from "react";
+import DeleteAction from './DeleteAction.js';
 /**
  * Será el formulario para editar y agregar objetivos
  * @param {*} props 
  */
-function Formulario(props) {
+function Formulario(props) {    
+    const datos = {url:"a",id:0,history:"",oneProfile:false}
+    let {url,id,history,oneProfile} = props.Delete ? props.Delete  : datos;
     return (
         <form className="form row m-0 p-3 col-md-8 col-sm-12 mx-auto">
             <div className="col-8">
@@ -22,7 +25,6 @@ function Formulario(props) {
                     onChange={props.onChange}
                     className="form-control"
                     name="descripcion"
-                    
                     value={props.formulario ? props.formulario.datos.descripcion : ""}
                 >
                 </textarea>
@@ -116,7 +118,7 @@ function Formulario(props) {
                     Volver
                 </button>
                 {props.edit && (
-                    <button className="btn btn-danger ml-3" onClick={props.onDelete}>Eliminar</button>
+                    <DeleteAction url={url} id={id} history={history} oneProfile={oneProfile} />
                 )}
             </div>
         </form>
