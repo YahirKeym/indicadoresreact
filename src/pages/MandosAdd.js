@@ -59,6 +59,7 @@ class MandosAdd extends React.Component
             },
             acciones:[],
             objetivoShow: true,
+            objetivoSelect: false
         }
     }
     /**
@@ -182,7 +183,7 @@ class MandosAdd extends React.Component
             objetivosData:{
                 ...this.state.objetivosData,
                 [nombre]:valor
-            }
+            },
         })
     }
     /**
@@ -199,6 +200,7 @@ class MandosAdd extends React.Component
                 'descripcion':''
             },
             objetivoShow:false,
+            objetivoSelect: true
         })
         this.setState({
             objetivosData:{
@@ -247,6 +249,9 @@ class MandosAdd extends React.Component
         {
             Valor = 0;
         }
+        if(Valor === "-"){
+            Valor = 0;
+        }
         const nuevoStado = await this.handleMantenerEtapas(idVariable, idEtapa, Valor, nombreEtapa);
         this.setState(nuevoStado);
         if(nombreEtapa === `${idVariable}_${idEtapa+1}`)
@@ -256,7 +261,7 @@ class MandosAdd extends React.Component
             let contadorVariables = 0;
             this.state.variables.map(variable => {
                 str += variable.nombre;
-                str +=`=parseInt(nuevoStado.variables[${variable.id-1}]['etapas'][idEtapa]['valor'])`;
+                str +=`=parseFloat(nuevoStado.variables[${variable.id-1}]['etapas'][idEtapa]['valor'])`;
                 contadorVariables++;
                 if(contadorVariables !== cantidadDeVariables)
                 {
@@ -275,11 +280,11 @@ class MandosAdd extends React.Component
                                     if(idVariable === 0){
                                         porcentaje = 100;
                                     }
-                                    const variableValor = parseInt(nuevoStado.variables[idVariable]['etapas'][idEtapa]['valor']);
+                                    const variableValor = parseFloat(nuevoStado.variables[idVariable]['etapas'][idEtapa]['valor']);
                                     if(idVariable > 1 ){
                                         porcentaje = (100*variableValor)/Variable_1;
                                     }
-                                    if(porcentaje === infinity){
+                                    if(porcentaje === Infinity){
                                         porcentaje = 100;
                                     }
                                     nuevoStado.variables[idVariable]['etapas'][idEtapa]['porcentaje'] = porcentaje;
@@ -310,7 +315,7 @@ class MandosAdd extends React.Component
             Etapas[idEtapa]['valor'] = Valor;
             const valorPrincipalDePorcentaje = nuevoStado.variables[0]['etapas'][idEtapa]['valor'];
             for (let index = 0; index < Etapas.length; index++) {
-                Suma = Suma + parseInt(Etapas[index]['valor']);
+                Suma = Suma + parseFloat(Etapas[index]['valor']);
             }
             nuevoStado.variables[idVariable]['valorTotal'] = Suma;
         }
@@ -604,14 +609,16 @@ class MandosAdd extends React.Component
                 <div className="col-12">
                     <input type="text" name="titulo" onChange={this.handleChange} className="form-control" placeholder="Nombre - Titulo Indicador"/>
                 </div>
-                <div className="col-12 col-lg-8 mt-3">
-                    <select className="form-control" name="objetivo" tipo="objetivo" onChange={this.handleChange}>
-                        <option>Selecciona el objetivo</option>
-                        {this.state.objetivos.map(objetivos => {
-                            return (<option value={objetivos.id} key={objetivos.id}>{objetivos.titulo}</option>);
-                        })}
-                    </select>
-                </div>
+                {!this.state.objetivoSelect && (
+                    <div className="col-12 col-lg-8 mt-3">
+                        <select className="form-control" name="objetivo" tipo="objetivo" onChange={this.handleChange}>
+                            <option>Selecciona el objetivo</option>
+                            {this.state.objetivos.map(objetivos => {
+                                return (<option value={objetivos.id} key={objetivos.id}>{objetivos.titulo}</option>);
+                            })}
+                        </select>
+                    </div>
+                )}
                 {this.state.objetivoShow && (
                 <div className="col-12 col-lg-9 mt-3 row">
                     <div className="col-12">
@@ -731,7 +738,7 @@ class MandosAdd extends React.Component
                                                 {
                                                     color = "border border-danger";
                                                 }
-                                                return(<input type="number" idetapa={etapa.idEtapa} onChange={this.handleChange} tipo="etapa" name={etapa.id} idvariable={variable.id} className={`col-2 form-control ${color}`} key={etapa.id} />)
+                                                return(<input type="number" placeholder="0" idetapa={etapa.idEtapa} onChange={this.handleChange} tipo="etapa" name={etapa.id} idvariable={variable.id} className={`col-2 form-control ${color}`} key={etapa.id} />)
                                             })}
                                         </div>
                                         <div className="col-12 col-lg-4 text-center">

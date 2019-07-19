@@ -26,8 +26,11 @@ function acentosEncodeJava(cadena = ""){
  */
 function VariablesMando(props)
 {
+    const {porcentajeBueno, porcentajeMedio} = props.porcentaje;
+    const tipoDeEtapa = props.etapa;
     const variables = props.variables;
     const seEdita = props.editar;
+    const onChange = props.onChange;
     if(seEdita){
         return(
             <React.Fragment>
@@ -39,10 +42,15 @@ function VariablesMando(props)
                             </div>
                             <div className="col-10 row">
                                 {variable.etapas.map(etapa =>{
+                                     let color = "";
+                                     if(etapa.porcentaje < porcentajeBueno){
+                                         color = "border-warning";
+                                     }
+                                     if(etapa.porcentaje < porcentajeMedio){
+                                         color ="border-danger"
+                                     }
                                 return(
-                                    <div className="col-2 text-center etapa" key={etapa.id}>
-                                        {etapa.valor}
-                                    </div>
+                                    <input type="number" name={etapa.id} idetapa={etapa.idEtapa} idvariable={variable.id} onChange={onChange} className={`col-2 text-center ${color}`} key={etapa.id} defaultValue={etapa.valor} />
                                     )
                                 })}
                             </div>
@@ -57,17 +65,24 @@ function VariablesMando(props)
     }
     return(
         <React.Fragment>
-            {variables.map(variable =>{
+           {variables.map(variable =>{
                 return(
                     <div className="col-12 row variable" key={variable.id}>
-                        <div className="col-12">
-                            {quitaEspeciales(variable.nombre)}
+                        <div className="col-9">
+                            <span style={{fontWeight:700}}>{quitaEspeciales(variable.nombre)}</span> <span className="float-right"><span style={{fontWeight:700}}>Tipo de etapa:</span> {tipoDeEtapa}</span>
                         </div>
                         <div className="col-10 row">
                             {variable.etapas.map(etapa =>{
+                                let color = "";
+                                if(etapa.porcentaje < porcentajeBueno){
+                                    color = "bg-warning";
+                                }
+                                if(etapa.porcentaje < porcentajeMedio){
+                                    color ="bg-danger"
+                                }
                                 return(
-                                <div className="col-2 text-center etapa" key={etapa.id}>
-                                    {etapa.valor}
+                                <div className={`col-2 text-center etapa ${color}`} key={etapa.id}>
+                                    {`${etapa.valor}`}
                                 </div>
                                 )
                             })}
@@ -132,7 +147,9 @@ export default class MandosProfile extends React.Component{
                  ],
                  "objetivoShow":true
             },
-            etapasChart: []
+            etapasChart: [],
+            editar:false,
+            update: undefined
         }
     }
     /**
@@ -181,23 +198,173 @@ export default class MandosProfile extends React.Component{
             etapasChart: aEtapas,
         })
     }
+    /**
+     * 
+     */
+    handleChangeEtapas = async e => 
+    {
+        const idVariable = e.target.getAttribute("idvariable") - 1;
+        const idEtapa = e.target.getAttribute("idetapa") -1;
+        const nombreEtapa = e.target.name;
+        let Valor = e.target.value;
+        if(Valor.length === 0)
+        {
+            Valor = 0;
+        }
+        if(Valor === "-"){
+            Valor = 0;
+        }
+        const nuevoStado = await this.handleMantenerEtapas(idVariable, idEtapa, Valor, nombreEtapa);
+        this.setState({
+            data:nuevoStado
+        });
+        if(nombreEtapa === `${idVariable}_${idEtapa+1}`)
+        {
+            let str = "var ";
+            let cantidadDeVariables = this.state.data.variables.length;
+            let contadorVariables = 0;
+            this.state.data.variables.map(variable => {
+                str += variable.nombre;
+                str +=`=parseFloat(nuevoStado.variables[${variable.id-1}]['etapas'][idEtapa]['valor'])`;
+                contadorVariables++;
+                if(contadorVariables !== cantidadDeVariables)
+                {
+                    str += ",";
+                }
+            })
+            let formulaString = this.state.data.datos.formula;
+            if(formulaString.length === 0)
+            {
+                formulaString= undefined;
+            }
+            let codigoEnString =  `${str}
+                                   try{
+                                    var formula = ${formulaString};
+                                    let porcentaje = formula;
+                                    if(idVariable === 0){
+                                        porcentaje = 100;
+                                    }
+                                    const variableValor = parseFloat(nuevoStado.variables[idVariable]['etapas'][idEtapa]['valor']);
+                                    if(idVariable > 1 ){
+                                        porcentaje = (100*variableValor)/Variable_1;
+                                    }
+                                    if(porcentaje === Infinity){
+                                        porcentaje = 100;
+                                    }
+                                    nuevoStado.variables[idVariable]['etapas'][idEtapa]['porcentaje'] = porcentaje;
+                                    this.setState({
+                                        data: nuevoStado
+                                    })
+                                   }catch(e)
+                                   {
+                                       this.setState({
+                                           errors:{
+                                               ...this.state.errors,
+                                               formulaNoCoincideConVariables: true
+                                           }
+                                       })
+                                   }
+                                `
+            eval(codigoEnString)
+        }
+        this.datosParaChart();
+    }
+    /**
+    * Nos ayudara a escribir solo sobre la etapa que estamos seleccionando
+    */
+   handleMantenerEtapas = (idVariable, idEtapa, Valor, nombreEtapa) => 
+   {
+       var nuevoStado = this.state.data;
+       if(nombreEtapa === `${idVariable}_${idEtapa+1}`)
+       {
+           var Suma = 0;
+           const Etapas = nuevoStado.variables[idVariable]['etapas'];
+           Etapas[idEtapa]['valor'] = Valor;
+           const valorPrincipalDePorcentaje = nuevoStado.variables[0]['etapas'][idEtapa]['valor'];
+           for (let index = 0; index < Etapas.length; index++) {
+               Suma = Suma + parseFloat(Etapas[index]['valor']);
+           }
+           nuevoStado.variables[idVariable]['valorTotal'] = Suma;
+       }
+       return nuevoStado;
+   }
+   /**
+    * Ayudara amandar los datos actualizados del indicador
+    */
+   handleUpdate = async e => {
+        e.preventDefault();
+        const datos = JSON.stringify(this.state.data);
+        let cadenaLimpia = datos.replace(/&/gi,"%26");
+        const req = await fetch(`${this.props.url}&action=edit&data=${cadenaLimpia}`);
+        const response = await req.json();
+        if(response.status){
+            this.setState({
+                update: true,
+                editar: false 
+            })
+        }
+    }
+    /**
+     * Ayudara a abrir los campos para que puedan ser editados 
+     */
+    handleChangeEdit = e =>{
+        e.preventDefault();
+        let Valor = false;
+        if(this.state.editar === false){
+            Valor = true; 
+        }
+        this.setState({
+            editar: Valor
+        })
+    }
+    /**
+     * 
+     */
     render()
     {
-        console.log(this.props.history)
+        let porcentaje = {
+            porcentajeBueno: this.state.data.datos.AceptacionBuena,
+            porcentajeMedio: this.state.data.datos.AceptacionMedia,
+        }
+        let mensajeEditar = "Editar datos";
+        if(this.state.editar){
+            mensajeEditar = "Dejar de editar";
+        }
         return (
             <React.Fragment>
-
-                <CuerpoObjetivosMandos textSuccess="Guardar" url="" titulo={this.state.data.datos.titulo} descripcion={this.state.data.objetivosData.descripcion}>
+                <CuerpoObjetivosMandos 
+                textSuccess="Guardar" 
+                url="" 
+                titulo={this.state.data.datos.titulo}
+                subtitulo={this.state.data.objetivosData.titulo} 
+                descripcion={this.state.data.objetivosData.descripcion}
+                history={this.props.history}
+                oneProfile={true}
+                Delete={this.props.url}
+                id={this.state.data.id}
+                isProfile={true}
+                save={this.handleUpdate}
+                >
+                    <div className="col-12 mt-3 row  d-flex justify-content-center">
+                        <div className="col-12 d-flex justify-content-center">
+                            <h4>Acciones a tomar</h4>
+                        </div>
+                        {this.state.data.acciones.map(action => {
+                            return (
+                                    <div className="acciones p-2 col-4 mt-3">{action.nombre}</div>
+                            )
+                        })}
+                    </div>
                     <div className="col-12 mt-3">
-                        <button className="btn-light btn">Editar datos</button>
+                        <button edicion={`${this.state.editar}`} className="btn-light btn" onClick={this.handleChangeEdit}>{mensajeEditar}</button>
                     </div>
                     <div className="col-12 p-2 mando-control">
-                        <VariablesMando variables={this.state.data.variables} />
+                        <VariablesMando onChange={this.handleChangeEtapas} etapa={this.state.data.datos.tipoDeEtapa} editar={this.state.editar} variables={this.state.data.variables} porcentaje={porcentaje}/>
                     </div>
                     <div className="col-12">
                     </div>
                 </CuerpoObjetivosMandos>
-                <div className="col-12 row d-flex justify-content-center">
+                <div className="col-12 mb-5 row d-flex justify-content-center">
                     <Chart
                         width="100%"
                         height={300}
