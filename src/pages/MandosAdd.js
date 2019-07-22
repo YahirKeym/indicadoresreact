@@ -103,7 +103,7 @@ class MandosAdd extends React.Component
                         valor: 0,
                         idEtapa: indexEtapas,
                         porcentaje: 100,
-                        procentajeApp: 100
+                        nombreEtapa: ''
                     }
                 ]
             }
@@ -172,7 +172,7 @@ class MandosAdd extends React.Component
             case 'action':
                 this.handleChangeAction(e);
             break;
-            case 'nombreEtapa':
+            case 'etapaNombre':
                 this.handleNombreEtapa(e);
             break;
             default:
@@ -183,10 +183,18 @@ class MandosAdd extends React.Component
             this.handleShowObjetivoEdit(e);
         }
     }
+    /**
+     * Se encargara de darle un nombre a las etapas
+     */
     handleNombreEtapa = e => {
         const idEtapa = e.target.getAttribute("idEtapa");
         const Valor = e.target.value;
-        
+        const nuevoStado = this.state;
+        console.log(Valor+" / "+idEtapa)
+        nuevoStado.variables.map(variable => {
+            nuevoStado.variables[variable.id -1].etapas[idEtapa - 1]['nombreEtapa'] = Valor;
+        })
+        this.setState(nuevoStado);
     }
     /**
      * Se encargara de guardar los datos del objetivo en caso de haber sido editado.
@@ -746,7 +754,7 @@ class MandosAdd extends React.Component
                 <div className="col-12 row mt-3 m-0">
                     {this.state.etapas.map(etapa => {
                         return(
-                            <input type="text" onChange={this.handleChange} idetapa={etapa.idEtapa} tipo="etapaNombre" className="form-control col-3" placeholder={`Etapa ${etapa.idEtapa} nombre`} />
+                            <input type="text" key={etapa.idEtapa} onChange={this.handleChange} idetapa={etapa.idEtapa} tipo="etapaNombre" className="form-control col-3" placeholder={`Etapa ${etapa.idEtapa} nombre`} />
                         )
                     })}
                     {this.state.datos.formula.length !== 0 && (
