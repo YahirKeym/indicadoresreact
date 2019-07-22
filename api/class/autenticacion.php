@@ -65,21 +65,17 @@ class Autenticacion
      * @param string $cDatos Serán los datos convertidos en Json.
      * @return void
      */
-    public function validarLogin($cDatos = "")
+    public function validarLogin($aDatos = [])
     {
-        $aDatos = json_decode($cDatos, true);
         $lEsEmail = filter_var($aDatos['usuario'], FILTER_VALIDATE_EMAIL);
-        $cCondicion = "email='{$aDatos['usuario']}'";
+        $cCondicion = "Correo='{$aDatos['usuario']}'";
         if (!$lEsEmail) {
-            $cCondicion = "nickname ='{$aDatos['usuario']}'";
+            $cCondicion = "UserName='{$aDatos['usuario']}'";
         }
-        $aSearch = [
-            'tabla' => 'general_empleado',
-            'condiciones' => "WHERE {$cCondicion}",
-        ];
+        $cQuery = "SELECT IdEmpleado, Password FROM general_empleado WHERE {$cCondicion}";
         $aDatos['condicionDb'] = $cCondicion;
-        $aDatosDeLaBaseDeDatos = $this->oConexion->selectDatos($aSearch);
-        return $this->comparadorDedatos($aDatosDeLaBaseDeDatos, $aDatos, $cToken);
+        $aDatosDeLaBaseDeDatos = $this->oNewConexion->query($cQuery);
+        return $this->comparadorDedatos($aDatosDeLaBaseDeDatos, $aDatos);
     }
     /**
      * Nos ayudara a hacer comprobación de las credenciales de los usuarios con lo que trae de la base de datos
@@ -89,15 +85,17 @@ class Autenticacion
      */
     private function comparadorDedatos($aDatosBaseDeDatos = [], $aDatosRecibidos = [])
     {
-        $aRegreso = [
-            'validado' => false,
+        $aStatus = [
+            'status' => false,
+            'cookie' => '',
         ];
         foreach ($aDatosBaseDeDatos as $aUsuario) {
-            if ($aDatosRecibidos['password'] === $aUsuario['password']) {
+            if ($aDatosRecibidos['password'] === $aUsuario['Password']) {
                 $dateFechaCookie = date("Y-m-d H:i:s");
-                $cookieParaUsuario = sha1($dateFechaCookie . $aUsuario['id']."1");
+                $cookieParaUsuario = sha1($dateFechaCookie . $aUsuario['IdEmpleado']."1");
+                
                 $aUpdate = [
-                    'tabla' => 'users',
+                    'tabla' => 'general_empleado',
                     'datos' => [
                         'cookie' => [
                             'valor' => $cookieParaUsuario,
@@ -112,12 +110,11 @@ class Autenticacion
                 ];
                 setcookie('indicadores_i', $cookieParaUsuario, time() + 365 * 24 * 60 * 60, "/");
                 $this->oConexion->updateDatos($aUpdate);
-                $aRegreso = [
-                    'validado' => true,
-                ];
+                $aStatus['status'] = true;
+                $aStatus['cookie'] = $cookieParaUsuario;
             }
         }
-        return $aRegreso;
+        return $aStatus;
     }
     /**
      * Nos ayudara a validar la cookie del usuario, para así loguearlo o no
@@ -131,11 +128,11 @@ class Autenticacion
         if (!empty($cCookie)) {
             $aSearch = [
                 'tabla' => 'general_empleado',
-                'condiciones' => "WHERE cookie = '{$cCookie}'",
+                'condiciones' => "WHERE Cookie = '{$cCookie}'",
             ];
             $aDatosDeLaBaseDeDatos = $this->oConexion->selectDatos($aSearch);
             foreach ($aDatosDeLaBaseDeDatos as $aUsuario) {
-                if ($aUsuario['cookie'] === $cCookie) {
+                if ($aUsuario['Cookie'] === $cCookie) {
                     $this->lAutenticado = true;
                     $this->saveData($aUsuario);
                     $aRegreso['autenticado'] = true;
@@ -188,9 +185,11 @@ class Autenticacion
         $dateFechaCookie = date("Y-m-d H:i:s");
         $cookieParaCerrarSesion = sha1($dateFechaCookie."0");
         setcookie('indicadores_i', $cookieParaCerrarSesion, time() + 365 * 24 * 60 * 60, "/");
-        return [
-            'session' => false 
-        ];        
+        $aStatus = [
+            'status' => true,
+            'cookie' => $cookieParaCerrarSesion,
+        ];
+        return $aStatus;        
     }
     public function selectForMandos($cId = "")
     {
@@ -212,32 +211,5 @@ class Autenticacion
             }
         }
         return $aStatus;
-    }
-    /**
-     * Nos ayudara a implementar el login donde lo ocupemos
-     * @return string Regresara el html del login
-     */
-    public function loginHtml()
-    {
-        return <<<HTML
-        <form id="login" class="row mt-5 p-5 col-lg-5 offset-lg-3 col-sm-12" method="post">
-            <div class="col-lg-12 row">
-                <div class="form-group col-lg-7 offset-lg-3 col-sm-9">
-                    <input type="text" name="usuario" class="form-control" placeholder="Usuario o Correo" />
-                    <label class="d-none text-danger" for="usuario">El usuario se encuentra vacio</label>
-                </div>
-                <div class="form-group col-lg-7 offset-lg-3 col-sm-9">
-                    <input type="password" name="password" class="form-control" placeholder="Password" />
-                    <label class="d-none text-danger" for="password">El password se encuentra vacio</label>
-                </div>
-                <div class="form-group col-lg-7 offset-lg-3 col-sm-9">
-                    <button class="btn btn-success">Iniciar Sesión</button>
-                </div>
-                <div class="d-none bg-danger col-md-6 offset-4 text-center error p-2">
-                    <p class="text-white">El usuario o la contraseña no son validos, por favor de verificar</p>
-                </div>
-            </div>
-        </form>
-HTML;
     }
 }
