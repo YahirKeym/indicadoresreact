@@ -1,6 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import imageLogo from '../images/suez-logo.png';
+import CerrarSesion from './CerrarSesion.js';
 class Navbar extends React.Component
 {
     render() 
@@ -15,6 +16,7 @@ class Navbar extends React.Component
                         <Link to="/" className="navbar-brand text-white" >Inicio</Link>
                         <Link to="/objetivos" className="navbar-brand text-white" >Objetivos</Link>
                         <Link to="/mandos" className="navbar-brand text-white" >Indicadores</Link>
+                        <CerrarSesion className="navbar-brand text-white cursor-pointer" />
                     </ul>
                 </div>
             </header>
