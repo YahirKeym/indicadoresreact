@@ -4,13 +4,16 @@ import Footer from './Footer.js';
 import SideBar from './SideBar.js';
 function Layout(props)
 {
+    const State = props.state
     const Children = props.children;
     return (
         <div className="col-12 row p-0 m-0">
-            <Navbar />
-            <div className="col-md-12  mt-5">
-                <SideBar />
-            </div>
+            <Navbar state={State} />
+            {State.logged && (
+                <div className="col-md-12  mt-5">
+                    <SideBar state={State} />
+                </div>
+            )}
             <div className="col-sm-12 col-md-12 mt-5">
                 {Children}
             </div>
