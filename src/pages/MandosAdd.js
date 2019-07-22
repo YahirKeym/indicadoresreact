@@ -45,6 +45,7 @@ class MandosAdd extends React.Component
                 unidadDeMedida: "",
                 AceptacionBuena: "90",
                 AceptacionMedia: "70",
+                tipoIndicador: 0
             },
             objetivos: [],
             objetivosData:{
@@ -59,7 +60,8 @@ class MandosAdd extends React.Component
             },
             acciones:[],
             objetivoShow: true,
-            objetivoSelect: false
+            objetivoSelect: false,
+            etapas: []
         }
     }
     /**
@@ -71,6 +73,9 @@ class MandosAdd extends React.Component
         this.traerDatos();
         this.creaFormula();
     }
+    /**
+     * 
+     */
     creaFormula = () => 
     {
         const Variable_1 = this.state.variables[0].nombre;
@@ -111,7 +116,8 @@ class MandosAdd extends React.Component
             ]
         }
         this.setState({
-            variables:$aVariables
+            variables:$aVariables,
+            etapas: aEtapas
         })
     }
     /**
@@ -166,6 +172,9 @@ class MandosAdd extends React.Component
             case 'action':
                 this.handleChangeAction(e);
             break;
+            case 'nombreEtapa':
+                this.handleNombreEtapa(e);
+            break;
             default:
                 this.handleChangeGeneral(e);
             break;
@@ -173,6 +182,11 @@ class MandosAdd extends React.Component
         if(atributo === "objetivo"){
             this.handleShowObjetivoEdit(e);
         }
+    }
+    handleNombreEtapa = e => {
+        const idEtapa = e.target.getAttribute("idEtapa");
+        const Valor = e.target.value;
+        
     }
     /**
      * Se encargara de guardar los datos del objetivo en caso de haber sido editado.
@@ -676,28 +690,39 @@ class MandosAdd extends React.Component
                     <div className="col-12 col-lg-6 mb-3">
                         <input type="number" max="500" min="1" onChange={this.handleChange} className="form-control" name="etapas" defaultValue={this.state.datos.etapas}/>
                     </div>
-                    <div className="col-6 mt-3">
-                        <select multiple className="form-control" onClick={this.handleClickSelect} name="rangos">
-                            {this.state.jeraraquias.map(rango => {
-                                return(<option tipo="jerarquia" value={rango.id} key={rango.id}>{rango.nombre}</option>)
-                            })}
+                    <div className="col-8">
+                        <span className="col-12">Tipo de Indicador: </span> 
+                        <select className="form-control" name="tipoIndicador" onChange={this.handleChange}>
+                            <option value="0">Resultados</option>
+                            <option value="1">Comportamentable</option>
                         </select>
                     </div>
-                    <div className="col-6 mt-3">
-                        {this.state.rangos.length > 0  && (
-                        <select multiple className="form-control" onClick={this.handleClickSelect} name="rangos">
-                            {this.state.rangos.map(rango => {
-                                return(<option tipo="rango" value={rango.id} key={rango.id}>{rango.nombre}</option>)
-                            })}
-                        </select>)}
-                    </div>
-                    <div className="col-6 mt-3">
-                        {this.state.users.length > 0  && (<select multiple className="form-control" name="rangos">
-                            {this.state.users.map(user => {
-                                return(<option rango="true" tipo="user" value={user.id} key={user.id}>{`${user.nombre} ${user.apellidoP} ${user.apellidoM}`}</option>)
-                            })}
-                        </select>)}
-                    </div>
+                    {parseInt(this.state.datos.tipoIndicador) === 1 && (
+                        <React.Fragment>
+                            <div className="col-6 mt-3">
+                                <select multiple className="form-control" onClick={this.handleClickSelect} name="rangos">
+                                    {this.state.jeraraquias.map(rango => {
+                                        return(<option tipo="jerarquia" value={rango.id} key={rango.id}>{rango.nombre}</option>)
+                                    })}
+                                </select>
+                            </div>
+                            <div className="col-6 mt-3">
+                                {this.state.rangos.length > 0  && (
+                                <select multiple className="form-control" onClick={this.handleClickSelect} name="rangos">
+                                    {this.state.rangos.map(rango => {
+                                        return(<option tipo="rango" value={rango.id} key={rango.id}>{rango.nombre}</option>)
+                                    })}
+                                </select>)}
+                            </div>
+                            <div className="col-6 mt-3">
+                                {this.state.users.length > 0  && (<select multiple className="form-control" name="rangos">
+                                    {this.state.users.map(user => {
+                                        return(<option rango="true" tipo="user" value={user.id} key={user.id}>{`${user.nombre} ${user.apellidoP} ${user.apellidoM}`}</option>)
+                                    })}
+                                </select>)}
+                            </div>
+                        </React.Fragment>
+                    )}
                 </div>
                 <div className="col-12 row mt-3">
                     <div className="col-12 col-md-6">
@@ -719,6 +744,11 @@ class MandosAdd extends React.Component
                     </div>
                 </div>
                 <div className="col-12 row mt-3 m-0">
+                    {this.state.etapas.map(etapa => {
+                        return(
+                            <input type="text" onChange={this.handleChange} idetapa={etapa.idEtapa} tipo="etapaNombre" className="form-control col-3" placeholder={`Etapa ${etapa.idEtapa} nombre`} />
+                        )
+                    })}
                     {this.state.datos.formula.length !== 0 && (
                         <div className="col-12 col-lg-12 row mt-3 m-0">
                             {this.state.variables.map(variable=>{

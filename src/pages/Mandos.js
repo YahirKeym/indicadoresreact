@@ -127,7 +127,6 @@ class Mandos extends React.Component{
                                 porcentajeBueno: mando.datos.AceptacionBuena,
                                 porcentajeMedio: mando.datos.AceptacionMedia
                             }
-                            console.log(mando.datos.AceptacionMedia)
                             return(
                                 <CuerpoObjetivosMandos textSuccess="Ver" key={mando.id} 
                                 titulo={mando.datos.titulo} id={mando.id} 
