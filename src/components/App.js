@@ -86,7 +86,7 @@ class App extends React.Component {
                 <Layout>
                     {!this.state.isLogged && (
                         <Switch>
-                            <Route component={() => <UserLogin />} />
+                            <Route component={() => <UserLogin url={this.urlAutentica} />} />
                         </Switch>
                     )}
                     {this.state.isLogged && (
