@@ -22,19 +22,19 @@ import JerarquiasMove from '../pages/JerarquiasMove.js';
 import JerarquiaRangoAdd from '../pages/JerarquiaRangoAdd.js';
 import JerarquiaRangoEdit from '../pages/JerarquiaRangoEdit.js';
 import MandosProfile from '../pages/MandosProfile.js';
-
 /**
  * Nos ayudara a ajustar las opciones de la web
  */
 class App extends React.Component {
     constructor(props) {
         super(props);
-        this.varyfiLogged = this.veryfiLogged.bind(this);
         this.state = {
-            isLogged: undefined
-        };
+            isLogged : undefined
+        }
+        this.varyfiLogged = this.veryfiLogged.bind(this);
     }
     veryfiLogged = async () => {
+        this.logged = false;
         this.session = this.getCookie("indicadores_i");
         this.urlAutentica = `http://localhost/indicadoresreact/api/controller/autentica.php?token=${this.session}`;
         const response = await fetch(this.urlAutentica);
@@ -45,9 +45,17 @@ class App extends React.Component {
         this.urlPaises = `http://localhost/indicadoresreact/api/controller/paises.php?token=${this.session}`;
         this.urlJerarquias = `http://localhost/indicadoresreact/api/controller/jerarquias.php?token=${this.session}`;
         this.urlRango = `http://localhost/indicadoresreact/api/controller/rango.php?token=${this.session}`;
-        this.setState({
-            isLogged: datos.autenticado
-        });
+        if(datos.autenticado)
+        {
+            this.setState({
+                isLogged: datos.autenticado,
+                logged : datos.autenticado
+            });
+        }else{
+            this.setState({
+                isLogged: datos.autenticado
+            })
+        }
     };
     componentDidMount() {
         this.veryfiLogged();
@@ -75,21 +83,25 @@ class App extends React.Component {
      *
      */
     render() {
-        if(this.state.isLogged === undefined)
+        if(this.state.isLogged === undefined )
         {
-            return (
-                <div></div>
+        return (
+            <div></div>
             );
+        }
+        let logueado = false;
+        if(this.state.isLogged && this.state.logged){
+            logueado = true;
         }
         return (
             <BrowserRouter>
-                <Layout>
-                    {!this.state.isLogged && (
+                <Layout state={this.state}>
+                    {!logueado && (
                         <Switch>
                             <Route component={() => <UserLogin url={this.urlAutentica} />} />
                         </Switch>
                     )}
-                    {this.state.isLogged && (
+                    {logueado && (
                         <Switch>
                             <Route
                                 exact
