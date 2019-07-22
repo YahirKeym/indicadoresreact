@@ -190,7 +190,6 @@ class MandosAdd extends React.Component
         const idEtapa = e.target.getAttribute("idEtapa");
         const Valor = e.target.value;
         const nuevoStado = this.state;
-        console.log(Valor+" / "+idEtapa)
         nuevoStado.variables.map(variable => {
             nuevoStado.variables[variable.id -1].etapas[idEtapa - 1]['nombreEtapa'] = Valor;
         })
