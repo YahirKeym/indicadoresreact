@@ -34,5 +34,7 @@ if ($oAutentica->lAutenticado) {
             $cRegreso = json_encode($aRegreso);
             break;
     }
-    echo $cRegreso;
+}else{
+    $cRegreso = "Página no encontrada";
 }
+echo $cRegreso;
