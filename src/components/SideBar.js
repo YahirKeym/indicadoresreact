@@ -10,9 +10,9 @@ function SideBar()
                 <div className="col-12 col-md-3">
                     <Link className="navbar-brand" to="/paises">Paises</Link>
                 </div>
-                <div className="col-12 col-md-3">
+                {/* <div className="col-12 col-md-3">
                     <Link className="navbar-brand" to="/jerarquia">Jerarquia</Link>
-                </div>
+                </div> */}
         </div>
     );
 }
