@@ -36,15 +36,15 @@ class App extends React.Component {
     veryfiLogged = async () => {
         this.logged = false;
         this.session = this.getCookie("indicadores_i");
-        this.urlAutentica = `http://localhost/indicadoresreact/api/controller/autentica.php?token=${this.session}`;
+        this.urlAutentica = `http://172.16.100.94/indicadoresreact/api/controller/autentica.php?token=${this.session}`;
         const response = await fetch(this.urlAutentica);
         const datos = await response.json();
-        this.urlObjetivos = `http://localhost/indicadoresreact/api/controller/objetivos.php?token=${this.session}`;
-        this.urlMandos = `http://localhost/indicadoresreact/api/controller/mandos.php?token=${this.session}`;
-        this.urlAlcance = `http://localhost/indicadoresreact/api/controller/alcance.php?token=${this.session}`;
-        this.urlPaises = `http://localhost/indicadoresreact/api/controller/paises.php?token=${this.session}`;
-        this.urlJerarquias = `http://localhost/indicadoresreact/api/controller/jerarquias.php?token=${this.session}`;
-        this.urlRango = `http://localhost/indicadoresreact/api/controller/rango.php?token=${this.session}`;
+        this.urlObjetivos = `http://172.16.100.94/indicadoresreact/api/controller/objetivos.php?token=${this.session}`;
+        this.urlMandos = `http://172.16.100.94/indicadoresreact/api/controller/mandos.php?token=${this.session}`;
+        this.urlAlcance = `http://172.16.100.94/indicadoresreact/api/controller/alcance.php?token=${this.session}`;
+        this.urlPaises = `http://172.16.100.94/indicadoresreact/api/controller/paises.php?token=${this.session}`;
+        this.urlJerarquias = `http://172.16.100.94/indicadoresreact/api/controller/jerarquias.php?token=${this.session}`;
+        this.urlRango = `http://172.16.100.94/indicadoresreact/api/controller/rango.php?token=${this.session}`;
         if(datos.autenticado)
         {
             this.setState({
