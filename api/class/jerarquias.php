@@ -6,9 +6,9 @@ class Jerarquias
      * @var object
      */
     private $oConexion = null;
-    function __construct()
+    function __construct($oConexion = null)
     {
-        $oConexion = new Conexion();
+        $oConexion = $oConexion;
         $this->oConexion = $oConexion->oConexion;
     }
     /**

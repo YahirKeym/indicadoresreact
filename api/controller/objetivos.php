@@ -9,7 +9,7 @@ if ($oAutentica->lAutenticado) {
     $cDatos = isset($_REQUEST['data']) ? $_REQUEST['data'] : '';
     $iIdObjetive = isset($_REQUEST['id']) ? $_REQUEST['id'] : 0;
     $aDatos = json_decode($cDatos);
-    $oObjetivos = new Objetivos($oAutentica);
+    $oObjetivos = new Objetivos($oAutentica, $oConexionMandos);
     $aDatos = json_decode($cDatos, true);
     switch ($cAccion) {
         case 'add':

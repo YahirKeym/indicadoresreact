@@ -6,7 +6,7 @@ $cAction = isset($_REQUEST['action']) ? $_REQUEST['action'] : '';
 $cDatos = isset($_REQUEST['data']) ? $_REQUEST['data'] : '';
 $iId = isset($_REQUEST['id']) ? $_REQUEST['id'] : 0;
 $aDatos = json_decode($cDatos, true);
-$oAlcance = new Alcance();
+$oAlcance = new Alcance($oConexionMandos);
 switch($cAction)
 {
     case 'view':

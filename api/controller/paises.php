@@ -6,7 +6,7 @@ $cAction = isset($_REQUEST['action']) ? $_REQUEST['action']:'';
 $cDatos = isset($_REQUEST['data']) ? $_REQUEST['data'] : '';
 $aDatos = json_decode($cDatos, true);
 $iId = isset($_REQUEST['id']) ? $_REQUEST['id'] : 0;
-$oPaises = new Paises();
+$oPaises = new Paises($oConexionMandos);
 switch($cAction)
 {
     case 'view':

@@ -7,7 +7,7 @@ $cDatos = isset($_REQUEST['data']) ? $_REQUEST['data'] : '';
 $iIdMando = isset($_REQUEST['id']) ? $_REQUEST['id'] : 0;
 $aDatos = json_decode($cDatos, true);
 $oAutentica->validarCookie($cToken);
-$oMandos = new Mandos($oAutentica);
+$oMandos = new Mandos($oAutentica, $oConexionMandos);
 if ($oAutentica->lAutenticado) {
 switch ($cAccion) {
     case 'add':

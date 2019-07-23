@@ -9,12 +9,12 @@ class Conexion
      * Será el host de donde traeremos la base de datos
      * @var string
      */
-    private $cHost = "localhost";
+    private $cHost = "";
     /**
      * Será el usuario con el cual nos conectaremos a la base de datos
      * @var string
      */
-    private $cUser = "root";
+    private $cUser = "";
     /**
      * Será la contraseña con la cual nos conectaremos a la base de datos
      * @var string
@@ -24,7 +24,7 @@ class Conexion
      * Será la base de datos que ocuparemos para está conexión
      * @var string
      */
-    private $cDatabase = "catalogos_generales";
+    private $cDatabase = "";
     /**
      * Guardara el tipo de codificación que usaremos
      *
@@ -44,8 +44,12 @@ class Conexion
     /**
      * Nos ayudara a declarar la conexión a la base de datos
      */
-    public function __construct()
+    public function __construct($aDatos = [])
     {
+        $this->cHost = $aDatos['host'];
+        $this->cDatabase = $aDatos['db'];
+        $this->cUser = $aDatos['user'];
+        $this->cPassword = $aDatos['password'];
         $this->oConexion = new PDO("mysql:host={$this->cHost};dbname={$this->cDatabase}", $this->cUser, $this->cPassword, [PDO::MYSQL_ATTR_INIT_COMMAND => $this->cCodificacion]);
     }
     /**

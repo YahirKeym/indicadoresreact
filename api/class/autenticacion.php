@@ -40,12 +40,12 @@ class Autenticacion
      * Guardara el nombre de usuario del usuario
      * @var string
      */
-    private $cNickname = "";
+    private $cUserName = "";
     /**
      * Guardara el rango del usuario
      * @var string
      */
-    private $cRango = "";
+    private $cDepartamento = "";
     /**
      * Guardara el area donde se encuentra ubicado el usuario
      * @var string
@@ -55,9 +55,9 @@ class Autenticacion
     /**
      * Nos ayudara a iniciar la autenticación para poder obtener datos de usuario o bien, validar si su sesión se encuentra activa.
      */
-    public function __construct($cToken = "")
+    public function __construct($oConexion = null)
     {
-        $this->oConexion = new Conexion();
+        $this->oConexion = $oConexion;
         $this->oNewConexion = $this->oConexion->oConexion;
     }
     /**
@@ -89,29 +89,19 @@ class Autenticacion
             'status' => false,
             'cookie' => '',
         ];
-        foreach ($aDatosBaseDeDatos as $aUsuario) {
-            if ($aDatosRecibidos['password'] === $aUsuario['Password']) {
-                $dateFechaCookie = date("Y-m-d H:i:s");
-                $cookieParaUsuario = sha1($dateFechaCookie . $aUsuario['IdEmpleado']."1");
-                
-                $aUpdate = [
-                    'tabla' => 'general_empleado',
-                    'datos' => [
-                        'cookie' => [
-                            'valor' => $cookieParaUsuario,
-                            'tipo' => 'string',
-                        ],
-                        'lastlogin' => [
-                            'valor' => date("Y-m-d H:i:s"),
-                            'tipo' => 'string'
-                        ]
-                    ],
-                    'condiciones' => "WHERE {$aDatosRecibidos['condicionDb']}",
-                ];
-                setcookie('indicadores_i', $cookieParaUsuario, time() + 365 * 24 * 60 * 60, "/");
-                $this->oConexion->updateDatos($aUpdate);
-                $aStatus['status'] = true;
-                $aStatus['cookie'] = $cookieParaUsuario;
+        if($aDatosBaseDeDatos != false)
+        {
+            foreach ($aDatosBaseDeDatos as $aUsuario) {
+                if ($aDatosRecibidos['password'] === $aUsuario['Password']) {
+                    $dateFechaCookie = date("Y-m-d H:i:s");
+                    $cookieParaUsuario = sha1($dateFechaCookie . $aUsuario['IdEmpleado']."1");
+                    $cFecha = date("Y-m-d H:i:s");
+                    $cQuery = "UPDATE general_empleado SET Cookie='{$cookieParaUsuario}', LastLogin='{$cFecha}' WHERE {$aDatosRecibidos['condicionDb']}";
+                    $this->oNewConexion->query($cQuery);
+                    setcookie('indicadores_i', $cookieParaUsuario, time() + 365 * 24 * 60 * 60, "/");
+                    $aStatus['status'] = true;
+                    $aStatus['cookie'] = $cookieParaUsuario;
+                }
             }
         }
         return $aStatus;
@@ -126,16 +116,15 @@ class Autenticacion
             'autenticado' => false
         ];
         if (!empty($cCookie)) {
-            $aSearch = [
-                'tabla' => 'general_empleado',
-                'condiciones' => "WHERE Cookie = '{$cCookie}'",
-            ];
-            $aDatosDeLaBaseDeDatos = $this->oConexion->selectDatos($aSearch);
-            foreach ($aDatosDeLaBaseDeDatos as $aUsuario) {
-                if ($aUsuario['Cookie'] === $cCookie) {
-                    $this->lAutenticado = true;
-                    $this->saveData($aUsuario);
-                    $aRegreso['autenticado'] = true;
+            $cQuery = "SELECT * FROM general_empleado WHERE Cookie = '${cCookie}'";
+            $oConsulta = $this->oNewConexion->query($cQuery);
+            if($oConsulta != false){
+                foreach ($oConsulta as $aUsuario) {
+                    if ($aUsuario['Cookie'] === $cCookie) {
+                        $this->lAutenticado = true;
+                        $this->saveData($aUsuario);
+                        $aRegreso['autenticado'] = true;
+                    }
                 }
             }
         }
@@ -150,6 +139,9 @@ class Autenticacion
         $this->iUserId = $aUsuario['IdEmpleado'];
         $this->cUserNombre = $aUsuario['Nombre'];
         $this->cNombreCompleto = $aUsuario['Nombre']." ".$aUsuario['ApellidoP']." ".$aUsuario['ApellidoM'];
+        $this->cUserName =  $aUsuario['UserName'];
+        $this->cPuesto = $aUsuario['IdPuesto'];
+        $this->cDepartamento = $aUsuario['IdDepto'];
     }
     /**
      * Nos ayudara a obtener el id del usuario
@@ -177,6 +169,30 @@ class Autenticacion
         return $this->cNombreCompleto;
     }
     /**
+     * Regresa el UserName para loguearse del usuario
+     * @return string Regresara el nombre de usuario para poder logearse
+     */
+    public function getUserName()
+    {
+        return $this->cUserName;   
+    }
+    /**
+     * Regresa el id del puesto del usuario
+     * @return string Regresara el id del puesto del usuario
+     */
+    public function getIdPuesto()
+    {
+        return $this->cPuesto;        
+    }
+    /**
+     * Regresa el id del departamento donde se encuentra el usuario
+     * @return string Regresara el id del departamento del usuario
+     */
+    public function getIdDepartamento()
+    { 
+        return $this->cDepartamento;
+    }
+    /**
      * Nos ayudara a cerrar la sessión
      * @return array Regresara un array con la sesión cerrada
      */
@@ -193,7 +209,7 @@ class Autenticacion
     }
     public function selectForMandos($cId = "")
     {
-        $cQuery = "SELECT IdEmpleado, Nombre, ApellidoP, ApellidoM FROM general_empleado WHERE IdDepto = '{$cId}'";
+        $cQuery = "SELECT IdEmpleado, Nombre, ApellidoP, ApellidoM,IdPuesto,IdDepto FROM general_empleado WHERE IdDepto = '{$cId}' AND Estatus='A'";
         $oConsulta = $this->oNewConexion->query($cQuery);
         $aStatus = [
             'status' => false,
@@ -206,6 +222,12 @@ class Autenticacion
                 $aStatus['datos'][$iContadorUsers]['nombre'] = $aUsuario['Nombre'];
                 $aStatus['datos'][$iContadorUsers]['apellidoP'] = $aUsuario['ApellidoP'];
                 $aStatus['datos'][$iContadorUsers]['apellidoM'] = $aUsuario['ApellidoM'];
+                $aStatus['datos'][$iContadorUsers]['departamento'] = $aUsuario['IdDepto'];
+                $aStatus['datos'][$iContadorUsers]['puesto'] = $aUsuario['IdPuesto'];
+                $cQueryPuesto = "SELECT Nivel FROM general_puesto WHERE IdPuesto='{$aUsuario['IdPuesto']}'";
+                $oConsultaPuesto = $this->oNewConexion->query($cQueryPuesto);
+                $iNivel = $oConsultaPuesto->fetch(PDO::FETCH_ASSOC);
+                $aStatus['datos'][$iContadorUsers]['nivelPuesto'] = $iNivel['Nivel'];
                 $aStatus['datos'][$iContadorUsers]['id'] = $aUsuario['IdEmpleado'];
                 $iContadorUsers++;
             }

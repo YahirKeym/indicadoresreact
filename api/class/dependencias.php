@@ -5,7 +5,8 @@
     require_once $_SERVER["DOCUMENT_ROOT"].$cRuta."/class/portal.php";
     require_once $_SERVER["DOCUMENT_ROOT"].$cRuta."/class/autenticacion.php";
     $cToken = isset($_REQUEST['token']) ? $_REQUEST['token'] : '';
-    $oConexion = new Conexion();          
-    $oAutentica = new Autenticacion();
+    $oConexionMandos = new Conexion(['host'=>'172.16.100.184','db'=>'indicadores_generales','user'=>'indicadores','password'=>'dOQAxEli']);
+    $oConexionUsers = new Conexion(['host'=>'172.16.100.184','db'=>'catalogos_generales','user'=>'indicadores','password'=>'dOQAxEli']);
+    $oAutentica = new Autenticacion($oConexionUsers);
     $oPortal = new Portal($oAutentica);
 ?>

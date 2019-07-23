@@ -5,9 +5,8 @@ class Rango {
      * @var object
      */
     private $oConexion = null;
-    function __construct()
+    function __construct($oConexion = null)
     {
-        $oConexion = new Conexion();
         $this->oConexion = $oConexion->oConexion;
     }
     public function view()

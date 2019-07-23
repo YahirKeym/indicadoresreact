@@ -2,18 +2,43 @@
 class Mandos
 {
     /**
+     * Es el nombre de la tabla del cuerpo de mando
+     * @var string
+     */
+    private $cTabla = "general_mando";
+    /**
      * Guardara el objeto de conexión
      * @var Object
      */
     private $oConexion = null;
     /**
+     * Es el objeto de autentitación para saber que usuario es el que esta solicitando datos
+     * @var object
+     */
+    private $oAutentica = null;
+    /**
      * Nos ayudara a iniciar los requerimientos de los mandos.
      */
-    function __construct()
+    function __construct($oAutentica = null, $oConexion)
     {
-        $oConexion = new Conexion();
+        $oConexion = $oConexion;
         $this->oConexion = $oConexion->oConexion;
-
+        $this->oAutentica = $oAutentica;
+    }
+    private function repetidorDeDatos($aDatos = [])
+    {
+        $cRegreso = "";
+        $iContadorDeDatos = 0;
+        $iCantidadDeDatos = count($aDatos);
+        foreach($aDatos as $reDatos)
+        {
+            $cRegreso .= $reDatos['id'];
+            $iContadorDeDatos++;
+            if($iContadorDeDatos < $iCantidadDeDatos){
+                $cRegreso .= ",";
+            }
+        }
+        return $cRegreso;
     }
     /**
      * Podremos añadir un mando
@@ -23,7 +48,25 @@ class Mandos
     public function add($aDatos = [])
     {
         $cDatos = json_encode($aDatos);
-        $cQueryMandoObjetivo = "INSERT INTO mandos (datosmando) VALUES ('{$cDatos}')";
+        $aUsuarios = $aDatos['datos']['usuarios']['datos'];
+        $aDepartamento = $aDatos['datos']['rangos']['datos'];
+        $aArea = $aDatos['datos']['jerarquias']['datos'];
+        $iTipoIndicador = (int)$aDatos['datos']['tipoIndicador'];
+        $iNivel = 0;
+        if(!empty($aUsuarios))
+        {
+            $iNivel = 10;
+            foreach($aUsuarios as $aUsers){
+                if($aUsers['nivel'] < $iNivel)
+                {
+                    $iNivel = $aUsers['nivel'];
+                }
+            }
+        }
+        $cDepartamento = $this->repetidorDeDatos($aDepartamento);
+        $cArea= $this->repetidorDeDatos($aArea);
+        $cUsuarios = $this->repetidorDeDatos($aUsuarios);
+        $cQueryMandoObjetivo = "INSERT INTO {$this->cTabla} (DatosMando,NivelPuesto,IdDepartamento,IdArea,IdUsuario,TipoIndicador) VALUE ('{$cDatos}',{$iNivel},'{$cDepartamento}','{$cArea}','{$cUsuarios}',{$iTipoIndicador})";
         $oConsultaMandoObjetivo = $this->oConexion->query($cQueryMandoObjetivo);
         $aStatus = [
             'status' => false
@@ -41,7 +84,8 @@ class Mandos
      */
     public function view()
     {
-        $cQuery = "SELECT * FROM mandos";
+        $idUsuario = $this->oAutentica->getId();
+        $cQuery = "SELECT * FROM {$this->cTabla} WHERE IdUsuario LIKE '{$idUsuario}%' OR '%{$idUsuario}%' OR '%{$idUsuario}' OR TipoIndicador=0";
         $oConsulta = $this->oConexion->query($cQuery);
         $aStatus =[
             'status' => false,
@@ -53,8 +97,8 @@ class Mandos
             $iContadorMandos = 0;
             foreach($oConsulta as $aMandos)
             {
-                $aStatus['datos'][$iContadorMandos]= json_decode($aMandos['datosmando'],true);
-                $aStatus['datos'][$iContadorMandos]['id'] = $aMandos['id'];
+                $aStatus['datos'][$iContadorMandos]= json_decode($aMandos['DatosMando'],true);
+                $aStatus['datos'][$iContadorMandos]['id'] = $aMandos['Id'];
                 $iContadorMandos++;
             }
         }
@@ -68,7 +112,7 @@ class Mandos
      */
     public function select($iId = 0)
     {
-        $cQuery = "SELECT * FROM mandos WHERE id={$iId}";
+        $cQuery = "SELECT * FROM {$this->cTabla} WHERE Id={$iId}";
         $oConsulta = $this->oConexion->query($cQuery);
         $aStatus = [
             'status' => false,
@@ -77,8 +121,8 @@ class Mandos
         if($oConsulta != false){
             $aStatus['status'] = true;
             $aDatos = $oConsulta->fetch(PDO::FETCH_ASSOC);
-            $aStatus['datos'] = json_decode($aDatos['datosmando'], true);
-            $aStatus['datos']['id'] = $aDatos['id'];
+            $aStatus['datos'] = json_decode($aDatos['DatosMando'], true);
+            $aStatus['datos']['id'] = $aDatos['Id'];
         }
         return json_encode($aStatus);
     }
@@ -90,7 +134,7 @@ class Mandos
      */
     public function delete($iIdMando = 0)
     {
-        $cQuery = "DELETE FROM mandos WHERE id={$iIdMando}";
+        $cQuery = "DELETE FROM {$this->cTabla} WHERE Id={$iIdMando}";
         $oConsulta = $this->oConexion->query($cQuery);
         $aStatus = [
             'status' => false
@@ -110,7 +154,7 @@ class Mandos
      */
     public function modify($aDatos = [],$cDatos = "")
     {
-        $cQuery = "UPDATE mandos SET datosmando='{$cDatos}' WHERE id={$aDatos['id']}";
+        $cQuery = "UPDATE {$this->cTabla} SET DatosMando='{$cDatos}' WHERE Id={$aDatos['id']}";
         $oConsulta = $this->oConexion->query($cQuery);
         $aStatus = [
             'status' => false

@@ -21,9 +21,8 @@ class Objetivos
      *
      * @param ObjetoDeAutenticacion $oAutentica Será el objeto de autenticación
      */
-    public function __construct($oAutentica = null)
+    public function __construct($oAutentica = null, $oConexion = null)
     {
-        $oConexion = new Conexion();
         $this->oConexion = $oConexion->oConexion;
         $this->oAutentica = $oAutentica;
     }
