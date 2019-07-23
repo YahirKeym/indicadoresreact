@@ -96,7 +96,7 @@ class Objetivos extends React.Component
         return (
             <div className="col-12 row">
                 <ButtonDirectTop to="/objetivos/add" text="Añadir objetivo" />
-                <div className="col-12 row">
+                <div className="col-12 row d-flex justify-content-between">
                     {this.state.data.map(objetivo => {
                         return(
                             <CuerpoObjetivosMandos titulo={objetivo.titulo} textSuccess="Editar" 

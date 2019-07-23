@@ -483,6 +483,9 @@ class MandosAdd extends React.Component
             )
         }
     }
+    /**
+     * 
+     */
     handleChangeAction = e =>{
         var nuevoStado = this.state;
         const id = e.target.getAttribute("id");
@@ -509,7 +512,14 @@ class MandosAdd extends React.Component
             }
         })
         const asignaValores = await this.asignarValores();
-        const Datos = JSON.stringify(this.state);
+        const creaDatos = {
+            variables: this.state.variables,
+            datos: this.state.datos,
+            objetivosData: this.state.objetivosData,
+            acciones: this.state.acciones,
+            rangos: this.state.rangos
+        }
+        const Datos = JSON.stringify(creaDatos);
         let cadenaLimpia = Datos.replace(/&/gi,"%26");
         const req = await fetch(`${this.props.url}&action=add&data=${cadenaLimpia}`);
         const response = await req.json();
@@ -584,7 +594,8 @@ class MandosAdd extends React.Component
                 aUsers = [
                     ...aUsers,
                     {
-                        id: $Usuarios[index].value
+                        id: $Usuarios[index].value,
+                        nivel: $Usuarios[index].getAttribute("nivel")
                     }
                 ]
             }
@@ -697,12 +708,15 @@ class MandosAdd extends React.Component
                     <div className="col-12 col-lg-6 mb-3">
                         <input type="number" max="500" min="1" onChange={this.handleChange} className="form-control" name="etapas" defaultValue={this.state.datos.etapas}/>
                     </div>
-                    <div className="col-8">
+                    <div className="col-8 row m-0">
                         <span className="col-12">Tipo de Indicador: </span> 
-                        <select className="form-control" name="tipoIndicador" onChange={this.handleChange}>
+                        <select className="form-control col-4" name="tipoIndicador" onChange={this.handleChange}>
                             <option value="0">Resultados</option>
                             <option value="1">Comportamentable</option>
                         </select>
+                        {parseInt(this.state.datos.tipoIndicador) === 0 && (
+                            <span className="col-4 align-middle">Global</span>
+                        )}
                     </div>
                     {parseInt(this.state.datos.tipoIndicador) === 1 && (
                         <React.Fragment>
@@ -724,7 +738,7 @@ class MandosAdd extends React.Component
                             <div className="col-6 mt-3">
                                 {this.state.users.length > 0  && (<select multiple className="form-control" name="rangos">
                                     {this.state.users.map(user => {
-                                        return(<option rango="true" tipo="user" value={user.id} key={user.id}>{`${user.nombre} ${user.apellidoP} ${user.apellidoM}`}</option>)
+                                        return(<option rango="true" tipo="user" value={user.id} nivel={user.nivelPuesto} key={user.id}>{`${user.nombre} ${user.apellidoP} ${user.apellidoM}`}</option>)
                                     })}
                                 </select>)}
                             </div>

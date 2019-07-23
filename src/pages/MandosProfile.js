@@ -187,7 +187,7 @@ export default class MandosProfile extends React.Component{
             this.state.data.variables[1].etapas.map(etapas2 => {
                 if(etapas1.idEtapa === etapas2.idEtapa)
                 {
-                    aEtapas.push([String(contadorEtapas),parseInt(etapas1.valor),parseInt(etapas2.valor)])
+                    aEtapas.push([etapas1.nombreEtapa,parseInt(etapas1.valor),parseInt(etapas2.valor)])
 
                 }
             })
@@ -332,38 +332,40 @@ export default class MandosProfile extends React.Component{
         }
         return (
             <React.Fragment>
-                <CuerpoObjetivosMandos 
-                textSuccess="Guardar" 
-                url="" 
-                titulo={this.state.data.datos.titulo}
-                subtitulo={this.state.data.objetivosData.titulo} 
-                descripcion={this.state.data.objetivosData.descripcion}
-                history={this.props.history}
-                oneProfile={true}
-                Delete={this.props.url}
-                id={this.state.data.id}
-                isProfile={true}
-                save={this.handleUpdate}
-                >
-                    <div className="col-12 mt-3 row  d-flex justify-content-center">
-                        <div className="col-12 d-flex justify-content-center">
-                            <h4>Acciones a tomar</h4>
-                        </div>
-                        {this.state.data.acciones.map(action => {
-                            return (
+                <div className="col-12 d-flex justify-content-center">
+                    <CuerpoObjetivosMandos 
+                    textSuccess="Guardar" 
+                    url="" 
+                    titulo={this.state.data.datos.titulo}
+                    subtitulo={this.state.data.objetivosData.titulo} 
+                    descripcion={this.state.data.objetivosData.descripcion}
+                    history={this.props.history}
+                    oneProfile={true}
+                    Delete={this.props.url}
+                    id={this.state.data.id}
+                    isProfile={true}
+                    save={this.handleUpdate}
+                    >
+                        <div className="col-12 mt-3 row  d-flex justify-content-center">
+                            <div className="col-12 d-flex justify-content-center">
+                                <h4>Acciones a tomar</h4>
+                            </div>
+                            {this.state.data.acciones.map(action => {
+                                return (
                                     <div className="acciones p-2 col-4 mt-3">{action.nombre}</div>
-                            )
-                        })}
-                    </div>
-                    <div className="col-12 mt-3">
-                        <button edicion={`${this.state.editar}`} className="btn-light btn" onClick={this.handleChangeEdit}>{mensajeEditar}</button>
-                    </div>
-                    <div className="col-12 p-2 mando-control">
-                        <VariablesMando onChange={this.handleChangeEtapas} etapa={this.state.data.datos.tipoDeEtapa} editar={this.state.editar} variables={this.state.data.variables} porcentaje={porcentaje}/>
-                    </div>
-                    <div className="col-12">
-                    </div>
-                </CuerpoObjetivosMandos>
+                                    )
+                                })}
+                        </div>
+                        <div className="col-12 mt-3">
+                            <button edicion={`${this.state.editar}`} className="btn-light btn" onClick={this.handleChangeEdit}>{mensajeEditar}</button>
+                        </div>
+                        <div className="col-12 p-2 mando-control">
+                            <VariablesMando onChange={this.handleChangeEtapas} etapa={this.state.data.datos.tipoDeEtapa} editar={this.state.editar} variables={this.state.data.variables} porcentaje={porcentaje}/>
+                        </div>
+                        <div className="col-12">
+                        </div>
+                    </CuerpoObjetivosMandos>
+                </div>
                 <div className="col-12 mb-5 row d-flex justify-content-center">
                     <Chart
                         width="100%"

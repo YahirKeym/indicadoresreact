@@ -2,6 +2,7 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 import CuerpoObjetivosMandos from '../components/CuerpoObjetivosMandos.js';
 import ButtonDirectTop from '../components/ButtonDirectTop.js';
+import DeleteAction from '../components/DeleteAction.js';
 
 /**
  * Guardara los badges de Jerarquias
@@ -48,7 +49,19 @@ function VariablesMando(props)
                         <div className="col-9">
                             <span style={{fontWeight:700}}>{quitaEspeciales(variable.nombre)}</span> <span className="float-right"><span style={{fontWeight:700}}>Tipo de etapa:</span> {tipoDeEtapa}</span>
                         </div>
-                        <div className="col-10 row">
+                        <div className="col-md-10 col-12 row">
+
+                            {variable.etapas.map(nombreEtapa => {
+                                if(variable.id === 1)
+                                {
+                                    return(
+                                        <div className="col-md-1 d-none d-md-block font-weight-bold text-center" key={nombreEtapa.id}>
+                                            {nombreEtapa.nombreEtapa}
+                                        </div>
+                                    )
+                                }
+                                return ;
+                            })}
                             {variable.etapas.map(etapa =>{
                                 let color = "";
                                 if(etapa.porcentaje < porcentajeBueno)
@@ -61,13 +74,13 @@ function VariablesMando(props)
                                 }
                                 let valor = Math.round(etapa.porcentaje);
                                 return(
-                                <div className={`col-2 text-center etapa ${color}`} key={etapa.id}>
-                                    {`${valor}%`}
-                                </div>
+                                    <div className={`col-md-1 col-3 text-center etapa ${color}`} key={etapa.id}>
+                                        {`${valor}%`}
+                                    </div>
                                 )
                             })}
                         </div>
-                        <div className="col-2">
+                        <div className="col-md-2 col-12 text-center">
                             Total: {variable.valorTotal}
                         </div>
                     </div>
@@ -121,28 +134,34 @@ class Mandos extends React.Component{
             <React.Fragment>
                 <div className="col-12 mt-3 row">
                     <ButtonDirectTop to="/mandos/add" text="Añadir nuevo mando" />
-                    <div className="col-12 row">
+                    <div className="col-12 row d-flex justify-content-between">
                         {this.state.data.map(mando => {
                             const porcentaje = {
                                 porcentajeBueno: mando.datos.AceptacionBuena,
                                 porcentajeMedio: mando.datos.AceptacionMedia
                             }
+                            let titulo = mando.datos.titulo;
+                            if(titulo.length === 0){
+                                titulo = mando.objetivosData.titulo;
+                            }
                             return(
-                                <CuerpoObjetivosMandos textSuccess="Ver" key={mando.id} 
-                                titulo={mando.datos.titulo} id={mando.id} 
-                                subtitulo={mando.objetivosData.titulo} url={`/mandos/${mando.id}`} 
-                                descripcion={mando.objetivosData.descripcion}
-                                Delete={this.props.url}
-                                history={this.props.history}
-                                id={mando.id}
-                                oneProfile={false}>
+                                <div className="mando col-12 text-white p-3" key={mando.id}>
+                                    <h4>{titulo}</h4>
                                     <div className="col-12 p-2 mando-control">
                                         <VariablesMando variables={mando.variables} porcentaje={porcentaje} etapa={mando.datos.tipoDeEtapa}/>
                                     </div>
                                     <div className="col-12">
                                         <JerarquiasMando jerarquias={mando.datos.jerarquias} rangos={mando.rangos}/>
                                     </div>
-                                </CuerpoObjetivosMandos>
+                                    <div className="col-12 mt-2">
+                                        <Link className="btn btn-success" to={`/mandos/${mando.id}`}>Ver</Link>
+                                        <DeleteAction 
+                                        url={this.props.url} 
+                                        id={mando.id} 
+                                        oneProfile={false}  
+                                        history={this.props.history} />
+                                    </div>
+                                </div>
                             );
                         })}
                     </div>
