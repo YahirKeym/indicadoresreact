@@ -68,7 +68,7 @@ function CuerpoObjetivosMandos(props){
         isProfile = true;
     }
     return(
-        <div className="col-12 p-3 col-md-6 row mando mx-auto text-white">
+        <div className="col-12 p-3 col-md-6 row mando m-0 text-white">
             <div  className="col-12 text-center">
                 <Titulo titulo={titulo} objetivo={subtitulo} />
             </div>

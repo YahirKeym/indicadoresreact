@@ -1,7 +1,16 @@
 .mando{
     background: #289c7c;
     border: 2px solid #fff;
-    border-radius: 10px;
+    border-radius: 0 10px 10px 0;
+}
+.mando:first-child{
+    border-radius: 0 0 10px 0;
+}
+.mando:nth-child(2n){
+    border-radius: 10px 0 0 10px;
+}
+.mando:nth-child(2){
+    border-radius: 0 0 0 10px;
 }
 .mando .mando-text{
     background: #376f60;
