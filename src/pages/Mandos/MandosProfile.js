@@ -1,7 +1,8 @@
 import React from 'react';
-import CuerpoObjetivosMandos from '../components/CuerpoObjetivosMandos.js';
+import CuerpoObjetivosMandos from '../../components/CuerpoObjetivosMandos.js';
 import {Chart} from 'react-google-charts';
-import Loader from '../components/Loader.js';
+import Loader from '../../components/Loader.js';
+import {Helmet} from 'react-helmet'
 /**
  * Cambiara los acentos que vengan con codificación java
  */
@@ -182,16 +183,18 @@ export default class MandosProfile extends React.Component{
         let aEtapas = [
             ["Etapas",nombreDeVariableUno,nombreDeVariableDos]
         ];
-        let contadorEtapas = 1;
+        this.contadorEtapas = 1;
         this.state.data.variables[0].etapas.map(etapas1=>{
-            this.state.data.variables[1].etapas.map(etapas2 => {
+            return this.state.data.variables[1].etapas.map(etapas2 => {
                 if(etapas1.idEtapa === etapas2.idEtapa)
                 {
-                    aEtapas.push([etapas1.nombreEtapa,parseInt(etapas1.valor),parseInt(etapas2.valor)])
+                    return aEtapas.push([etapas1.nombreEtapa,parseInt(etapas1.valor),parseInt(etapas2.valor)])
 
+                }else{
+                    return [];
                 }
             })
-            contadorEtapas++;
+            this.contadorEtapas++;
         }
         )
         this.setState({
@@ -237,6 +240,7 @@ export default class MandosProfile extends React.Component{
             {
                 formulaString= undefined;
             }
+            let _self = this;
             let codigoEnString =  `${str}
                                    try{
                                     var formula = ${formulaString};
@@ -252,14 +256,14 @@ export default class MandosProfile extends React.Component{
                                         porcentaje = 100;
                                     }
                                     nuevoStado.variables[idVariable]['etapas'][idEtapa]['porcentaje'] = porcentaje;
-                                    this.setState({
+                                    _self.setState({
                                         data: nuevoStado
                                     })
                                    }catch(e)
                                    {
-                                       this.setState({
+                                       _self.setState({
                                            errors:{
-                                               ...this.state.errors,
+                                               ..._self.state.errors,
                                                formulaNoCoincideConVariables: true
                                            }
                                        })
@@ -332,6 +336,9 @@ export default class MandosProfile extends React.Component{
         }
         return (
             <React.Fragment>
+                <Helmet>
+                    <title>Indicadores - {this.state.data.objetivosData.titulo}</title>
+                </Helmet>
                 <div className="col-12 d-flex justify-content-center">
                     <CuerpoObjetivosMandos 
                     textSuccess="Guardar" 

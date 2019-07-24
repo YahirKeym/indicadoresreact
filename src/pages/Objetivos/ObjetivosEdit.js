@@ -1,5 +1,5 @@
 import React from 'react';
-import FormularioObjetivos from '../components/FormularioObjetivos';
+import FormularioObjetivos from '../../components/FormularioObjetivos';
 
 class ObjetivosEdit extends React.Component
 {

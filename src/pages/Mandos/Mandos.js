@@ -1,8 +1,12 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
-import CuerpoObjetivosMandos from '../components/CuerpoObjetivosMandos.js';
-import ButtonDirectTop from '../components/ButtonDirectTop.js';
-import DeleteAction from '../components/DeleteAction.js';
+import ButtonDirectTop from '../../components/ButtonDirectTop.js';
+import DeleteAction from '../../components/DeleteAction.js';
+import {Helmet} from 'react-helmet';
+import Loader from '../../components/Loader.js';
+import ErrorConexion from '../../components/ErrorConexion.js';
+import SinDatos from '../../components/SinDatos.js';
+import TraeDatos from '../../components/TraeDatos.js';
 
 /**
  * Guardara los badges de Jerarquias
@@ -97,6 +101,24 @@ function quitaEspeciales(cadena = ""){
     return cadena;
 }
 /**
+ * Cambiara los acentos que vengan con codificación java
+ */
+function acentosEncodeJava(cadena = ""){
+    cadena = cadena.replace(/u00e1/gi,"á");
+    cadena = cadena.replace(/u00C1/gi,"Á");
+    cadena = cadena.replace(/u00E9/gi,"é");
+    cadena = cadena.replace(/u00C9/gi,"É");
+    cadena = cadena.replace(/u00ED/gi,"í");
+    cadena = cadena.replace(/u00CD/gi,"Í");
+    cadena = cadena.replace(/u00f3/gi,"ó");
+    cadena = cadena.replace(/u00D3/gi,"Ó");
+    cadena = cadena.replace(/u00fa/gi,"ú");
+    cadena = cadena.replace(/u00DA/gi,"Ú");
+    cadena = cadena.replace(/u00F1/gi,"ñ");
+    cadena = cadena.replace(/u00D1/gi,"Ñ");
+    return cadena;
+}
+/**
  * Será la clase de mandos donde se visualizaran todos
  */
 class Mandos extends React.Component{
@@ -105,34 +127,44 @@ class Mandos extends React.Component{
         super(props);
         this.state = {
             data:[],
-            objetivos:[]
+            objetivos:[],
+            loading: true,
+            error:false
         }
-    }
-    componentDidMount()
-    {
-        this.traerDatos();
     }
     /**
-     * Tr
+     * Nos ayudara  a mandar a llamar las funciones para poder inicializar nuestro componente
      */
-    traerDatos = async () =>{
-        const req = await fetch(`${this.props.url}&action=view`);
-        const response =  await req.json();
-        if(response.status)
-        {
-            if(response.datos.length === 0){
-                response.datos = [];
-            }
-            this.setState({
-                data: response.datos
-            })
-        }
-    } 
+    componentDidMount()
+    {
+        TraeDatos({url: this.props.url, _self: this});
+    }
+    /**
+     * 
+     */
+    componentWillUnmount(){
+        clearTimeout(this.traeDatos)
+    }
     render()
     {
+        if(this.state.loading){
+            return (<Loader />)
+        }
+        if(this.state.error){
+            return(
+                <ErrorConexion />
+            )
+        }
+        if(this.state.data.length === 0){
+            return(
+                <SinDatos />)
+        }
         return (
             <React.Fragment>
-                <div className="col-12 mt-3 row">
+                <Helmet>
+                    <title>Indicadores - Indicadores</title>
+                </Helmet>
+                <div className="col-12 row">
                     <ButtonDirectTop to="/mandos/add" text="Añadir nuevo mando" />
                     <div className="col-12 row d-flex justify-content-between">
                         {this.state.data.map(mando => {
@@ -146,7 +178,7 @@ class Mandos extends React.Component{
                             }
                             return(
                                 <div className="mando col-12 text-white p-3" key={mando.id}>
-                                    <h4>{titulo}</h4>
+                                    <h4>{acentosEncodeJava(titulo)}</h4>
                                     <div className="col-12 p-2 mando-control">
                                         <VariablesMando variables={mando.variables} porcentaje={porcentaje} etapa={mando.datos.tipoDeEtapa}/>
                                     </div>

@@ -1,7 +1,10 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import './styles/alcance.css';
-import Loader from '../components/Loader.js';
+import ButtonDirectTop from '../../components/ButtonDirectTop.js';
+import Loader from '../../components/Loader.js';
+import ErrorConexion from '../../components/ErrorConexion';
+import TraeDatos from '../../components/TraeDatos.js';
 class Alcance extends React.Component{
     constructor(props)
     {
@@ -12,40 +15,45 @@ class Alcance extends React.Component{
             this.success = true;
         }
         this.state = {
-            loader: true,
+            loading: true,
             success: this.success,
-            data: []
+            data: [],
+            error: false
         }
     }
+    /**
+     * Nos ayudara  a mandar a llamar las funciones para poder inicializar nuestro componente
+     */
     componentDidMount()
     {
-        this.traerDatos();
+        TraeDatos({url: this.props.url, _self: this});
     }
-    traerDatos = async () => 
-    {
-        const response = await fetch(`${this.props.url}&action=view`);
-        const data = await response.json();
-        this.setState(
-            {
-                loader:false,
-                data:data.datos
-            }
-        )
+    /**
+     * 
+     */
+    componentWillUnmount(){
+        clearTimeout(this.traeDatos)
     }
+    /**
+     * 
+     */
     render()
     {
-        if(this.state.loader)
+        if(this.state.loading)
         {
             return (
                 <Loader />
             );
         }
+        if(this.state.error){
+            return(
+                <ErrorConexion />
+            )
+        }
         return (
            <React.Fragment>
                 <div className="row col-12 d-block d-sm-block d-md-flex justify-content-center">
-                    <div className="col-md-5 col-12 col-sm-12">
-                        <Link className="btn btn-success col-12" to="/tipos/alcance/add">AGREGAR ALCANCE</Link>
-                    </div>
+                    <ButtonDirectTop to="/tipos/alcance/add" text="Agregar alcance" />
                     <div className="col-5"></div>
                     {this.state.success && (
                         <div className="bg-success col-12 col-md-8 mt-3 text-white text-center success p-3">

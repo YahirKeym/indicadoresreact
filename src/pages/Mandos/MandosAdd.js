@@ -294,6 +294,7 @@ class MandosAdd extends React.Component
             {
                 formulaString= undefined;
             }
+            let _self = this;
             let codigoEnString =  `${str}
                                    try{
                                     var formula = ${formulaString};
@@ -309,12 +310,12 @@ class MandosAdd extends React.Component
                                         porcentaje = 100;
                                     }
                                     nuevoStado.variables[idVariable]['etapas'][idEtapa]['porcentaje'] = porcentaje;
-                                    this.setState(nuevoStado)
+                                    _self.setState(nuevoStado)
                                    }catch(e)
                                    {
-                                       this.setState({
+                                       _self.setState({
                                            errors:{
-                                               ...this.state.errors,
+                                               ..._self.state.errors,
                                                formulaNoCoincideConVariables: true
                                            }
                                        })
@@ -415,6 +416,7 @@ class MandosAdd extends React.Component
                 url = this.props.urlAutentica;
             break;
         }
+        console.log(url)
         const id = e.target.value;
         const req = await fetch(`${url}&action=selectForMandos&id=${id}`);
         const response = await req.json();

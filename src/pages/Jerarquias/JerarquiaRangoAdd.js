@@ -1,6 +1,6 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
-import Loader from '../components/Loader.js';
+import Loader from '../../components/Loader.js';
 export default class JerarquiaRangoAdd extends React.Component
 {
     constructor(props)

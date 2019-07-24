@@ -1,6 +1,6 @@
 import React from 'react';
 import "./styles/JerarquiasMove.css";
-import Loader from '../components/Loader.js';
+import Loader from '../../components/Loader.js';
 export default class JerarquiasMove extends React.Component
 {
     constructor(props)
