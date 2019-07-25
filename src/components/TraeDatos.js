@@ -1,14 +1,18 @@
-async function TraeDatos({url,_self}){
+async function TraeDatos({url,_self},lugar = ""){
     try{
         const response = await fetch(`${url}&action=view`);
         const data = await response.json();
         if(data.datos === undefined){
             data.datos = [];
         }
+        if(lugar.length === 0)
+        {
+            lugar = "data";
+        }
         _self.setState(
             {
                 loading: false,
-                data: data.datos,
+                [lugar]: data.datos,
                 error: false
             }
         );
