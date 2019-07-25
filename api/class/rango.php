@@ -5,7 +5,7 @@ class Rango {
      * @var object
      */
     private $oConexion = null;
-    function __construct($oConexion = null)
+    function __construct($oAutentica = null,$oConexion = null)
     {
         $this->oConexion = $oConexion->oConexion;
     }
