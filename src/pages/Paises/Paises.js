@@ -2,7 +2,7 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 import './styles/Paises.css';
 import Loader from '../../components/Loader.js';
-import ButtonDirectTop from '../../components/ButtonDirectTop';
+import ButtonDirectTop from '../../components/Generales/ButtonDirectTop';
 import ErrorConexion from '../../components/ErrorConexion';
 import SinDatos from '../../components/SinDatos';
 import TraeDatos from '../../components/TraeDatos';
@@ -36,27 +36,6 @@ class Paises extends React.Component
         clearTimeout(this.traeDatos)
     }
     /**
-     * Ayuda a obtener todos los paises
-     */
-    obtenerPaises = async () => {
-        try{
-            const response = await fetch(`${this.props.url}&action=view`);
-            const data = await response.json();
-            this.setState(
-                {
-                    loading: false,
-                    data: data.datos,
-                    error: false
-                }
-            );
-        }catch(error){
-            this.setState({
-                error: true,
-                loading:false
-            })
-        }
-    }
-    /**
      * Nos ayudara a renderizar los paises y su editable
      */
     render()
@@ -79,19 +58,21 @@ class Paises extends React.Component
         return(
             <React.Fragment>
                 <ButtonDirectTop to="/paises/add" text="Añadir un pais" />
-                <div className="col-12 row mt-3">
+                <div className="col-12 row mt-5">
                     {this.state.data.map(pais=>{
-                        return(<div className="col-md-3 col-6 pais mb-2" key={pais.id}>
+                        return(
+                        <div className="col-md-3 col-6 pais mb-2" key={pais.id}>
                             <p>
-                                <span className="bg-primary p-1 text-white">{pais.nombre}</span>
+                                <span className="secondary-bg p-1 text-white">{pais.nombre}</span>
                                 <span className="ml-2">
-                                    <Link to={`/paises/${pais.id}/edit`} onClick={this.obtenerOnePais}>Editar</Link>
+                                    <Link to={`/paises/${pais.id}/edit`} className="color-ancla-suez" onClick={this.obtenerOnePais}>Editar</Link>
                                 </span>
                                 <span className="ml-2">
-                                    <Link to={`/paises/${pais.id}/delete`}>Eliminar</Link>
+                                    <Link to={`/paises/${pais.id}/delete`}className="color-ancla-suez" >Eliminar</Link>
                                 </span>
-                                </p>
-                        </div>);
+                            </p>
+                        </div>
+                        );
                     })}
                 </div>
             </React.Fragment>

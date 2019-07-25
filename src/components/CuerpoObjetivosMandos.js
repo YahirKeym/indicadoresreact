@@ -14,7 +14,7 @@ function acentosEncodeJava(cadena = ""){
     cadena = cadena.replace(/u00CD/gi,"Í");
     cadena = cadena.replace(/u00f3/gi,"ó");
     cadena = cadena.replace(/u00D3/gi,"Ó");
-    cadena = cadena.replace(/u00D3/gi,"ú");
+    cadena = cadena.replace(/u00fa/gi,"ú");
     cadena = cadena.replace(/u00DA/gi,"Ú");
     cadena = cadena.replace(/u00F1/gi,"ñ");
     cadena = cadena.replace(/u00D1/gi,"Ñ");
@@ -52,16 +52,16 @@ function Titulo(props)
  * @param {props} props 
  */
 function CuerpoObjetivosMandos(props){
-    const titulo = props.titulo;
-    const subtitulo = props.subtitulo;
-    const descripcion = props.descripcion;
-    const url = props.url;
-    const textSuccess = props.textSuccess;
-    const Delete = props.Delete;
-    const id = props.id;
-    const history = props.history;
-    const oneProfile = props.oneProfile;
-    const onClickSave = props.save;
+    const titulo = props.titulo,
+    subtitulo = props.subtitulo,
+    descripcion = props.descripcion,
+    url = props.url,
+    textSuccess = props.textSuccess,
+    Delete = props.Delete,
+    id = props.id,
+    history = props.history,
+    oneProfile = props.oneProfile,
+    onClickSave = props.save;
     let isProfile = false;
     if(props.isProfile)
     {

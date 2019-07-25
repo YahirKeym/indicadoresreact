@@ -1,7 +1,7 @@
 import React from 'react';
 import CuerpoObjetivosMandos from '../../components/CuerpoObjetivosMandos.js';
 import Loader from '../../components/Loader.js';
-import ButtonDirectTop from '../../components/ButtonDirectTop.js';
+import ButtonDirectTop from '../../components/Generales/ButtonDirectTop.js';
 import SinDatos from '../../components/SinDatos.js';
 import ErrorConexion from '../../components/ErrorConexion.js';
 import TraeDatos from '../../components/TraeDatos.js';
@@ -28,6 +28,7 @@ class Objetivos extends React.Component
      */
     componentDidMount()
     {
+        console.log(localStorage)
         TraeDatos({url: this.props.url, _self: this});
     }
     /**

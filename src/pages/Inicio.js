@@ -4,7 +4,7 @@ import {Helmet} from 'react-helmet';
 class Inicio extends React.Component {
     render() {
         return (
-            <div className="container jumbotron">
+            <div className="container jumbotron secondary-bg text-white">
                 <Helmet>
                     <title>Indicadores - Inicio</title>
                 </Helmet>

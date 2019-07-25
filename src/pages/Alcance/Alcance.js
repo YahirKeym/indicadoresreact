@@ -1,7 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import './styles/alcance.css';
-import ButtonDirectTop from '../../components/ButtonDirectTop.js';
+import ButtonDirectTop from '../../components/Generales/ButtonDirectTop.js';
 import Loader from '../../components/Loader.js';
 import ErrorConexion from '../../components/ErrorConexion';
 import TraeDatos from '../../components/TraeDatos.js';
@@ -64,7 +64,7 @@ class Alcance extends React.Component{
                 <div className="mt-3 row d-block d-sm-block d-md-flex justify-content-center">
                     {this.state.data.map(alcance=>{
                         return (
-                            <div key={alcance.id} className="col-md-3 col-11 col-sm-11 bg-header text-white text-center alcance p-3 mt-2 ml-3">
+                            <div key={alcance.id} className="col-md-3 col-11 col-sm-11 secondary-bg text-white text-center alcance p-3 mt-2 ml-3">
                                 <h4>{alcance.nombre}</h4>
                                 <Link className="btn btn-editar mr-3" to={`/tipos/alcance/${alcance.id}/edit`}>Editar</Link>
                                 <Link className="btn btn-danger mt-1" to={`/tipos/alcance/${alcance.id}/delete`}>Eliminar</Link>

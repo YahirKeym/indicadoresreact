@@ -1,7 +1,26 @@
-.bg-header
+.primary-bg
 {
-  background: #289c7c;
+  background: #9bcd41 !important;
+}
+.primary-color{
+  color: #9bcd41 !important;
+}
+.color-ancla-suez{
+  color: #000d42 !important;
 }
 .cursor-pointer{
   cursor: pointer;
+}
+.secondary-bg{
+  background: #000d42 !important;
+}
+.btn-success-suez{
+  background: #99ca3c !important;
+  border: 1px solid #99ca3c !important;
+  color: rgba(70,70,70,.8) !important;
+  font-weight: 700 !important
+}
+.btn-success-suez:hover{
+  background: #28a745 !important;
+  border: 1px solid #28a745 !important;
 }

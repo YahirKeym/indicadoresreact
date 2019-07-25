@@ -1,5 +1,5 @@
 .mando{
-    background: #289c7c;
+    background: #000d42;
     border: 2px solid #fff;
     border-radius: 0 10px 10px 0;
 }
@@ -13,27 +13,28 @@
     border-radius: 0 0 0 10px;
 }
 .mando .mando-text{
-    background: #376f60;
+    background: #202c69;
     border-radius: 10px;
 }
 .mando .etapa{
-    border: 1px solid #289c7c;
-    background: #376f60;
+    border: 1px solid #000d42;
+    background: #376f37;
 }
 .mando .variable:nth-child(+n+3){
     display: none;
 }
 .mando .btn-success{
-    background: #193a20 !important;
-    border: 1px solid #154e22 !important;
+    background: #99ca3c  !important;
+    border: 1px solid #99ca3c  !important;
+    color: rgba(50,50,50,1) !important
 }
 .mando .btn-success:hover{
     background: #234e2c !important;
     border: 1px solid #154e22 !important;
 }
 .mando .acciones{
-    background: #376f60;
-    border-left: 1px solid #289c7c;
-    border-right: 1px solid #289c7c;
+    background: #202c69;
+    border-left: 1px solid #000d42;
+    border-right: 1px solid #000d42;
 
 }

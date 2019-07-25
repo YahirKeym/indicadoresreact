@@ -6,16 +6,18 @@ function Navbar(props){
         return (
             <header className="bg-header text-center p-3 col-12">
                 <div className="row">
-                    <figure className="col-lg-4 col-sm-12">
-                        <img src={imageLogo} alt=""/>
-                    </figure>
+                    <Link to="/" className="col-lg-4 col-sm-12">
+                        <figure>
+                            <img src={imageLogo} alt="Suez indicadores"/>
+                        </figure>
+                    </Link>
                     <ul className="col-lg-8 col-sm-12">
-                        <Link to="/" className="navbar-brand text-white" >Inicio</Link>
+                        <Link to="/" className="navbar-brand color-ancla-suez" >Inicio</Link>
                         {props.state.logged &&(
                             <React.Fragment>
-                                <Link to="/objetivos" className="navbar-brand text-white" >Objetivos</Link>
-                                <Link to="/mandos" className="navbar-brand text-white" >Indicadores</Link>
-                                <CerrarSesion className="navbar-brand text-white cursor-pointer" />  
+                                <Link to="/objetivos" className="navbar-brand color-ancla-suez" >Objetivos</Link>
+                                <Link to="/mandos" className="navbar-brand color-ancla-suez" >Indicadores</Link>
+                                <CerrarSesion className="navbar-brand color-ancla-suez cursor-pointer" />  
                             </React.Fragment>
                         )}
                     </ul>
