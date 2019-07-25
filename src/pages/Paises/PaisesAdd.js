@@ -1,5 +1,5 @@
 import React from 'react';
-import FormularioPaises from '../components/FormularioPaises.js';
+import FormularioPaises from '../../components/FormularioPaises.js';
 // import {Link} from 'react-router-dom';
 class PaisesAdd extends React.Component
 {

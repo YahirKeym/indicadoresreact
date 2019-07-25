@@ -1,5 +1,5 @@
 import React from 'react';
-import FormularioPaises from '../components/FormularioPaises.js';
+import FormularioPaises from '../../components/FormularioPaises.js';
 class PaisesEdit extends React.Component{
     constructor(props)
     {

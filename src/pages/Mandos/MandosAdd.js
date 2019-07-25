@@ -1,5 +1,6 @@
 import React from 'react';
 import './styles/MandosAdd.css';
+import TraeDatos from '../../components/TraeDatos';
 function Formula(props){
     let _self= props.this;
     let onChange = props.onChange
@@ -45,7 +46,10 @@ class MandosAdd extends React.Component
                 unidadDeMedida: "",
                 AceptacionBuena: "90",
                 AceptacionMedia: "70",
-                tipoIndicador: 0
+                tipoIndicador: 0,
+                "minimaEscala":0,
+                "maximaEscala":0,
+                "personaResponsable" : ""
             },
             objetivos: [],
             objetivosData:{
@@ -61,7 +65,8 @@ class MandosAdd extends React.Component
             acciones:[],
             objetivoShow: true,
             objetivoSelect: false,
-            etapas: []
+            etapas: [],
+            allUsers:[]
         }
     }
     /**
@@ -72,6 +77,14 @@ class MandosAdd extends React.Component
         this.crearEtapas();
         this.traerDatos();
         this.creaFormula();
+        TraeDatos({ url: this.props.urlAutentica, _self: this}, "allUsers");
+    }
+    /**
+     *
+     */
+    componentWillUnmount() {
+        clearTimeout(this.traeDatos);
+
     }
     /**
      * 
@@ -294,6 +307,7 @@ class MandosAdd extends React.Component
             {
                 formulaString= undefined;
             }
+            let _self = this;
             let codigoEnString =  `${str}
                                    try{
                                     var formula = ${formulaString};
@@ -309,12 +323,12 @@ class MandosAdd extends React.Component
                                         porcentaje = 100;
                                     }
                                     nuevoStado.variables[idVariable]['etapas'][idEtapa]['porcentaje'] = porcentaje;
-                                    this.setState(nuevoStado)
+                                    _self.setState(nuevoStado)
                                    }catch(e)
                                    {
-                                       this.setState({
+                                       _self.setState({
                                            errors:{
-                                               ...this.state.errors,
+                                               ..._self.state.errors,
                                                formulaNoCoincideConVariables: true
                                            }
                                        })
@@ -322,6 +336,21 @@ class MandosAdd extends React.Component
                                 `
             eval(codigoEnString)
         }
+        let formula = undefined;
+        this.state.variables.map(variable=>{
+            let idVariable = variable.id -1;
+            let etapa = parseInt(nuevoStado.variables[idVariable].etapas[idEtapa].valor);
+            let ideEtapa= idEtapa
+            nuevoStado.variables[0].etapas.map(etapaEstadoUno =>{
+                if(ideEtapa === etapaEstadoUno.idEtapa-1){
+                        formula = (100*etapa)/etapaEstadoUno.valor;
+                    }
+                })
+                if(formula === Infinity){
+                    formula = 100;
+                }
+                nuevoStado.variables[idVariable].etapas[idEtapa].porcentaje = formula;
+        })
     }
     /**
      * 
@@ -415,6 +444,7 @@ class MandosAdd extends React.Component
                 url = this.props.urlAutentica;
             break;
         }
+        console.log(url)
         const id = e.target.value;
         const req = await fetch(`${url}&action=selectForMandos&id=${id}`);
         const response = await req.json();
@@ -636,8 +666,44 @@ class MandosAdd extends React.Component
      * 
      */
     render(){
+        let Responsables = "";
+        if(parseInt(this.state.datos.tipoIndicador) === 1 || parseInt(this.state.datos.tipoIndicador) === 0 ){
+            Responsables = (
+                <React.Fragment>
+                    <div className="col-6 mt-3">
+                        <select multiple className="form-control" onClick={this.handleClickSelect} name="rangos">
+                            {this.state.jeraraquias.map(rango => {
+                                return(<option tipo="jerarquia" value={rango.id} key={rango.id}>{rango.nombre}</option>)
+                            })}
+                        </select>
+                    </div>
+                    <div className="col-6 mt-3">
+                        {this.state.rangos.length > 0  && (
+                        <select multiple className="form-control" onClick={this.handleClickSelect} name="rangos">
+                            {this.state.rangos.map(rango => {
+                                return(<option tipo="rango" value={rango.id} key={rango.id}>{rango.nombre}</option>)
+                            })}
+                        </select>)}
+                    </div>
+                    <div className="col-6 mt-3">
+                        {this.state.users.length > 0  && (<select multiple className="form-control" name="rangos">
+                            {this.state.users.map(user => {
+                                return(<option rango="true" tipo="user" value={user.id} nivel={user.nivelPuesto} key={user.id}>{`${user.nombre} ${user.apellidoP} ${user.apellidoM}`}</option>)
+                            })}
+                        </select>)}
+                    </div>
+                </React.Fragment>
+            )
+        }
         return (
             <form className="row col-12 col-lg-9 mx-auto p-3">
+                <datalist id="usuarios">
+                    {this.state.allUsers.map(usuario=>{
+                        return (
+                            <option value={usuario.id} label={`${usuario.nombre} ${usuario.apellidoP} ${usuario.apellidoM}`} key={usuario.id}/>
+                        )
+                    })}
+                </datalist>
                 <div className="col-12">
                     <input type="text" name="titulo" onChange={this.handleChange} className="form-control" placeholder="Nombre - Titulo Indicador"/>
                 </div>
@@ -699,11 +765,7 @@ class MandosAdd extends React.Component
                         <label htmlFor="etapas">Etapas que tendra este mando </label>
                     </div>
                     <div className="col-12 col-lg-6">
-                        <select className="form-control" name="tipoDeEtapa" onChange={this.handleChange} defaultValue="meses">
-                            <option value="dias">Días</option>
-                            <option value="meses">Meses</option>
-                            <option value="anios">Años</option>
-                        </select>
+                        <input name="tipoDeEtapa" type="text" onChange={this.handleChange} placeholder="Ejemplo: Meses" className="float-right form-control" />
                     </div>
                     <div className="col-12 col-lg-6 mb-3">
                         <input type="number" max="500" min="1" onChange={this.handleChange} className="form-control" name="etapas" defaultValue={this.state.datos.etapas}/>
@@ -713,37 +775,13 @@ class MandosAdd extends React.Component
                         <select className="form-control col-4" name="tipoIndicador" onChange={this.handleChange}>
                             <option value="0">Resultados</option>
                             <option value="1">Comportamentable</option>
+                            <option value="3">Personal</option>
                         </select>
-                        {parseInt(this.state.datos.tipoIndicador) === 0 && (
-                            <span className="col-4 align-middle">Global</span>
-                        )}
                     </div>
-                    {parseInt(this.state.datos.tipoIndicador) === 1 && (
-                        <React.Fragment>
-                            <div className="col-6 mt-3">
-                                <select multiple className="form-control" onClick={this.handleClickSelect} name="rangos">
-                                    {this.state.jeraraquias.map(rango => {
-                                        return(<option tipo="jerarquia" value={rango.id} key={rango.id}>{rango.nombre}</option>)
-                                    })}
-                                </select>
-                            </div>
-                            <div className="col-6 mt-3">
-                                {this.state.rangos.length > 0  && (
-                                <select multiple className="form-control" onClick={this.handleClickSelect} name="rangos">
-                                    {this.state.rangos.map(rango => {
-                                        return(<option tipo="rango" value={rango.id} key={rango.id}>{rango.nombre}</option>)
-                                    })}
-                                </select>)}
-                            </div>
-                            <div className="col-6 mt-3">
-                                {this.state.users.length > 0  && (<select multiple className="form-control" name="rangos">
-                                    {this.state.users.map(user => {
-                                        return(<option rango="true" tipo="user" value={user.id} nivel={user.nivelPuesto} key={user.id}>{`${user.nombre} ${user.apellidoP} ${user.apellidoM}`}</option>)
-                                    })}
-                                </select>)}
-                            </div>
-                        </React.Fragment>
-                    )}
+                    {Responsables}
+                    <div className="col-12 mt-3">
+                        <input list="usuarios" type="text" className="form-control col-6" placeholder="Persona responsable del indicador" onChange={this.handleChange} name="personaResponsable"/>
+                    </div>
                 </div>
                 <div className="col-12 row mt-3">
                     <div className="col-12 col-md-6">
@@ -793,7 +831,7 @@ class MandosAdd extends React.Component
                                             })}
                                         </div>
                                         <div className="col-12 col-lg-4 text-center">
-                                            <h5>{variable.nombre}: <span style={{fontWeight:100}}>{variable.valorTotal} {this.state.datos.unidadDeMedida}</span></h5>
+                                            <h5>{variable.nombre}: <span style={{fontWeight:100}}>{Math.round(variable.valorTotal* 100) / 100} {this.state.datos.unidadDeMedida}</span></h5>
                                         </div>
                                     </div>
                                 )

@@ -1,7 +1,8 @@
 import React from 'react';
-import CuerpoObjetivosMandos from '../components/CuerpoObjetivosMandos.js';
+import CuerpoObjetivosMandos from '../../components/CuerpoObjetivosMandos.js';
 import {Chart} from 'react-google-charts';
-import Loader from '../components/Loader.js';
+import Loader from '../../components/Loader.js';
+import {Helmet} from 'react-helmet'
 /**
  * Cambiara los acentos que vengan con codificación java
  */
@@ -88,7 +89,7 @@ function VariablesMando(props)
                             })}
                         </div>
                         <div className="col-2">
-                            Total: {variable.valorTotal}
+                            Total: {Math.round(variable.valorTotal * 100) / 100}
                         </div>
                     </div>
                 );
@@ -129,7 +130,9 @@ export default class MandosProfile extends React.Component{
                     },
                     "usuarios":{  
                        "datos":[]
-                    }
+                    },
+                    "minimaEscala":0,
+                    "maximaEscala":0
                  },
                  "objetivos":[],
                  "objetivosData":{  
@@ -182,21 +185,87 @@ export default class MandosProfile extends React.Component{
         let aEtapas = [
             ["Etapas",nombreDeVariableUno,nombreDeVariableDos]
         ];
-        let contadorEtapas = 1;
+        this.contadorEtapas = 1;
         this.state.data.variables[0].etapas.map(etapas1=>{
-            this.state.data.variables[1].etapas.map(etapas2 => {
+            return this.state.data.variables[1].etapas.map(etapas2 => {
                 if(etapas1.idEtapa === etapas2.idEtapa)
                 {
-                    aEtapas.push([etapas1.nombreEtapa,parseInt(etapas1.valor),parseInt(etapas2.valor)])
+                    return aEtapas.push([etapas1.nombreEtapa,parseInt(etapas1.valor),parseInt(etapas2.valor)])
 
+                }else{
+                    return [];
                 }
             })
-            contadorEtapas++;
+            this.contadorEtapas++;
         }
         )
         this.setState({
             etapasChart: aEtapas,
         })
+    }
+    handleChangeEscala = e =>{
+        let valor = e.target.value;
+        let name = e.target.name;
+        this.setState({
+            data:{
+                ...this.state.data,
+                datos:{
+                    ...this.state.data.datos,
+                    [name] : valor
+                }
+            }
+        })
+    }
+     /**
+     * 
+     */
+    handleChangeAction = e =>{
+        var nuevoStado = this.state;
+        const id = e.target.getAttribute("id");
+        var Valor = e.target.value;
+        if(Valor.length === 0)
+        {
+            Valor = `Acción ${id}`
+        }
+        nuevoStado.data.acciones[id-1]['nombre'] = Valor;
+        this.setState(nuevoStado);
+    }
+    /**
+     * Agregara una acción de así requerirlo.
+     */
+    handleAddAction = e =>{
+        this.setState(
+            {
+                data:{
+                    ...this.state.data,
+                    acciones:[
+                        ...this.state.data.acciones,
+                        {
+                             id: this.state.data.acciones.length +1,
+                             nombre: `Acción ${this.state.data.acciones.length + 1}`
+                        }
+                    ]
+                }
+            }
+        )
+    }
+    /**
+     * Quitara una acción de abajo hacía arriba
+     */
+    handleQuitAction = e =>{
+        const cantidadDeAciones = this.state.data.acciones.length;
+        if(cantidadDeAciones > 0)
+        {
+            const acciones = this.state.data.acciones.splice(-cantidadDeAciones,cantidadDeAciones-1)
+            this.setState(
+                {
+                    data:{
+                        ...this.state.data,
+                        acciones: acciones
+                    }
+                }
+            )
+        }
     }
     /**
      * 
@@ -204,7 +273,7 @@ export default class MandosProfile extends React.Component{
     handleChangeEtapas = async e => 
     {
         const idVariable = e.target.getAttribute("idvariable") - 1;
-        const idEtapa = e.target.getAttribute("idetapa") -1;
+        let idEtapa = e.target.getAttribute("idetapa") -1;
         const nombreEtapa = e.target.name;
         let Valor = e.target.value;
         if(Valor.length === 0)
@@ -237,36 +306,52 @@ export default class MandosProfile extends React.Component{
             {
                 formulaString= undefined;
             }
+            let _self = this;
             let codigoEnString =  `${str}
-                                   try{
-                                    var formula = ${formulaString};
-                                    let porcentaje = formula;
-                                    if(idVariable === 0){
-                                        porcentaje = 100;
-                                    }
-                                    const variableValor = parseFloat(nuevoStado.variables[idVariable]['etapas'][idEtapa]['valor']);
-                                    if(idVariable > 1 ){
-                                        porcentaje = (100*variableValor)/Variable_1;
-                                    }
-                                    if(porcentaje === Infinity){
-                                        porcentaje = 100;
-                                    }
-                                    nuevoStado.variables[idVariable]['etapas'][idEtapa]['porcentaje'] = porcentaje;
-                                    this.setState({
-                                        data: nuevoStado
-                                    })
-                                   }catch(e)
-                                   {
-                                       this.setState({
-                                           errors:{
-                                               ...this.state.errors,
-                                               formulaNoCoincideConVariables: true
-                                           }
-                                       })
-                                   }
-                                `
+            try{
+                var formula = ${formulaString};
+                let porcentaje = formula;
+                if(idVariable === 0){
+                    porcentaje = 100;
+                }
+                const variableValor = parseFloat(nuevoStado.variables[idVariable]['etapas'][idEtapa]['valor']);
+                if(idVariable > 1 ){
+                    porcentaje = (100*variableValor)/Variable_1;
+                }
+                if(porcentaje === Infinity){
+                    porcentaje = 100;
+                }
+                nuevoStado.variables[idVariable]['etapas'][idEtapa]['porcentaje'] = porcentaje;
+                _self.setState({
+                    data: nuevoStado
+                })
+            }catch(e)
+            {
+                _self.setState({
+                    errors:{
+                        ..._self.state.errors,
+                        formulaNoCoincideConVariables: true
+                    }
+                })
+            }
+            `
             eval(codigoEnString)
         }
+        let formula = undefined
+        this.state.data.variables.map(variable=>{
+            let idVariable = variable.id -1;
+            let etapa = parseInt(nuevoStado.variables[idVariable].etapas[idEtapa].valor);
+            let ideEtapa= idEtapa
+            nuevoStado.variables[0].etapas.map(etapaEstadoUno =>{
+                if(ideEtapa === etapaEstadoUno.idEtapa-1){
+                        formula = (100*etapa)/etapaEstadoUno.valor;
+                    }
+                })
+                if(formula === Infinity){
+                    formula = 100;
+                }
+                nuevoStado.variables[idVariable].etapas[idEtapa].porcentaje = formula;
+        })
         this.datosParaChart();
     }
     /**
@@ -287,6 +372,18 @@ export default class MandosProfile extends React.Component{
            nuevoStado.variables[idVariable]['valorTotal'] = Suma;
        }
        return nuevoStado;
+   }
+   handleChangeAnalisisDeInformacion = e => {
+        let valor = e.target.value;
+        this.setState({
+            data:{
+                ...this.state.data,
+                datos:{
+                    ...this.state.data.datos,
+                    'analisisDeInformacion' : valor
+                }
+            }
+        })
    }
    /**
     * Ayudara amandar los datos actualizados del indicador
@@ -330,8 +427,20 @@ export default class MandosProfile extends React.Component{
         if(this.state.editar){
             mensajeEditar = "Dejar de editar";
         }
+        if(this.state.data.datos.minimaEscala === undefined){
+            this.state.data.datos.minimaEscala = 0;            
+        }
+        if(this.state.data.datos.maximaEscala === undefined){
+            this.state.data.datos.maximaEscala = 0;            
+        }
+        if(this.state.data.datos.analisisDeInformacion === undefined){
+            this.state.data.datos.analisisDeInformacion = "";
+        }
         return (
             <React.Fragment>
+                <Helmet>
+                    <title>Indicadores - {this.state.data.objetivosData.titulo}</title>
+                </Helmet>
                 <div className="col-12 d-flex justify-content-center">
                     <CuerpoObjetivosMandos 
                     textSuccess="Guardar" 
@@ -347,14 +456,18 @@ export default class MandosProfile extends React.Component{
                     save={this.handleUpdate}
                     >
                         <div className="col-12 mt-3 row  d-flex justify-content-center">
-                            <div className="col-12 d-flex justify-content-center">
-                                <h4>Acciones a tomar</h4>
-                            </div>
-                            {this.state.data.acciones.map(action => {
-                                return (
-                                    <div className="acciones p-2 col-4 mt-3">{action.nombre}</div>
-                                    )
-                                })}
+                            {this.state.data.acciones.length !== 0 && (
+                                <React.Fragment>
+                                    <div className="col-12 d-flex justify-content-center">
+                                        <h4>Acciones a tomar</h4>
+                                    </div>
+                                    {this.state.data.acciones.map(action => {
+                                        return (
+                                            <div className="acciones col-12 p-2 mando-text"><p>{action.nombre}</p></div>
+                                            )
+                                        })}
+                                </React.Fragment>
+                            )}
                         </div>
                         <div className="col-12 mt-3">
                             <button edicion={`${this.state.editar}`} className="btn-light btn" onClick={this.handleChangeEdit}>{mensajeEditar}</button>
@@ -362,8 +475,46 @@ export default class MandosProfile extends React.Component{
                         <div className="col-12 p-2 mando-control">
                             <VariablesMando onChange={this.handleChangeEtapas} etapa={this.state.data.datos.tipoDeEtapa} editar={this.state.editar} variables={this.state.data.variables} porcentaje={porcentaje}/>
                         </div>
-                        <div className="col-12">
-                        </div>
+                        {this.state.editar && (
+                            <React.Fragment>
+                                <div className="col-12 row m-0 mt-2">
+                                    <input type="number" placeholder="Escala Minima" name="minimaEscala" onChange={this.handleChangeEscala} defaultValue={this.state.data.datos.minimaEscala} className="form-control col-4"/>
+                                    <input type="number" placeholder="Escala Máxima" name="maximaEscala" onChange={this.handleChangeEscala} defaultValue={this.state.data.datos.maximaEscala} className="form-control col-4 ml-3"/>
+                                </div>
+                                <div className="col-12 row m-0 mt-2">
+                                    {this.state.data.acciones.map(accion => {
+                                        return(
+                                            <div key={accion.id} className="col-12 mt-2">
+                                                <input type="text" tipo="action" id={accion.id} onChange={this.handleChangeAction} defaultValue={accion.nombre} className="col-6 form-control" name={accion.nombre} />
+                                            </div>
+                                        )
+                                    })}
+                                    <div className="col-12 mt-3 row">
+                                        <div className="col-4">
+                                            <a className="text-primary accion" onClick={this.handleAddAction}>Agregar Acción a tomar +</a>
+                                        </div>
+                                        {this.state.data.acciones.length !== 0 && (
+                                            <div className="col-4">
+                                                <a className="text-primary accion" onClick={this.handleQuitAction}>Eliminar Acción -</a>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="col-12 row m-0 mt-2">
+                                            <textarea placeholder="Analisis de información" onChange={this.handleChangeAnalisisDeInformacion} className="form-control" defaultValue={this.state.data.datos.analisisDeInformacion}></textarea>
+                                </div>
+                            </React.Fragment>
+                        )}
+                        {this.state.data.datos.analisisDeInformacion.length !== 0 && (
+                            <React.Fragment>
+                                <div className="col-12">
+                                    <h4>Análisis de información</h4>
+                                </div>
+                                <div className="col-12 p-2 mando-text">
+                                    {this.state.data.datos.analisisDeInformacion}
+                                </div>
+                            </React.Fragment>
+                        )}
                     </CuerpoObjetivosMandos>
                 </div>
                 <div className="col-12 mb-5 row d-flex justify-content-center">
@@ -374,7 +525,7 @@ export default class MandosProfile extends React.Component{
                         loader={<Loader />}
                         data={this.state.etapasChart}
                         options={{
-                            title: this.state.data.datos.titulo,
+                            title: acentosEncodeJava(this.state.data.datos.titulo),
                             chartArea: { width: '70%', backgroundColor:'rgba(0,0,0,0)' },
                             backgroundColor: {
                                 fill: '#000',
@@ -386,7 +537,8 @@ export default class MandosProfile extends React.Component{
                             },
                             vAxis: {
                                 title: acentosEncodeJava(this.state.data.datos.unidadDeMedida),
-                                minValue: 0
+                                minValue: this.state.data.datos.minimaEscala,
+                                maxValue: this.state.data.datos.maximaEscala
                             },
                             colors:["#289c7c","#007bff"]
                         }}

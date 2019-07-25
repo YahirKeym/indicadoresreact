@@ -1,7 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import "./styles/Jerarquias.css";
-import Loader from '../components/Loader.js';
+import Loader from '../../components/Loader.js';
 export default class Jerarquias extends React.Component{
     constructor(props)
     {

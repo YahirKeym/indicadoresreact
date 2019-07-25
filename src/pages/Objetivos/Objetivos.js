@@ -1,9 +1,10 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
-import CuerpoObjetivosMandos from '../components/CuerpoObjetivosMandos.js';
-import Loader from '../components/Loader.js';
-import ButtonDirectTop from '../components/ButtonDirectTop.js';
-
+import CuerpoObjetivosMandos from '../../components/CuerpoObjetivosMandos.js';
+import Loader from '../../components/Loader.js';
+import ButtonDirectTop from '../../components/Generales/ButtonDirectTop.js';
+import SinDatos from '../../components/SinDatos.js';
+import ErrorConexion from '../../components/ErrorConexion.js';
+import TraeDatos from '../../components/TraeDatos.js';
 /**
  * Será la clase que nos ayudara a pintar los objetivos
  */
@@ -21,59 +22,20 @@ class Objetivos extends React.Component
             data: [],
             error: false,
         };
-        this.handleEditar = this.handleEditar.bind(this);
     }
     /**
-     * Nos ayudara a montar el componente
+     * Nos ayudara  a mandar a llamar las funciones para poder inicializar nuestro componente
      */
     componentDidMount()
     {
-        this.traeObjetivos();
+        console.log(localStorage)
+        TraeDatos({url: this.props.url, _self: this});
     }
     /**
      * 
      */
-    traeObjetivos = async () => 
-    {
-        try {
-            const response = await fetch(`${this.props.url}&action=view`);
-            const datos = await response.json();
-            if(datos.datos === undefined)
-            {
-                datos.datos = [];
-            }
-            this.setState(
-                {
-                    loading: false,
-                    data: datos.datos
-                }
-            );
-        } catch (error) {
-            this.setState({
-                loading:false,
-                data: [],
-                error: true
-            });
-        }
-    }
-    /**
-     * Nos ayudara a desmontar el componente
-     */
-    componentWillUnmount()
-    {
-       
-    }
-    handleEditar(e)
-    {
-        this.setState(
-            { 
-                editar: true,
-                error: null,
-                data: [
-                    ...this.state.data,
-                ]
-            }
-            );
+    componentWillUnmount(){
+        clearTimeout(this.traeDatos)
     }
     /**
      * Renderizara el componente
@@ -88,10 +50,13 @@ class Objetivos extends React.Component
         }
         if (this.state.error) {
             return (
-            <div className="col-12">
-                Por favor vuelve a intentarlo más tarde.
-            </div>
+                <ErrorConexion />
             );
+        }
+        if(this.state.data.length === 0){
+            return (
+                <SinDatos />
+            )
         }
         return (
             <div className="col-12 row">

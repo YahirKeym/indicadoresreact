@@ -1,27 +1,29 @@
 import React from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import Layout from "./Layout.js";
+import Alcance from "../pages/Alcance/Alcance.js";
+import AlcanceAdd from "../pages/Alcance/AlcanceAdd.js";
+import AlcanceEdit from "../pages/Alcance/AlcanceEdit.js";
+import AlcanceDelete from "../pages/Alcance/AlcanceDelete.js";
+import ErrorConexion from "./ErrorConexion.js";
 import Inicio from "../pages/Inicio.js";
-import Objetivos from "../pages/Objetivos.js";
-import ObjetivosAdd from "../pages/ObjetivosAdd.js";
-import ObjetivosEdit from "../pages/ObjetivosEdit.js";
+import Jerarquias from "../pages/Jerarquias/Jerarquias.js";
+import JerarquiasAdd from '../pages/Jerarquias/JerarquiasAdd.js';
+import JerarquiasMove from '../pages/Jerarquias/JerarquiasMove.js';
+import JerarquiaRangoAdd from '../pages/Jerarquias/JerarquiaRangoAdd.js';
+import JerarquiaRangoEdit from '../pages/Jerarquias/JerarquiaRangoEdit.js';
+import Layout from "./Layout.js";
+import Loader from "./Loader.js";
+import Mandos from "../pages/Mandos/Mandos.js";
+import MandosAdd from "../pages/Mandos/MandosAdd.js";
+import MandosProfile from '../pages/Mandos/MandosProfile.js';
+import Objetivos from "../pages/Objetivos/Objetivos.js";
+import ObjetivosAdd from "../pages/Objetivos/ObjetivosAdd.js";
+import ObjetivosEdit from "../pages/Objetivos/ObjetivosEdit.js";
+import Paises from "../pages/Paises/Paises.js";
+import PaisesAdd from "../pages/Paises/PaisesAdd.js";
+import PaisesEdit from '../pages/Paises/PaisesEdit.js';
+import PaisesDelete from '../pages/Paises/PaisesDeleted.js';
 import UserLogin from "../pages/UserLogin.js";
-import Mandos from "../pages/Mandos.js";
-import MandosAdd from "../pages/MandosAdd.js";
-import Alcance from "../pages/Alcance.js";
-import AlcanceAdd from "../pages/AlcanceAdd.js";
-import AlcanceEdit from "../pages/AlcanceEdit.js";
-import AlcanceDelete from "../pages/AlcanceDelete.js";
-import Paises from "../pages/Paises.js";
-import PaisesAdd from "../pages/PaisesAdd.js";
-import PaisesEdit from '../pages/PaisesEdit.js';
-import PaisesDelete from '../pages/PaisesDeleted.js';
-import Jerarquias from "../pages/Jerarquias.js";
-import JerarquiasAdd from '../pages/JerarquiasAdd.js';
-import JerarquiasMove from '../pages/JerarquiasMove.js';
-import JerarquiaRangoAdd from '../pages/JerarquiaRangoAdd.js';
-import JerarquiaRangoEdit from '../pages/JerarquiaRangoEdit.js';
-import MandosProfile from '../pages/MandosProfile.js';
 /**
  * Nos ayudara a ajustar las opciones de la web
  */
@@ -29,31 +31,39 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            isLogged : undefined
+            isLogged : undefined,
+            error: false
         }
         this.varyfiLogged = this.veryfiLogged.bind(this);
     }
     veryfiLogged = async () => {
         this.logged = false;
         this.session = this.getCookie("indicadores_i");
-        this.urlAutentica = `http://172.16.100.94/indicadoresreact/api/controller/autentica.php?token=${this.session}`;
-        const response = await fetch(this.urlAutentica);
-        const datos = await response.json();
-        this.urlObjetivos = `http://172.16.100.94/indicadoresreact/api/controller/objetivos.php?token=${this.session}`;
-        this.urlMandos = `http://172.16.100.94/indicadoresreact/api/controller/mandos.php?token=${this.session}`;
-        this.urlAlcance = `http://172.16.100.94/indicadoresreact/api/controller/alcance.php?token=${this.session}`;
-        this.urlPaises = `http://172.16.100.94/indicadoresreact/api/controller/paises.php?token=${this.session}`;
-        this.urlJerarquias = `http://172.16.100.94/indicadoresreact/api/controller/jerarquias.php?token=${this.session}`;
-        this.urlRango = `http://172.16.100.94/indicadoresreact/api/controller/rango.php?token=${this.session}`;
-        if(datos.autenticado)
-        {
+        const URL_BASE = "http://172.16.100.94";
+        try {
+            this.urlAutentica = `${URL_BASE}/indicadoresreact/api/controller/autentica.php?token=${this.session}`;
+            const response = await fetch(this.urlAutentica);
+            const datos = await response.json();
+            this.urlObjetivos = `${URL_BASE}/indicadoresreact/api/controller/objetivos.php?token=${this.session}`;
+            this.urlMandos = `${URL_BASE}/indicadoresreact/api/controller/mandos.php?token=${this.session}`;
+            this.urlAlcance = `${URL_BASE}/indicadoresreact/api/controller/alcance.php?token=${this.session}`;
+            this.urlPaises = `${URL_BASE}/indicadoresreact/api/controller/paises.php?token=${this.session}`;
+            this.urlJerarquias = `${URL_BASE}/indicadoresreact/api/controller/jerarquias.php?token=${this.session}`;
+            this.urlRango = `${URL_BASE}/indicadoresreact/api/controller/rango.php?token=${this.session}`;
+            if(datos.autenticado)
+            {
+                this.setState({
+                    isLogged: datos.autenticado,
+                    logged : datos.autenticado
+                });
+            }else{
+                this.setState({
+                    isLogged: datos.autenticado
+                })
+            }
+        } catch (e) {
             this.setState({
-                isLogged: datos.autenticado,
-                logged : datos.autenticado
-            });
-        }else{
-            this.setState({
-                isLogged: datos.autenticado
+                error:true
             })
         }
     };
@@ -83,10 +93,23 @@ class App extends React.Component {
      *
      */
     render() {
+        if(this.state.error){
+            return(
+                <BrowserRouter>
+                    <Layout state={this.state}>
+                        <ErrorConexion />
+                    </Layout>
+                </BrowserRouter>
+            )
+        }
         if(this.state.isLogged === undefined )
         {
         return (
-            <div></div>
+            <BrowserRouter>
+                <Layout state={this.state}>
+                    <Loader />
+                </Layout>
+            </BrowserRouter>
             );
         }
         let logueado = false;
