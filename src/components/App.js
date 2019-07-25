@@ -39,16 +39,17 @@ class App extends React.Component {
     veryfiLogged = async () => {
         this.logged = false;
         this.session = this.getCookie("indicadores_i");
+        const URL_BASE = "http://172.16.100.94";
         try {
-            this.urlAutentica = `http://172.16.100.94/indicadoresreact/api/controller/autentica.php?token=${this.session}`;
+            this.urlAutentica = `${URL_BASE}/indicadoresreact/api/controller/autentica.php?token=${this.session}`;
             const response = await fetch(this.urlAutentica);
             const datos = await response.json();
-            this.urlObjetivos = `http://172.16.100.94/indicadoresreact/api/controller/objetivos.php?token=${this.session}`;
-            this.urlMandos = `http://172.16.100.94/indicadoresreact/api/controller/mandos.php?token=${this.session}`;
-            this.urlAlcance = `http://172.16.100.94/indicadoresreact/api/controller/alcance.php?token=${this.session}`;
-            this.urlPaises = `http://172.16.100.94/indicadoresreact/api/controller/paises.php?token=${this.session}`;
-            this.urlJerarquias = `http://172.16.100.94/indicadoresreact/api/controller/jerarquias.php?token=${this.session}`;
-            this.urlRango = `http://172.16.100.94/indicadoresreact/api/controller/rango.php?token=${this.session}`;
+            this.urlObjetivos = `${URL_BASE}/indicadoresreact/api/controller/objetivos.php?token=${this.session}`;
+            this.urlMandos = `${URL_BASE}/indicadoresreact/api/controller/mandos.php?token=${this.session}`;
+            this.urlAlcance = `${URL_BASE}/indicadoresreact/api/controller/alcance.php?token=${this.session}`;
+            this.urlPaises = `${URL_BASE}/indicadoresreact/api/controller/paises.php?token=${this.session}`;
+            this.urlJerarquias = `${URL_BASE}/indicadoresreact/api/controller/jerarquias.php?token=${this.session}`;
+            this.urlRango = `${URL_BASE}/indicadoresreact/api/controller/rango.php?token=${this.session}`;
             if(datos.autenticado)
             {
                 this.setState({
