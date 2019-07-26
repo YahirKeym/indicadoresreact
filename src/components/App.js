@@ -24,6 +24,8 @@ import PaisesAdd from "../pages/Paises/PaisesAdd.js";
 import PaisesEdit from '../pages/Paises/PaisesEdit.js';
 import PaisesDelete from '../pages/Paises/PaisesDeleted.js';
 import UserLogin from "../pages/UserLogin.js";
+import BrouserName from "./BrouserName.js";
+import IndicadorReductor from "./IndicadorReductor.js";
 /**
  * Nos ayudara a ajustar las opciones de la web
  */
@@ -93,21 +95,18 @@ class App extends React.Component {
      *
      */
     render() {
-        let es_ie = navigator.userAgent.indexOf("MSIE") > -1;
         let mensajeEsIe;
-        if(es_ie){
+        console.log(IndicadorReductor({valorTop:15,valorLow:5,valorAReducir:1}));
+        if(BrouserName() === "IE 11"){
             mensajeEsIe = (
-                <div className="alert alert-info">
-                    <h5>
-                        Estás usando internet explorer, por favor asegurate de usar otro tipo de navegador ya que 
-                        algunas funciones puede que no se encuentren activas.
-                    </h5>
+                <div className="col-12 d-flex justify-content-center">
+                    <div className="alert alert-danger col-6">
+                        <h5 className="text-center">
+                            Estás usando internet explorer, por favor asegurate de usar otro tipo de navegador para
+                            un buen funcionamiento y tener todas las funciones de la web activas.
+                        </h5>
+                    </div>
                 </div>
-            )
-            return(
-                <React.Fragment>
-                    {mensajeEsIe}
-                </React.Fragment>
             )
         }
         if(this.state.error){
@@ -136,6 +135,7 @@ class App extends React.Component {
         return (
             <BrowserRouter>
                 <Layout state={this.state}>
+                    {mensajeEsIe}
                     {!logueado && (
                         <Switch>
                             <Route component={() => <UserLogin url={this.urlAutentica} />} />
