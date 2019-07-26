@@ -53,10 +53,14 @@ class Mandos
         $aArea = $aDatos['datos']['jerarquias']['datos'];
         $iTipoIndicador = (int)$aDatos['datos']['tipoIndicador'];
         $iNivel = 0;
+        $cFecha = date("Y-m-d H:i:s");
         if(!empty($aUsuarios))
         {
             $iNivel = 10;
             foreach($aUsuarios as $aUsers){
+                if($aUsers['nivel'] === null){
+                    $aUsers['nivel'] = 0;
+                }
                 if($aUsers['nivel'] < $iNivel)
                 {
                     $iNivel = $aUsers['nivel'];
@@ -65,8 +69,11 @@ class Mandos
         }
         $cDepartamento = $this->repetidorDeDatos($aDepartamento);
         $cArea= $this->repetidorDeDatos($aArea);
-        $cUsuarios = $this->repetidorDeDatos($aUsuarios);
-        $cQueryMandoObjetivo = "INSERT INTO {$this->cTabla} (DatosMando,NivelPuesto,IdDepartamento,IdArea,IdUsuario,TipoIndicador) VALUE ('{$cDatos}',{$iNivel},'{$cDepartamento}','{$cArea}','{$cUsuarios}',{$iTipoIndicador})";
+        $cUsuarios = (string)$this->repetidorDeDatos($aUsuarios);
+        $cQueryMandoObjetivo = "INSERT INTO {$this->cTabla}
+        (DatosMando,NivelPuesto,IdDepartamento,IdArea,IdUsuario,TipoIndicador,UsuarioCreo,Creado,Editado,UsuarioEdito) 
+        VALUES 
+        ('{$cDatos}',{$iNivel},'{$cDepartamento}','{$cArea}','{$cUsuarios}',{$iTipoIndicador},{$this->oAutentica->getId()},'{$cFecha}','{$cFecha}',{$this->oAutentica->getId()})";
         $oConsultaMandoObjetivo = $this->oConexion->query($cQueryMandoObjetivo);
         $aStatus = [
             'status' => false
@@ -85,7 +92,7 @@ class Mandos
     public function view()
     {
         $idUsuario = $this->oAutentica->getId();
-        $cQuery = "SELECT * FROM {$this->cTabla} WHERE IdUsuario LIKE '{$idUsuario}%' OR '%{$idUsuario}%' OR '%{$idUsuario}' OR TipoIndicador=0";
+    $cQuery = "SELECT * FROM {$this->cTabla} WHERE IdUsuario LIKE '{$idUsuario}%' OR '%{$idUsuario}%' OR '%{$idUsuario}' OR UsuarioCreo={$this->oAutentica->getId()} AND TipoIndicador=3 OR TipoIndicador=0";
         $oConsulta = $this->oConexion->query($cQuery);
         $aStatus =[
             'status' => false,
@@ -154,7 +161,8 @@ class Mandos
      */
     public function modify($aDatos = [],$cDatos = "")
     {
-        $cQuery = "UPDATE {$this->cTabla} SET DatosMando='{$cDatos}' WHERE Id={$aDatos['id']}";
+        $cFecha = date("Y-m-d H:i:s");
+        $cQuery = "UPDATE {$this->cTabla} SET DatosMando='{$cDatos}', Editado='{$cFecha}',UsuarioEdito={$this->oAutentica->getId()} WHERE Id={$aDatos['id']}";
         $oConsulta = $this->oConexion->query($cQuery);
         $aStatus = [
             'status' => false
