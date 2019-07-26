@@ -131,6 +131,33 @@ class Autenticacion
         return $aRegreso;
     }
     /**
+     * Undocumented function
+     *
+     * @return void
+     */
+    public function view(){
+        $cQuery = "SELECT IdEmpleado, IdPuesto, IdDepto, Nombre, ApellidoP,ApellidoM FROM general_empleado";
+        $oConsulta = $this->oNewConexion->query($cQuery);
+        $aStatus = [
+            'status'=>false,
+            'datos'=> []
+        ];
+        if($oConsulta != false){
+            $aStatus['status'];
+            $iContadorUsuarios = 0;
+            foreach ($oConsulta as $aUsuarios) {
+                $aStatus['datos'][$iContadorUsuarios]['id'] = $aUsuarios['IdEmpleado'];
+                $aStatus['datos'][$iContadorUsuarios]['idPuesto'] = $aUsuarios['IdPuesto'];
+                $aStatus['datos'][$iContadorUsuarios]['idDepartamento'] = $aUsuarios['IdDepto'];
+                $aStatus['datos'][$iContadorUsuarios]['nombre'] = $aUsuarios['Nombre'];
+                $aStatus['datos'][$iContadorUsuarios]['apellidoP'] = $aUsuarios['ApellidoP'];
+                $aStatus['datos'][$iContadorUsuarios]['apellidoM'] = $aUsuarios['ApellidoM'];
+                $iContadorUsuarios++;
+            }
+        }
+        return $aStatus;
+    }
+    /**
      * Guardara los datos del usuario
      * @param array $aUsuario Serán los datos que guardaremos
      */
@@ -224,10 +251,10 @@ class Autenticacion
                 $aStatus['datos'][$iContadorUsers]['apellidoM'] = $aUsuario['ApellidoM'];
                 $aStatus['datos'][$iContadorUsers]['departamento'] = $aUsuario['IdDepto'];
                 $aStatus['datos'][$iContadorUsers]['puesto'] = $aUsuario['IdPuesto'];
-                $cQueryPuesto = "SELECT Nivel FROM general_puesto WHERE IdPuesto='{$aUsuario['IdPuesto']}'";
+                $cQueryPuesto = "SELECT NivelDePuesto FROM general_puesto WHERE IdPuesto='{$aUsuario['IdPuesto']}'";
                 $oConsultaPuesto = $this->oNewConexion->query($cQueryPuesto);
                 $iNivel = $oConsultaPuesto->fetch(PDO::FETCH_ASSOC);
-                $aStatus['datos'][$iContadorUsers]['nivelPuesto'] = $iNivel['Nivel'];
+                $aStatus['datos'][$iContadorUsers]['nivelPuesto'] = $iNivel['NivelDePuesto'];
                 $aStatus['datos'][$iContadorUsers]['id'] = $aUsuario['IdEmpleado'];
                 $iContadorUsers++;
             }

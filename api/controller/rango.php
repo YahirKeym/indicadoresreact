@@ -6,7 +6,7 @@ require_once $_SERVER["DOCUMENT_ROOT"] . $cRuta . "/class/rango.php";
     $cDatos = isset($_REQUEST['data']) ? $_REQUEST['data'] : '';
     $iId = isset($_REQUEST['id']) ? $_REQUEST['id'] : 0;
     $aDatos = json_decode($cDatos);
-    $oRangos = new Rango($oAutentica, $oConexionMandos);
+    $oRangos = new Rango($oAutentica, $oConexionUsers);
     $aDatos = json_decode($cDatos, true);
     switch ($cAccion) {
         case 'add':

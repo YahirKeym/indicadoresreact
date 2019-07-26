@@ -5,7 +5,7 @@ require_once $_SERVER["DOCUMENT_ROOT"] . $cRuta . "/class/jerarquias.php";
 $cAction = isset($_REQUEST['action']) ? $_REQUEST['action'] : '';
 $cDatos = isset($_REQUEST['data']) ? $_REQUEST['data'] : '';
 $aDatos = json_decode($cDatos,true);
-$oJerarquias = new Jerarquias($oConexionMandos);
+$oJerarquias = new Jerarquias($oConexionUsers);
 switch($cAction)
 {
     case 'view':
