@@ -463,7 +463,7 @@ export default class MandosProfile extends React.Component{
                                     </div>
                                     {this.state.data.acciones.map(action => {
                                         return (
-                                            <div className="acciones col-12 p-2 mando-text"><p>{action.nombre}</p></div>
+                                            <div className="acciones col-12 p-2 mando-text mb-2"><p>{action.nombre}</p></div>
                                             )
                                         })}
                                 </React.Fragment>
@@ -478,8 +478,18 @@ export default class MandosProfile extends React.Component{
                         {this.state.editar && (
                             <React.Fragment>
                                 <div className="col-12 row m-0 mt-2">
-                                    <input type="number" placeholder="Escala Minima" name="minimaEscala" onChange={this.handleChangeEscala} defaultValue={this.state.data.datos.minimaEscala} className="form-control col-4"/>
-                                    <input type="number" placeholder="Escala Máxima" name="maximaEscala" onChange={this.handleChangeEscala} defaultValue={this.state.data.datos.maximaEscala} className="form-control col-4 ml-3"/>
+                                    <div className="col-4">
+                                        <label htmlFor="minimaEscala">Escala mínima</label>
+                                        <input type="number" placeholder="Escala Mínima" name="minimaEscala" 
+                                        onChange={this.handleChangeEscala} defaultValue={this.state.data.datos.minimaEscala} 
+                                        className="form-control"/>
+                                    </div>
+                                    <div className="col-4 ml-3">
+                                        <labe htmlFor="maximaEscala">Escala máxima</labe>
+                                        <input type="number" placeholder="Escala Máxima" name="maximaEscala" 
+                                        onChange={this.handleChangeEscala} defaultValue={this.state.data.datos.maximaEscala} 
+                                        className="form-control"/>
+                                    </div>
                                 </div>
                                 <div className="col-12 row m-0 mt-2">
                                     {this.state.data.acciones.map(accion => {

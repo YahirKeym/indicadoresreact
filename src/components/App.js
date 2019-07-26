@@ -93,6 +93,23 @@ class App extends React.Component {
      *
      */
     render() {
+        let es_ie = navigator.userAgent.indexOf("MSIE") > -1;
+        let mensajeEsIe;
+        if(es_ie){
+            mensajeEsIe = (
+                <div className="alert alert-info">
+                    <h5>
+                        Estás usando internet explorer, por favor asegurate de usar otro tipo de navegador ya que 
+                        algunas funciones puede que no se encuentren activas.
+                    </h5>
+                </div>
+            )
+            return(
+                <React.Fragment>
+                    {mensajeEsIe}
+                </React.Fragment>
+            )
+        }
         if(this.state.error){
             return(
                 <BrowserRouter>
