@@ -1,6 +1,7 @@
 import React from 'react';
 import './styles/MandosAdd.css';
 import TraeDatos from '../../components/TraeDatos';
+import IndicadorReductor from '../../components/IndicadorReductor';
 function Formula(props){
     let _self= props.this;
     let onChange = props.onChange
@@ -49,7 +50,9 @@ class MandosAdd extends React.Component
                 tipoIndicador: 0,
                 "minimaEscala":0,
                 "maximaEscala":0,
-                "personaResponsable" : ""
+                "personaResponsable" : "",
+                formaDeIndicador: "incremento",
+                valorMinimo: 0,
             },
             objetivos: [],
             objetivosData:{
@@ -288,69 +291,31 @@ class MandosAdd extends React.Component
         }
         const nuevoStado = await this.handleMantenerEtapas(idVariable, idEtapa, Valor, nombreEtapa);
         this.setState(nuevoStado);
-        if(nombreEtapa === `${idVariable}_${idEtapa+1}`)
-        {
-            let str = "var ";
-            let cantidadDeVariables = this.state.variables.length;
-            let contadorVariables = 0;
-            this.state.variables.map(variable => {
-                str += variable.nombre;
-                str +=`=parseFloat(nuevoStado.variables[${variable.id-1}]['etapas'][idEtapa]['valor'])`;
-                contadorVariables++;
-                if(contadorVariables !== cantidadDeVariables)
-                {
-                    str += ",";
-                }
-            })
-            let formulaString = this.state.datos.formula;
-            if(formulaString.length === 0)
-            {
-                formulaString= undefined;
-            }
-            let _self = this;
-            let codigoEnString =  `${str}
-                                   try{
-                                    var formula = ${formulaString};
-                                    let porcentaje = formula;
-                                    if(idVariable === 0){
-                                        porcentaje = 100;
-                                    }
-                                    const variableValor = parseFloat(nuevoStado.variables[idVariable]['etapas'][idEtapa]['valor']);
-                                    if(idVariable > 1 ){
-                                        porcentaje = (100*variableValor)/Variable_1;
-                                    }
-                                    if(porcentaje === Infinity){
-                                        porcentaje = 100;
-                                    }
-                                    nuevoStado.variables[idVariable]['etapas'][idEtapa]['porcentaje'] = porcentaje;
-                                    _self.setState(nuevoStado)
-                                   }catch(e)
-                                   {
-                                       _self.setState({
-                                           errors:{
-                                               ..._self.state.errors,
-                                               formulaNoCoincideConVariables: true
-                                           }
-                                       })
-                                   }
-                                `
-            eval(codigoEnString)
-        }
         let formula = undefined;
-        this.state.variables.map(variable=>{
-            let idVariable = variable.id -1;
-            let etapa = parseInt(nuevoStado.variables[idVariable].etapas[idEtapa].valor);
-            let ideEtapa= idEtapa
-            nuevoStado.variables[0].etapas.map(etapaEstadoUno =>{
-                if(ideEtapa === etapaEstadoUno.idEtapa-1){
-                        formula = (100*etapa)/etapaEstadoUno.valor;
+        if(idVariable !== 0){
+            this.state.variables.map(variable=>{
+                let idVariable = variable.id -1;
+                let etapa = parseInt(nuevoStado.variables[idVariable].etapas[idEtapa].valor);
+                let ideEtapa= idEtapa
+                nuevoStado.variables[0].etapas.map(etapaEstadoUno =>{
+                    if(ideEtapa === etapaEstadoUno.idEtapa-1){
+                        if(this.state.datos.formaDeIndicador === "incremento")
+                        {
+                            formula = (100*etapa)/etapaEstadoUno.valor;
+                        }else{
+                            formula = IndicadorReductor({valorTop: etapaEstadoUno.valor,valorLow: this.state.datos.valorMinimo, valorAReducir: etapa});
+                        }
+                        if(etapa === 0){
+                            formula = 100;
+                        }
                     }
                 })
                 if(formula === Infinity){
                     formula = 100;
                 }
                 nuevoStado.variables[idVariable].etapas[idEtapa].porcentaje = formula;
-        })
+            })
+        }
     }
     /**
      * 
@@ -770,12 +735,16 @@ class MandosAdd extends React.Component
                     <div className="col-12 col-lg-6 mb-3">
                         <input type="number" max="500" min="1" onChange={this.handleChange} className="form-control" name="etapas" defaultValue={this.state.datos.etapas}/>
                     </div>
-                    <div className="col-8 row m-0">
+                    <div className="col-12 row m-0">
                         <span className="col-12">Tipo de Indicador: </span> 
                         <select className="form-control col-4" name="tipoIndicador" onChange={this.handleChange}>
                             <option value="0">Resultados</option>
                             <option value="1">Comportamentable</option>
                             <option value="3">Personal</option>
+                        </select>
+                        <select className="col-4 ml-3 form-control" name="formaDeIndicador" onChange={this.handleChange}>
+                            <option value="incremento">Incremento</option>
+                            <option value="decremento">Decremento</option>
                         </select>
                     </div>
                     {Responsables}

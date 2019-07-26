@@ -65,19 +65,21 @@ function VariablesMando(props) {
                             </span>
                         </div>
                         <div className="col-md-10 col-12 row">
-                            {variable.etapas.map(nombreEtapa => {
-                                if (variable.id === 1) {
-                                    return (
-                                        <div
+                            <div className="col-12 row">
+                                {variable.etapas.map(nombreEtapa => {
+                                    if (variable.id === 1) {
+                                        return (
+                                            <div
                                             className="col-md-1 d-none d-md-block font-weight-bold text-center"
                                             key={nombreEtapa.id}
-                                        >
-                                            {nombreEtapa.nombreEtapa}
-                                        </div>
-                                    );
-                                }
-                                return;
-                            })}
+                                            >
+                                                {nombreEtapa.nombreEtapa}
+                                            </div>
+                                        );
+                                    }
+                                    return;
+                                })}
+                            </div>
                             {variable.etapas.map(etapa => {
                                 let color = "";
                                 if (etapa.porcentaje < porcentajeBueno) {
