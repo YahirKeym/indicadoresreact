@@ -1,76 +1,41 @@
 import React from 'react';
 import './styles/MandosAdd.css';
 import TraeDatos from '../../components/TraeDatos';
-import IndicadorReductor from '../../components/IndicadorReductor';
+import CodificaMalos from '../../components/Generales/CodificaMalos';
+import DecodificaMalos from '../../components/Generales/DecodificaMalos';
+import MandosDatos from '../../components/Mandos/MandoDatos.js';
+import CambiarEtapas from '../../components/Mandos/CambiarEtapas';
+import InputDeTitulo from '../../components/Formulario/InputDeTitulo';
 function Formula(props){
     let _self= props.this;
     let onChange = props.onChange
-    if(_self.state.errors.formulaNoCoincideConVariables)
-    {
-        return(
-            <div className="col-7 mt-3">
-                <input className="form-control is-invalid" disabled={true} onChange={onChange} name="formula" type="text" defaultValue={_self.state.datos.formula} placeholder="Formula etapas" />
-            </div>
-        ) 
-    }
     return(
             <div className="col-7 mt-3">
                 <input className="form-control" disabled={true} onChange={onChange} name="formula" type="text" defaultValue={_self.state.datos.formula} placeholder="Formula etapas" />
             </div>
     )
 }
+//Ayudara a añadir un nuevo indicador
 class MandosAdd extends React.Component
 {
     constructor(props)
     {
         super(props);
-        this.state = {
-            variables:[
-                {
-                    id: 1,
-                    etapas:[],
-                    valorTotal: 0,
-                    nombre:"Variable_1"
-                },
-                {
-                    id: 2,
-                    etapas:[],
-                    valorTotal: 0,
-                    nombre: "Variable_2"
-                }
-            ],
-            datos:{
-                formula: "",
-                etapas: 12,
-                tipoDeEtapa: "meses",
-                titulo: "",
-                unidadDeMedida: "",
-                AceptacionBuena: "90",
-                AceptacionMedia: "70",
-                tipoIndicador: 0,
-                "minimaEscala":0,
-                "maximaEscala":0,
-                "personaResponsable" : "",
-                formaDeIndicador: "incremento",
-                valorMinimo: 0,
-            },
-            objetivos: [],
-            objetivosData:{
-                'titulo' : "",
-                'descripcion' : ""
-            },
-            rangos:[],
-            jeraraquias: [],
-            users:[],
-            errors: {
-                'formulaNoCoincideConVariables': false,
-            },
-            acciones:[],
-            objetivoShow: true,
-            objetivoSelect: false,
-            etapas: [],
-            allUsers:[]
-        }
+        let variables=[
+           {
+               id: 1,
+               etapas:[],
+               valorTotal: 0,
+               nombre:"Variable_1"
+           },
+           {
+               id: 2,
+               etapas:[],
+               valorTotal: 0,
+               nombre: "Variable_2"
+           }
+       ];
+        this.state = MandosDatos(variables);
     }
     /**
      * 
@@ -78,9 +43,8 @@ class MandosAdd extends React.Component
     componentDidMount()
     {   
         this.crearEtapas();
-        this.traerDatos();
+        TraeDatos({url: this.props.urlObjetivos,_self: this}, "objetivos");
         this.creaFormula();
-        TraeDatos({ url: this.props.urlAutentica, _self: this}, "allUsers");
     }
     /**
      *
@@ -118,7 +82,7 @@ class MandosAdd extends React.Component
                         id: `${index}_${indexEtapas}`,
                         valor: 0,
                         idEtapa: indexEtapas,
-                        porcentaje: 100,
+                        porcentaje: 0,
                         nombreEtapa: ''
                     }
                 ]
@@ -135,26 +99,6 @@ class MandosAdd extends React.Component
             variables:$aVariables,
             etapas: aEtapas
         })
-    }
-    /**
-     * 
-     */
-    traerDatos = async () =>
-    {
-        const [objetivos,jerarquias] = await Promise.all(
-            [
-                fetch(`${this.props.urlObjetivos}&action=view`),
-                fetch(`${this.props.urlJerarquias}&action=view`)
-            ]
-        )
-        const responseObjetivos = await objetivos.json();
-        const responseJerarquias = await jerarquias.json();
-        if(responseObjetivos.status && responseJerarquias.status){
-            this.setState({
-                objetivos: responseObjetivos.datos,
-                jeraraquias: responseJerarquias.datos
-            })
-        }
     }
     /**
      * quitaAcentos Nos ayudara a quitar los acentos de la cadena para poder hacer la busqueda de manera correcta
@@ -179,9 +123,6 @@ class MandosAdd extends React.Component
             case 'variable':
                 this.handleChangeVariable(e);
             break;
-            case 'etapa':
-                this.handleChangeEtapas(e);
-            break;
             case 'dataObjetivo':
                 this.handleChangeDataObjetive(e);
             break;
@@ -203,7 +144,7 @@ class MandosAdd extends React.Component
      * Se encargara de darle un nombre a las etapas
      */
     handleNombreEtapa = e => {
-        const idEtapa = e.target.getAttribute("idEtapa");
+        const idEtapa = e.target.getAttribute("idetapa");
         const Valor = e.target.value;
         const nuevoStado = this.state;
         nuevoStado.variables.map(variable => {
@@ -239,11 +180,13 @@ class MandosAdd extends React.Component
             objetivoShow:false,
             objetivoSelect: true
         })
+        let titulo = CodificaMalos(response.datos.titulo),
+        descripcion = CodificaMalos(response.datos.descripcion);
         this.setState({
             objetivosData:{
                 ...this.state.objetivosData,
-                'titulo' : response.datos.titulo,
-                'descripcion' : response.datos.descripcion
+                'titulo' : titulo,
+                'descripcion' : descripcion
             },
             objetivoShow:true
         })
@@ -254,6 +197,7 @@ class MandosAdd extends React.Component
     handleChangeGeneral = async e => {
         const nombre = e.target.name;
         let valor = e.target.value;
+            valor = valor.replace(/"/gi,"'");
         if(valor.length === 0){
             valor = "";
             if(nombre === "etapas"){
@@ -272,69 +216,6 @@ class MandosAdd extends React.Component
         if(nombre === "etapas"){
             const Etapas = await this.crearEtapas();
         }
-    }
-    /**
-     * 
-     */
-    handleChangeEtapas = async e => 
-    {
-        const idVariable = e.target.getAttribute("idvariable") - 1;
-        const idEtapa = e.target.getAttribute("idetapa") -1;
-        const nombreEtapa = e.target.name;
-        let Valor = e.target.value;
-        if(Valor.length === 0)
-        {
-            Valor = 0;
-        }
-        if(Valor === "-"){
-            Valor = 0;
-        }
-        const nuevoStado = await this.handleMantenerEtapas(idVariable, idEtapa, Valor, nombreEtapa);
-        this.setState(nuevoStado);
-        let formula = undefined;
-        if(idVariable !== 0){
-            this.state.variables.map(variable=>{
-                let idVariable = variable.id -1;
-                let etapa = parseInt(nuevoStado.variables[idVariable].etapas[idEtapa].valor);
-                let ideEtapa= idEtapa
-                nuevoStado.variables[0].etapas.map(etapaEstadoUno =>{
-                    if(ideEtapa === etapaEstadoUno.idEtapa-1){
-                        if(this.state.datos.formaDeIndicador === "incremento")
-                        {
-                            formula = (100*etapa)/etapaEstadoUno.valor;
-                        }else{
-                            formula = IndicadorReductor({valorTop: etapaEstadoUno.valor,valorLow: this.state.datos.valorMinimo, valorAReducir: etapa});
-                        }
-                        if(etapa === 0){
-                            formula = 100;
-                        }
-                    }
-                })
-                if(formula === Infinity){
-                    formula = 100;
-                }
-                nuevoStado.variables[idVariable].etapas[idEtapa].porcentaje = formula;
-            })
-        }
-    }
-    /**
-     * 
-     */
-    handleMantenerEtapas = (idVariable, idEtapa, Valor, nombreEtapa) => 
-    {
-        var nuevoStado = this.state;
-        if(nombreEtapa === `${idVariable}_${idEtapa+1}`)
-        {
-            var Suma = 0;
-            const Etapas = nuevoStado.variables[idVariable]['etapas'];
-            Etapas[idEtapa]['valor'] = Valor;
-            const valorPrincipalDePorcentaje = nuevoStado.variables[0]['etapas'][idEtapa]['valor'];
-            for (let index = 0; index < Etapas.length; index++) {
-                Suma = Suma + parseFloat(Etapas[index]['valor']);
-            }
-            nuevoStado.variables[idVariable]['valorTotal'] = Suma;
-        }
-        return nuevoStado;
     }
     /**
      * 
@@ -409,7 +290,6 @@ class MandosAdd extends React.Component
                 url = this.props.urlAutentica;
             break;
         }
-        console.log(url)
         const id = e.target.value;
         const req = await fetch(`${url}&action=selectForMandos&id=${id}`);
         const response = await req.json();
@@ -626,7 +506,7 @@ class MandosAdd extends React.Component
     {
         e.preventDefault();
         this.props.history.push("/mandos");
-    }
+    } 
     /**
      * 
      */
@@ -670,7 +550,7 @@ class MandosAdd extends React.Component
                     })}
                 </datalist>
                 <div className="col-12">
-                    <input type="text" name="titulo" onChange={this.handleChange} className="form-control" placeholder="Nombre - Titulo Indicador"/>
+                   <InputDeTitulo datos={{_self: this,lugar:this.state.datos}} />
                 </div>
                 {!this.state.objetivoSelect && (
                     <div className="col-12 col-lg-8 mt-3">
@@ -685,10 +565,10 @@ class MandosAdd extends React.Component
                 {this.state.objetivoShow && (
                 <div className="col-12 col-lg-9 mt-3 row">
                     <div className="col-12">
-                        <input tipo="dataObjetivo" onChange={this.handleChange} className="form-control" placeholder="Titulo de objetivo" type="text" name="titulo" defaultValue={this.state.objetivosData.titulo}/>
+                        <input tipo="dataObjetivo" onChange={this.handleChange} className="form-control" placeholder="Titulo de objetivo" type="text" name="titulo" defaultValue={DecodificaMalos(this.state.objetivosData.titulo)}/>
                     </div>
                     <div className="col-12 mt-3">
-                        <textarea className="form-control" tipo="dataObjetivo" onChange={this.handleChange} placeholder="Descripción del objetivo" name="descripcion" defaultValue={this.state.objetivosData.descripcion}></textarea>
+                        <textarea className="form-control" tipo="dataObjetivo" onChange={this.handleChange} placeholder="Descripción del objetivo" name="descripcion" defaultValue={DecodificaMalos(this.state.objetivosData.descripcion)}></textarea>
                     </div>
                 </div>
                 )}
@@ -747,10 +627,6 @@ class MandosAdd extends React.Component
                             <option value="decremento">Decremento</option>
                         </select>
                     </div>
-                    {Responsables}
-                    <div className="col-12 mt-3">
-                        <input list="usuarios" type="text" className="form-control col-6" placeholder="Persona responsable del indicador" onChange={this.handleChange} name="personaResponsable"/>
-                    </div>
                 </div>
                 <div className="col-12 row mt-3">
                     <div className="col-12 col-md-6">
@@ -774,7 +650,7 @@ class MandosAdd extends React.Component
                 <div className="col-12 row mt-3 m-0">
                     {this.state.etapas.map(etapa => {
                         return(
-                            <input type="text" key={etapa.idEtapa} onChange={this.handleChange} idetapa={etapa.idEtapa} tipo="etapaNombre" className="form-control col-3" placeholder={`Etapa ${etapa.idEtapa} nombre`} />
+                            <input type="text" key={etapa.idEtapa} idetapa={etapa.idEtapa} onChange={this.handleChange} tipo="etapaNombre" className="form-control col-3" placeholder={`Etapa ${etapa.idEtapa} nombre`} />
                         )
                     })}
                     {this.state.datos.formula.length !== 0 && (
@@ -796,7 +672,7 @@ class MandosAdd extends React.Component
                                                 {
                                                     color = "border border-danger";
                                                 }
-                                                return(<input type="number" placeholder="0" idetapa={etapa.idEtapa} onChange={this.handleChange} tipo="etapa" name={etapa.id} idvariable={variable.id} className={`col-2 form-control ${color}`} key={etapa.id} />)
+                                                return(<input type="number" placeholder="0" idetapa={etapa.idEtapa} onChange={e=>{CambiarEtapas(e,this,this.state.variables,this.state)}} tipo="etapa" name={etapa.id} idvariable={variable.id} className={`col-2 form-control ${color}`} key={etapa.id} />)
                                             })}
                                         </div>
                                         <div className="col-12 col-lg-4 text-center">
