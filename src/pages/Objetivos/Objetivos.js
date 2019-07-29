@@ -1,9 +1,9 @@
 import React from 'react';
-import CuerpoObjetivosMandos from '../../components/CuerpoObjetivosMandos.js';
-import Loader from '../../components/Loader.js';
+import CuerpoObjetivosMandos from '../../components/Mandos/CuerpoObjetivosMandos.js';
+import Loader from '../../components/Generales/Loader.js';
 import ButtonDirectTop from '../../components/Generales/ButtonDirectTop.js';
-import SinDatos from '../../components/SinDatos.js';
-import ErrorConexion from '../../components/ErrorConexion.js';
+import SinDatos from '../../components/Errores/SinDatos.js';
+import ErrorConexion from '../../components/Errores/ErrorConexion.js';
 import TraeDatos from '../../components/TraeDatos.js';
 /**
  * Será la clase que nos ayudara a pintar los objetivos
@@ -28,7 +28,6 @@ class Objetivos extends React.Component
      */
     componentDidMount()
     {
-        console.log(localStorage)
         TraeDatos({url: this.props.url, _self: this});
     }
     /**
@@ -53,15 +52,13 @@ class Objetivos extends React.Component
                 <ErrorConexion />
             );
         }
-        if(this.state.data.length === 0){
-            return (
-                <SinDatos />
-            )
-        }
         return (
             <div className="col-12 row">
                 <ButtonDirectTop to="/objetivos/add" text="Añadir objetivo" />
                 <div className="col-12 row d-flex justify-content-between">
+                    {this.state.data.length === 0 && (
+                        <SinDatos />
+                    )}
                     {this.state.data.map(objetivo => {
                         return(
                             <CuerpoObjetivosMandos titulo={objetivo.titulo} textSuccess="Editar" 

@@ -2,8 +2,8 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 import './styles/alcance.css';
 import ButtonDirectTop from '../../components/Generales/ButtonDirectTop.js';
-import Loader from '../../components/Loader.js';
-import ErrorConexion from '../../components/ErrorConexion';
+import Loader from '../../components/Generales/Loader.js';
+import ErrorConexion from '../../components/Errores/ErrorConexion';
 import TraeDatos from '../../components/TraeDatos.js';
 class Alcance extends React.Component{
     constructor(props)

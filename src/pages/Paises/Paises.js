@@ -1,10 +1,10 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import './styles/Paises.css';
-import Loader from '../../components/Loader.js';
+import Loader from '../../components/Generales/Loader.js';
 import ButtonDirectTop from '../../components/Generales/ButtonDirectTop';
-import ErrorConexion from '../../components/ErrorConexion';
-import SinDatos from '../../components/SinDatos';
+import ErrorConexion from '../../components/Errores/ErrorConexion';
+import SinDatos from '../../components/Errores/SinDatos';
 import TraeDatos from '../../components/TraeDatos';
 class Paises extends React.Component
 {
