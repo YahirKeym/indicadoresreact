@@ -1,7 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import './styles/Mandos.css';
-import DeleteAction from './DeleteAction.js';
+import DeleteAction from '../DeleteAction.js';
 /**
  * Cambiara los acentos que vengan con codificación java
  */

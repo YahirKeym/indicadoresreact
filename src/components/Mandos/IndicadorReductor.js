@@ -1,3 +1,4 @@
+// Nos ayudara a llevar el porcentaje contrario para poder hacer un indicador de tipo reductor.
 function IndicadorReductor({valorTop,valorLow,valorAReducir}){
     let valorCienPorciento = valorTop-valorLow,
     porcentajeTotal = (100*valorAReducir)/valorCienPorciento,
