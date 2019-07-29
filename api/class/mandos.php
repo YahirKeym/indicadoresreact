@@ -92,7 +92,7 @@ class Mandos
     public function view()
     {
         $idUsuario = $this->oAutentica->getId();
-    $cQuery = "SELECT * FROM {$this->cTabla} WHERE IdUsuario LIKE '{$idUsuario}%' OR '%{$idUsuario}%' OR '%{$idUsuario}' OR UsuarioCreo={$this->oAutentica->getId()} AND TipoIndicador=3 OR TipoIndicador=0";
+    $cQuery = "SELECT * FROM {$this->cTabla} WHERE IdUsuario LIKE '{$idUsuario}%' OR '%{$idUsuario}%' OR '%{$idUsuario}' OR UsuarioCreo={$this->oAutentica->getId()}";
         $oConsulta = $this->oConexion->query($cQuery);
         $aStatus =[
             'status' => false,

@@ -85,7 +85,15 @@ class Objetivos
      */
     public function selectObjectives()
     {
-        $cQuery = "SELECT * FROM objetivos WHERE deleted=0";
+        $idUsuario = $this->oAutentica->getId();
+        $cQuery = "SELECT * FROM objetivos 
+        WHERE 
+        deleted=0 
+        AND 
+        idusuariocreo={$idUsuario} 
+        OR UsuariosDeObjetivo LIKE '{$idUsuario}%' 
+        OR UsuariosDeObjetivo LIKE  '%{$idUsuario}%' 
+        OR UsuariosDeObjetivo LIKE '%{$idUsuario}'";
         $oConsulta = $this->oConexion->query($cQuery);
         $aStatus = [
             'status' => false,
