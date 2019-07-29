@@ -1,5 +1,5 @@
 import React from "react";
-import Loader from "../../components/Loader.js";
+import Loader from "../../components/Generales/Loader.js";
 import { Redirect } from "react-router-dom";
 import FormularioObjetivos from '../../components/FormularioObjetivos';
 class ObjetivosAdd extends React.Component {

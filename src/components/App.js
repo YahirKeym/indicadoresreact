@@ -4,7 +4,8 @@ import Alcance from "../pages/Alcance/Alcance.js";
 import AlcanceAdd from "../pages/Alcance/AlcanceAdd.js";
 import AlcanceEdit from "../pages/Alcance/AlcanceEdit.js";
 import AlcanceDelete from "../pages/Alcance/AlcanceDelete.js";
-import ErrorConexion from "./ErrorConexion.js";
+import ErrorConexion from "./Errores/ErrorConexion.js";
+import ErrorInternetExplorer from "./Errores/ErrorInternetExplorer.js";
 import Inicio from "../pages/Inicio.js";
 import Jerarquias from "../pages/Jerarquias/Jerarquias.js";
 import JerarquiasAdd from '../pages/Jerarquias/JerarquiasAdd.js';
@@ -12,18 +13,20 @@ import JerarquiasMove from '../pages/Jerarquias/JerarquiasMove.js';
 import JerarquiaRangoAdd from '../pages/Jerarquias/JerarquiaRangoAdd.js';
 import JerarquiaRangoEdit from '../pages/Jerarquias/JerarquiaRangoEdit.js';
 import Layout from "./Layout.js";
-import Loader from "./Loader.js";
+import Loader from "./Generales/Loader.js";
 import Mandos from "../pages/Mandos/Mandos.js";
 import MandosAdd from "../pages/Mandos/MandosAdd.js";
 import MandosProfile from '../pages/Mandos/MandosProfile.js';
 import Objetivos from "../pages/Objetivos/Objetivos.js";
 import ObjetivosAdd from "../pages/Objetivos/ObjetivosAdd.js";
 import ObjetivosEdit from "../pages/Objetivos/ObjetivosEdit.js";
+import ObtenCookie from "./ObtenCookie.js";
 import Paises from "../pages/Paises/Paises.js";
 import PaisesAdd from "../pages/Paises/PaisesAdd.js";
 import PaisesEdit from '../pages/Paises/PaisesEdit.js';
 import PaisesDelete from '../pages/Paises/PaisesDeleted.js';
 import UserLogin from "../pages/UserLogin.js";
+import BrouserName from "./Generales/BrouserName.js";
 /**
  * Nos ayudara a ajustar las opciones de la web
  */
@@ -38,7 +41,7 @@ class App extends React.Component {
     }
     veryfiLogged = async () => {
         this.logged = false;
-        this.session = this.getCookie("indicadores_i");
+        this.session = ObtenCookie("indicadores_i");
         const URL_BASE = "http://172.16.100.94";
         try {
             this.urlAutentica = `${URL_BASE}/indicadoresreact/api/controller/autentica.php?token=${this.session}`;
@@ -70,29 +73,15 @@ class App extends React.Component {
     componentDidMount() {
         this.veryfiLogged();
     }
-    /**
-     * Nos ayudara a encontrar la cookie de sesión
-     * @param {string} nombreCookie Será el nombre de la cookie que buscaremos
-     */
-    getCookie = nombreCookie => {
-        var name = nombreCookie + "=";
-        var decodedCookie = decodeURIComponent(document.cookie);
-        var ca = decodedCookie.split(";");
-        for (var i = 0; i < ca.length; i++) {
-            var c = ca[i];
-            while (c.charAt(0) === " ") {
-                c = c.substring(1);
-            }
-            if (c.indexOf(name) === 0) {
-                return c.substring(name.length, c.length);
-            }
-        }
-        return "";
-    };
+
     /**
      *
      */
     render() {
+        let errorIE;
+        if(BrouserName() === "IE 11"){
+            errorIE = <ErrorInternetExplorer />
+        }
         if(this.state.error){
             return(
                 <BrowserRouter>
@@ -116,21 +105,28 @@ class App extends React.Component {
         if(this.state.isLogged && this.state.logged){
             logueado = true;
         }
+        // Esté return manejara las rutas de la web así de a donde nos  lleve la web, se encargaran estos switch
         return (
             <BrowserRouter>
                 <Layout state={this.state}>
+                    {errorIE}
+                    {/* Si no nos encontramos logueados, se mostrara el loguin de usuario de inicio */}
                     {!logueado && (
                         <Switch>
                             <Route component={() => <UserLogin url={this.urlAutentica} />} />
                         </Switch>
                     )}
+                    {/* En caso de encontrarnos logueados empezara a funcionar la magia de las SPA */}
                     {logueado && (
                         <Switch>
+                            {errorIE}
+                            {/* Aquí manejaremos lo que es la ruta de incio */}
                             <Route
                                 exact
                                 path="/"
                                 component={() => <Inicio />}
                             />
+                            {/* En este lugar empezaremos a manejar lo que son las rutas de los objetivos */}
                             <Route
                                 exact
                                 path="/objetivos"
@@ -153,6 +149,10 @@ class App extends React.Component {
                                     />
                                 )}
                             />
+                            {/* En este caso de objetivos podemos ver que tiene ":objetivoId" Esto es una propiedad de react-router-dom
+                            * La cual nos ayuda a obtener la propiedad que se encuentre entre "objetivos" y "edit"
+                            * Un vago ejemplo sería http://localhost/objetivos/1/edit. El cúal nos mandara a la página del objetivo 1 para editar
+                            */}
                             <Route
                                 exact
                                 path="/objetivos/:objetivoId/edit"
@@ -166,6 +166,7 @@ class App extends React.Component {
                                     />
                                 )}
                             />
+                            {/* Aquí comenzaran las rutas de los mandos */}
                             <Route
                                 exact
                                 path="/mandos"
@@ -193,6 +194,8 @@ class App extends React.Component {
                                     />
                                     )}
                             />
+                            {/* Al igual que en los objetivos se busca que el ":mandoId" sea el número id del mando>indicador al cual podremos ver
+                         */}
                             <Route
                                 exact
                                 path="/mandos/:mandoId"

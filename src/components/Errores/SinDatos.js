@@ -1,4 +1,5 @@
 import React from 'react';
+// Se encargara de mostrar el mensaje que nos dira si una web se encuentra sin datos.
 function SinDatos()
 {
     return (

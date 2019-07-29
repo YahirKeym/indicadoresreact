@@ -1,7 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import imageLogo from '../images/suez-logo.png';
-import CerrarSesion from './CerrarSesion.js';
+import CerrarSesion from './Generales/CerrarSesion.js';
 function Navbar(props){
         return (
             <header className="bg-header text-center p-3 col-12">
