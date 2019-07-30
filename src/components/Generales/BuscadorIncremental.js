@@ -21,7 +21,7 @@ function keysUp (event, {claseCorrecta,claseIncorrecta,seBusca}){
     function muestraBuqueda({elements},{claseCorrecta,claseIncorrecta,cValorLimpio}){
         // debugger;
         let cValorSearch = elements.getAttribute('data-search')
-        if (quitaAcentos(cValorSearch.toLowerCase()).search(cValorLimpio.toLowerCase()) == -1) {
+        if (quitaAcentos(cValorSearch.toLowerCase()).search(cValorLimpio.toLowerCase()) === -1) {
             elements.classList.remove(claseCorrecta);
             elements.classList.add(claseIncorrecta);
         } else {

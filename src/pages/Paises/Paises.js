@@ -1,8 +1,6 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
 import './styles/Paises.css';
 import Loader from '../../components/Generales/Loader.js';
-import ButtonDirectTop from '../../components/Generales/ButtonDirectTop';
 import ErrorConexion from '../../components/Errores/ErrorConexion';
 import SinDatos from '../../components/Errores/SinDatos';
 import TraeDatos from '../../components/TraeDatos';
@@ -57,19 +55,19 @@ class Paises extends React.Component
         }
         return(
             <React.Fragment>
-                <ButtonDirectTop to="/paises/add" text="Añadir un pais" />
+                {/* <ButtonDirectTop to="/paises/add" text="Añadir un pais" /> */}
                 <div className="col-12 row mt-5">
                     {this.state.data.map(pais=>{
                         return(
                         <div className="col-md-3 col-6 pais mb-2" key={pais.id}>
-                            <p>
+                            <p className="text-center">
                                 <span className="secondary-bg p-1 text-white">{pais.nombre}</span>
-                                <span className="ml-2">
+                                {/* <span className="ml-2">
                                     <Link to={`/paises/${pais.id}/edit`} className="color-ancla-suez" onClick={this.obtenerOnePais}>Editar</Link>
                                 </span>
                                 <span className="ml-2">
                                     <Link to={`/paises/${pais.id}/delete`}className="color-ancla-suez" >Eliminar</Link>
-                                </span>
+                                </span> */}
                             </p>
                         </div>
                         );

@@ -1,9 +1,5 @@
 import React from 'react';
 export default class CerrarSesion extends React.Component{
-    constructor(props)
-    {
-        super(props);
-    }
     /**
      * Cerrara la sesión y cambiara la cookie automaticamente
      */
@@ -17,13 +13,14 @@ export default class CerrarSesion extends React.Component{
             document.cookie =  `indicadores_i=${response.cookie}; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`; 
             window.location.reload();
         }
+        return false
     }
     /**
      * Renderizara el boton para cerrar la sesión en la web
      */
     render(){
         return(
-            <a className={this.props.className} onClick={this.handleCloseSession}>Cerrar Sesión</a>
+            <a className={this.props.className} href="/cerrarSesion" onClick={this.handleCloseSession}>Cerrar Sesión</a>
         );
     }
 }

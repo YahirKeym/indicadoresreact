@@ -33,7 +33,7 @@ function VariablesMando(props)
                                 }
                                 let valor = etapa.valor;
                                 if(porcentaje){
-                                    valor = `${etapa.porcentaje}%`;
+                                    valor = `${Math.round(etapa.porcentaje*100)/100}%`;
                                 }
                                 return(
                                 <div className={`col-2 text-center etapa ${color}`} key={etapa.id}>

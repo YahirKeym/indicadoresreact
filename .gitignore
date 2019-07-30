@@ -2,3 +2,7 @@
 node_modules/
 build/
 server.js
+<<<<<<< Updated upstream
+=======
+api/
+>>>>>>> Stashed changes
