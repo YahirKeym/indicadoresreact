@@ -7,7 +7,6 @@ function MandoDatos(variables){
     return {
         "variables":variables,
         "datos":{  
-            "formula":"",
             "etapas":12,
             "tipoDeEtapa": "meses",
             "titulo":"",
