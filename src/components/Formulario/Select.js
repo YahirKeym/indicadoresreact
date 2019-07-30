@@ -4,9 +4,12 @@ function Select(props){
     const {_self,lugar,zona} = props.datos,
     elementos = props.elementos,
     callback= props.callback,
-    callFunction = props.function;
+    callFunction = props.function,
+    placeholder=props.plhold,
+    className=props.className,
+    valor = props.valor;
     return(
-        <select className="form-control" onChange={
+        <select className={`form-control ${className}`} onChange={
             e=> {
                 if(callback){
                     callFunction(e);
@@ -15,9 +18,9 @@ function Select(props){
                 }
             }
         }>
-            <option>Selecciona un objetivo</option>
-            {elementos.map(elemento => <option value={elemento.id} key={elemento.id}>{elemento.titulo}</option>)}
+            <option>{placeholder}</option>
+            {elementos.map(elemento => <option value={elemento[valor]} key={elemento.id}>{elemento.titulo}</option>)}
         </select>
     )
 }
-export default Select;
+export default Select;  
