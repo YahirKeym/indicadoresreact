@@ -5,15 +5,10 @@ import ButtonDirectTop from '../../components/Generales/ButtonDirectTop.js';
 import SinDatos from '../../components/Errores/SinDatos.js';
 import ErrorConexion from '../../components/Errores/ErrorConexion.js';
 import TraeDatos from '../../components/TraeDatos.js';
-/**
- * Será la clase que nos ayudara a pintar los objetivos
- */
+// Pintara todos los objetivos disponibles por usuario.
 class Objetivos extends React.Component
 {
-    /**
-     * Iniciara la construcción del componente
-     * @param {*} props 
-     */
+    // Iniciaremos el constructor para poder declarar el estado de inicio.
     constructor(props)
     {
         super(props);
@@ -23,43 +18,39 @@ class Objetivos extends React.Component
             error: false,
         };
     }
-    /**
-     * Nos ayudara  a mandar a llamar las funciones para poder inicializar nuestro componente
-     */
+    // Al montar el componente mandaremos a llamar a los objetivos disponibles para el usuario
+    // Para luego colocarlos en el estado y así poder montar nuestro componente de manera correcta
+    // con los datos que solicitamos
     componentDidMount()
     {
         TraeDatos({url: this.props.url, _self: this});
     }
-    /**
-     * 
-     */
+    // Si llegase a ser el caso de que el usuario sale  del componente antes de que la petición a los datos termine 
+    // Este limpiara el intervalo del tiempo para no generar error alguno o bien un consumo excesivo de memoria
     componentWillUnmount(){
         clearTimeout(this.traeDatos)
     }
-    /**
-     * Renderizara el componente
-     */
+    // Renderizamos el componente con los subcomponentes que ocuparemos para ello.
     render()
     {
-        if(this.state.loading)
-        {
+        if(this.state.loading){ // En caso de que el componente se encuentre cargando mandamos a llamar el Loader
             return (
                 <Loader />
             );
         }
-        if (this.state.error) {
+        if (this.state.error){ // En caso de que la petición le haya generado algún error al usuario, mandaremos a llamar el error de conexión
             return (
                 <ErrorConexion />
             );
         }
-        return (
+        return ( // Si todo salió bien, renderizaremos los objetivos del usuario
             <div className="col-12 row">
                 <ButtonDirectTop to="/objetivos/add" text="Añadir objetivo" />
                 <div className="col-12 row d-flex justify-content-between">
-                    {this.state.data.length === 0 && (
+                    {this.state.data.length === 0 && ( // En caso de que el usuario no cuente con datos, le mandaremos el componente de que no cuenta con datos
                         <SinDatos />
                     )}
-                    {this.state.data.map(objetivo => {
+                    {this.state.data.map(objetivo => { // Si el usuario si llegase a tener datos, hacemos un mapping de ellos y los mostramos.
                         return(
                             <CuerpoObjetivosMandos titulo={objetivo.titulo} textSuccess="Editar" 
                             url={`/objetivos/${objetivo.id}/edit`} 
