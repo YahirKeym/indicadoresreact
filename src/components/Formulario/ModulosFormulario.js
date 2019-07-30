@@ -1,4 +1,4 @@
-import InputText from './InputText';
+import Input from './Input';
 import TextArea from './TextArea';
 import Select from './Select.js';
-export {InputText, TextArea, Select};
+export {Input, TextArea, Select};
