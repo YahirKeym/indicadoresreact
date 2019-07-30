@@ -13,17 +13,6 @@ function MandoDatos(variables){
             "unidadDeMedida":"",
             "AceptacionBuena":"94",
             "AceptacionMedia":"80",
-            "rangos":{  
-                "datos":[],
-                "global":false
-            },
-            "jerarquias":{  
-                "datos":[],
-                "global":true
-            },
-            "usuarios":{  
-                "datos":[]
-            },
             "minimaEscala":0,
             "maximaEscala":0,
             "personaResponsable": "",
@@ -36,12 +25,33 @@ function MandoDatos(variables){
             "titulo":"",
             "descripcion":""
         },
-        "rangos":[],
-        "jeraraquias":[],
-        "users":[],
+        "tipoDeIndicador":[
+            {
+                "id":0,
+                "titulo" : "Resultados"
+            },
+            {
+                "id":1,
+                "titulo" : "Comportamental"
+            }
+            ,
+            {
+                "id":2,
+                "titulo":"Personal"
+            }
+        ],
+        "manejoDeIndicador":[
+            {
+                "id" : 0,
+                "titulo":"incremento",
+            },
+            {
+                "id" :1,
+                "titulo":"decremento"
+            }
+        ],
         "acciones":[],
         "objetivoShow":true,
-        "allUsers":[],
         "etapas":[]
     }
 }
