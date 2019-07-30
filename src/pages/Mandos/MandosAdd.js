@@ -1,88 +1,61 @@
 import React from 'react';
 import './styles/MandosAdd.css';
 import TraeDatos from '../../components/TraeDatos';
-import CodificaMalos from '../../components/Generales/CodificaMalos';
-import DecodificaMalos from '../../components/Generales/DecodificaMalos';
-import MandosDatos from '../../components/Mandos/MandoDatos.js';
-import CambiarEtapas from '../../components/Mandos/CambiarEtapas';
-import InputDeTitulo from '../../components/Formulario/InputDeTitulo';
-function Formula(props){
-    let _self= props.this;
-    let onChange = props.onChange
-    return(
-            <div className="col-7 mt-3">
-                <input className="form-control" disabled={true} onChange={onChange} name="formula" type="text" defaultValue={_self.state.datos.formula} placeholder="Formula etapas" />
-            </div>
-    )
-}
-//Ayudara a añadir un nuevo indicador
+import {CodificaMalos, DecodificaMalos} from '../../components/Generales/ModulosGenerales.js';
+import {MandosDatos, CambiarEtapas} from '../../components/Mandos/ModulosMandos.js';
+import {InputText, TextArea, Select} from '../../components/Formulario/ModulosFormulario.js';
+// Creara un nuevo indicador mediante los campos solicitados
 class MandosAdd extends React.Component
 {
+    // Definimos el constructor para poder iniciar con los datos de nuestra app.
     constructor(props)
     {
-        super(props);
-        let variables=[
+        super(props);   
+        let variables=[ // Definimos las primeras dos variables que irán por default en la creación del indicador
            {
                id: 1,
                etapas:[],
                valorTotal: 0,
-               nombre:"Variable_1"
+               nombre:"Variable 1"
            },
            {
                id: 2,
                etapas:[],
                valorTotal: 0,
-               nombre: "Variable_2"
+               nombre: "Variable 2"
            }
        ];
         this.state = MandosDatos(variables);
     }
-    /**
-     * 
-     */
+    // Una vez que nuestro componente se haya montado mandara a llamar a las etapas de cada variable 
+    // y traera los datos de los objetivos
     componentDidMount()
     {   
-        this.crearEtapas();
+        this.entregaEtapasALasVariables();
         TraeDatos({url: this.props.urlObjetivos,_self: this}, "objetivos");
-        this.creaFormula();
     }
-    /**
-     *
-     */
+    // Si llegase a ser el caso de que salgamos de los indicadores antes de terminar la petición
+    // en cuanto desmontemos el componente, se limpiara la petición echa.
     componentWillUnmount() {
         clearTimeout(this.traeDatos);
-
     }
-    /**
-     * 
-     */
-    creaFormula = () => 
-    {
-        const Variable_1 = this.state.variables[0].nombre;
-        const Variable_2 = this.state.variables[1].nombre;
-        const formula = `(100*${Variable_2})/${Variable_1}`;
-        this.setState({
-            datos:{
-                ...this.state.datos,
-                formula: formula
-            }
-        })
-    }
-    /**
-     * 
-     */
-    crearEtapas = () => {
-        var $aVariables = []
-        for (let index = 0; index < this.state.variables.length; index++) {
-            var aEtapas = [];
-            for (let indexEtapas = 1; indexEtapas <= this.state.datos.etapas; indexEtapas++) {
-                aEtapas = [
+    // Se manda a llamar para generar las etapas que le pedimos por cada variable.
+    // Por default las etapas vienen en 12 que serían 12 meses: Enero, Febrero, Marzo...
+    entregaEtapasALasVariables = () => {
+        let $aVariables = []
+        let aEtapas;
+        // Contamos la cantidad de variables que son
+        for (let index = 0; index < this.state.variables.length; index++) { 
+            aEtapas = [];
+            // Buscamos en cuantas son las etapas que nos piden
+            for (let indexEtapas = 1; indexEtapas <= this.state.datos.etapas; indexEtapas++) { 
+                aEtapas = [ 
                     ...aEtapas,
                     {
                         id: `${index}_${indexEtapas}`,
                         valor: 0,
                         idEtapa: indexEtapas,
-                        porcentaje: 0,
+                        porcentaje: 100,
                         nombreEtapa: ''
                     }
                 ]
@@ -100,32 +73,12 @@ class MandosAdd extends React.Component
             etapas: aEtapas
         })
     }
-    /**
-     * quitaAcentos Nos ayudara a quitar los acentos de la cadena para poder hacer la busqueda de manera correcta
-     * @param  {String} cCadena Es la cadena que queremos limpiar de acentos
-     * @return {String}         Regresa la cadena limpia de acentos
-     */
-    quitaAcentos = (cCadena = "") => {
-        cCadena = cCadena.replace(/á/gi, "a");
-        cCadena = cCadena.replace(/é/gi, "e");
-        cCadena = cCadena.replace(/í/gi, "i");
-        cCadena = cCadena.replace(/ó/gi, "o");
-        cCadena = cCadena.replace(/ú/gi, "u");
-        cCadena = cCadena.replace(/ñ/gi, "n");
-        return cCadena;
-    }
      /**
      * Cambiaremos el estado mediante las peticiones que se hagan
      */
     handleChange= async e => {
         let atributo = e.target.getAttribute("tipo");
         switch(atributo){
-            case 'variable':
-                this.handleChangeVariable(e);
-            break;
-            case 'dataObjetivo':
-                this.handleChangeDataObjetive(e);
-            break;
             case 'action':
                 this.handleChangeAction(e);
             break;
@@ -151,18 +104,6 @@ class MandosAdd extends React.Component
             nuevoStado.variables[variable.id -1].etapas[idEtapa - 1]['nombreEtapa'] = Valor;
         })
         this.setState(nuevoStado);
-    }
-    /**
-     * Se encargara de guardar los datos del objetivo en caso de haber sido editado.
-     */
-    handleChangeDataObjetive = e => {
-        const valor = e.target.value, nombre = e.target.name;
-        this.setState({
-            objetivosData:{
-                ...this.state.objetivosData,
-                [nombre]:valor
-            },
-        })
     }
     /**
      * Nos ayudara a mostrar los campos para editar el objetivo
@@ -214,25 +155,8 @@ class MandosAdd extends React.Component
             }
         })
         if(nombre === "etapas"){
-            const Etapas = await this.crearEtapas();
+            const Etapas = await this.entregaEtapasALasVariables();
         }
-    }
-    /**
-     * 
-     */
-    handleChangeVariable = e => {
-        var nuevoStado = this.state;
-        const id = e.target.getAttribute("id");
-        var Valor = e.target.value;
-        if(e.target.value.length === 0)
-        {
-            Valor = `Variable_${id}`
-        }
-        const cambioEspaciosEnBlanco = Valor.replace(/\s/g,"_");
-        const cadenaLimpia = this.quitaAcentos(cambioEspaciosEnBlanco);
-        nuevoStado.variables[id-1]['nombre'] = cadenaLimpia;
-        this.setState(nuevoStado);
-        this.creaFormula();
     }
     /**
      * Nos ayudara a agregar más variables de así requerirlo
@@ -249,8 +173,7 @@ class MandosAdd extends React.Component
                     id: `${idVariable}_${indexEtapas}`,
                     valor: 0,
                     idEtapa: indexEtapas,
-                    porcentaje: 100,
-                    procentajeApp: 100
+                    porcentaje: 0
                 }
             ]
         }
@@ -266,81 +189,6 @@ class MandosAdd extends React.Component
                 ]
             }
         )
-    }
-    /**
-     * Se encargara de hacer x Acción cuando algún select sea precionado
-     */
-    handleClickSelect = async e =>{
-        const tipo = e.target.getAttribute("tipo");
-        const $Seleccionados = document.querySelectorAll(`select [tipo='${tipo}']`);
-        let CuentaSiHaySeleccionado = 0;
-        for (let index = 0; index < $Seleccionados.length; index++) {
-            if($Seleccionados[index].selected)
-            {
-                CuentaSiHaySeleccionado++;
-            }
-        }
-        let url;
-        switch(tipo)
-        {
-            case 'jerarquia':
-                url = this.props.urlRangos;
-            break;
-            case 'rango':
-                url = this.props.urlAutentica;
-            break;
-        }
-        const id = e.target.value;
-        const req = await fetch(`${url}&action=selectForMandos&id=${id}`);
-        const response = await req.json();
-        if(CuentaSiHaySeleccionado > 1)
-        {
-            switch(tipo)
-            {
-                case 'jerarquia':
-                response.datos.map(rangos => {
-                    this.setState({
-                            rangos:[
-                                ...this.state.rangos,
-                                {
-                                    nombre: rangos.nombre,
-                                    id: rangos.id,
-                                    idArea : rangos.idArea
-                                }
-                            ]
-                        })
-                })
-                break;
-                case 'rango':
-                    response.datos.map(users => {
-                        this.setState({
-                                users:[
-                                    ...this.state.users,
-                                    {
-                                        nombre: users.nombre,
-                                        id: users.id,
-                                        idArea : users.idArea
-                                    }
-                                ]
-                            })
-                    })
-                break;
-            }
-        }else{
-            switch(tipo)
-            {
-                case 'jerarquia':
-                    this.setState({
-                        rangos: response.datos
-                    })
-                break;
-                case 'rango':
-                    this.setState({
-                        users: response.datos
-                    })
-                break;
-            }
-        }
     }
     /**
      * 
@@ -507,9 +355,7 @@ class MandosAdd extends React.Component
         e.preventDefault();
         this.props.history.push("/mandos");
     } 
-    /**
-     * 
-     */
+    // Renderizaremos los componentes necesarios para mostrar el formulario para agregar indicadores.
     render(){
         let Responsables = "";
         if(parseInt(this.state.datos.tipoIndicador) === 1 || parseInt(this.state.datos.tipoIndicador) === 0 ){
@@ -542,33 +388,26 @@ class MandosAdd extends React.Component
         }
         return (
             <form className="row col-12 col-lg-9 mx-auto p-3">
-                <datalist id="usuarios">
-                    {this.state.allUsers.map(usuario=>{
-                        return (
-                            <option value={usuario.id} label={`${usuario.nombre} ${usuario.apellidoP} ${usuario.apellidoM}`} key={usuario.id}/>
-                        )
-                    })}
-                </datalist>
                 <div className="col-12">
-                   <InputDeTitulo datos={{_self: this,lugar:this.state.datos}} />
+                   <InputText datos={{_self: this,lugar:this.state.datos,zona:"titulo"}} plhold="Titulo de indicador"/>
                 </div>
                 {!this.state.objetivoSelect && (
                     <div className="col-12 col-lg-8 mt-3">
-                        <select className="form-control" name="objetivo" tipo="objetivo" onChange={this.handleChange}>
-                            <option>Selecciona el objetivo</option>
-                            {this.state.objetivos.map(objetivos => {
-                                return (<option value={objetivos.id} key={objetivos.id}>{objetivos.titulo}</option>);
-                            })}
-                        </select>
+                            <Select 
+                            elementos={this.state.objetivos} callback={true} 
+                            function={e => {
+                                this.handleShowObjetivoEdit(e);
+                            }}
+                            datos={{_self:this,lugar: this,zona:""}} />
                     </div>
                 )}
                 {this.state.objetivoShow && (
                 <div className="col-12 col-lg-9 mt-3 row">
                     <div className="col-12">
-                        <input tipo="dataObjetivo" onChange={this.handleChange} className="form-control" placeholder="Titulo de objetivo" type="text" name="titulo" defaultValue={DecodificaMalos(this.state.objetivosData.titulo)}/>
+                        <InputText datos={{_self:this, lugar: this.state.objetivosData,zona:"titulo"}} plhold="Titulo de objetivo" dfv={DecodificaMalos(this.state.objetivosData.titulo)} />
                     </div>
                     <div className="col-12 mt-3">
-                        <textarea className="form-control" tipo="dataObjetivo" onChange={this.handleChange} placeholder="Descripción del objetivo" name="descripcion" defaultValue={DecodificaMalos(this.state.objetivosData.descripcion)}></textarea>
+                        <TextArea datos={{_self:this, lugar: this.state.objetivosData,zona:"descripcion"}} plhold="Descripción del objetivo" dfv={DecodificaMalos(this.state.objetivosData.descripcion)} />
                     </div>
                 </div>
                 )}
@@ -577,7 +416,7 @@ class MandosAdd extends React.Component
                     {
                         return (
                         <div className="col-12 col-lg-4 mt-2" key={variable.id}>
-                            <input className="form-control" type="text" onChange={this.handleChange} tipo="variable" id={variable.id} name={`variable_${variable.id}`} placeholder={`variable ${variable.id}`} />
+                            <InputText datos={{_self:this, lugar: this.state.variables[variable.id-1], zona:"nombre"}} plhold={`variable ${variable.id}`} />
                         </div>)
                     })}
                     <div className="col-12 col-lg-4 mt-2">
@@ -587,7 +426,6 @@ class MandosAdd extends React.Component
                         )}
                     </div>
                 </div>
-                <Formula this={this} onChange={this.handleChange}/>
                 {this.state.acciones.map(accion => {
                     return(
                         <div key={accion.id} className="col-12 mt-2">
@@ -653,9 +491,8 @@ class MandosAdd extends React.Component
                             <input type="text" key={etapa.idEtapa} idetapa={etapa.idEtapa} onChange={this.handleChange} tipo="etapaNombre" className="form-control col-3" placeholder={`Etapa ${etapa.idEtapa} nombre`} />
                         )
                     })}
-                    {this.state.datos.formula.length !== 0 && (
-                        <div className="col-12 col-lg-12 row mt-3 m-0">
-                            {this.state.variables.map(variable=>{
+                    <div className="col-12 col-lg-12 row mt-3 m-0">
+                        {this.state.variables.map(variable=>{
                                 return(
                                     <div className="row col-12 mt-3" key={variable.id}>
                                         <div className="col-12">
@@ -680,9 +517,8 @@ class MandosAdd extends React.Component
                                         </div>
                                     </div>
                                 )
-                            })}
-                        </div>
-                    )}
+                        })}
+                    </div>
                     <div className="col-12 mt-3">
                         <button className="btn btn-success" onClick={this.handleAddMando}>Agregar</button>
                         <button className="btn btn-danger ml-3" onClick={this.handleBack}>Volver</button>
