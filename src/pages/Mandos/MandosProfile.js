@@ -241,7 +241,7 @@ export default class MandosProfile extends React.Component{
                                     </div>
                                     {this.state.data.acciones.map(action => {
                                         return (
-                                            <div className="acciones col-12 p-2 mando-text mb-2"><p>{action.nombre}</p></div>
+                                            <div className="acciones col-12 p-2 mando-text mb-2" key={action.id}><p>{DecodificaMalos(action.nombre)}</p></div>
                                             )
                                         })}
                                 </React.Fragment>
@@ -257,7 +257,7 @@ export default class MandosProfile extends React.Component{
                             <VariablesMando 
                                 onChange={
                                     e=>{
-                                         CambiarEtapas(e,this,this.state.data.variables,this.state.data)
+                                         CambiarEtapas(e,this,this.state.data.variables,this.state.data, this.state.data.datos.valorMinimo)
                                          this.datosParaChart()
                                          }
                                 } etapa={this.state.data.datos.tipoDeEtapa} editar={this.state.editar} variables={this.state.data.variables} porcentaje={porcentaje}/>
@@ -282,7 +282,7 @@ export default class MandosProfile extends React.Component{
                                     {this.state.data.acciones.map(accion => {
                                         return(
                                             <div key={accion.id} className="col-12 mt-2">
-                                                <input type="text" tipo="action" id={accion.id} onChange={this.handleChangeAction} defaultValue={accion.nombre} className="col-6 form-control" name={accion.nombre} />
+                                                <input type="text" tipo="action" id={accion.id} onChange={this.handleChangeAction} defaultValue={DecodificaMalos(accion.nombre)} className="col-6 form-control" name={accion.nombre} />
                                             </div>
                                         )
                                     })}
