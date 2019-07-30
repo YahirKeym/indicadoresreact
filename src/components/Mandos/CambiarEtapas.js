@@ -28,6 +28,9 @@ function generaPorcentaje({idEtapa },_self,nuevoStado,variables,datos) {
             if (ideEtapa === etapaEstadoUno.idEtapa - 1) {
                 if (datos.datos.formaDeIndicador === "incremento") {
                     formula = (100 * etapa) / etapaEstadoUno.valor;
+                    if (etapa === 0) {
+                        formula = 0;
+                    }
                 } else {
                     formula = IndicadorReductor({
                         valorTop: etapaEstadoUno.valor,
@@ -35,12 +38,12 @@ function generaPorcentaje({idEtapa },_self,nuevoStado,variables,datos) {
                         valorAReducir: etapa
                     });
                 }
-                if (etapa === 0) {
-                    formula = 100;
-                }
             }
         });
-        if (formula === Infinity || idVariable === 0) {
+        if (formula === Infinity) {
+            formula = 0;
+        }
+        if( idVariable === 0){
             formula = 100;
         }
         nuevoStado.variables[idVariable].etapas[
