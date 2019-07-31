@@ -3,10 +3,6 @@ import React from 'react';
 // Actualmente se ocupara objetivos y indicadores.
 export default class DeleteAction extends React.Component
 {
-    // Mandara a llamar al constructor para hacer las propiedades globales.
-    constructor(props){
-        super(props);
-    }
     // Se encarga de hacer la petición para eliminar el elemento.
     handleDelete = async (e) =>{
         e.preventDefault();
