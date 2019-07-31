@@ -43,6 +43,7 @@ function generaPorcentaje({idEtapa },valorMinimo,nuevoStado,variables,datos) {
                     }
                 }
             }
+            return true;
         });
         if( idVariable === 0){
             formula = 100;
@@ -50,6 +51,7 @@ function generaPorcentaje({idEtapa },valorMinimo,nuevoStado,variables,datos) {
         nuevoStado.variables[idVariable].etapas[
             idEtapa
         ].porcentaje = formula;
+        return true;
     });
 }
 // Está función ayudara a cambiar las etapas de los mandos, asignandole el valor de la formula a cada uno.
