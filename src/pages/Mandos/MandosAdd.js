@@ -2,13 +2,17 @@ import React from 'react';
 import './styles/MandosAdd.css';
 import TraeDatos from '../../components/TraeDatos';
 import {CodificaMalos} from '../../components/Generales/ModulosGenerales.js';
-import {MandosDatos, CambiarEtapas} from '../../components/Mandos/ModulosMandos.js';
-import {Input, Select} from '../../components/Formulario/ModulosFormulario.js';
-import TitleAndDescription from '../../components/Mandos/FormularioMandos.js/TitleAndDescription';
+import {MandosDatos} from '../../components/Mandos/ModulosMandos.js';
+import TitleAndDescription from '../../components/Mandos/FormularioMandos/TitleAndDescription';
 import Variables from '../../components/Mandos/FormularioMandos/Variables';
 import Acciones from '../../components/Mandos/FormularioMandos/Acciones';
 import DatosGenerales from '../../components/Mandos/FormularioMandos/DatosGenerales';
 import Etapas from '../../components/Mandos/FormularioMandos/Etapas';
+import BodyFormulario from '../../components/Formulario/BodyFormulario';
+import ValidaCampos from '../../components/Formulario/ValidaCampos';
+import EmptyFields from '../../components/Errores/EmptyFields';
+import AddOneElement from '../../components/Generales/AddOneElement';
+import Subindicadores from '../../components/Mandos/FormularioMandos/Subindicadores';
 
 // Creara un nuevo indicador mediante los campos solicitados
 class MandosAdd extends React.Component
@@ -122,18 +126,10 @@ class MandosAdd extends React.Component
                 }
             ]
         }
-        this.setState(
-            {
-                variables:[
-                    ...this.state.variables,
-                    {
-                        etapas: aEtapas,
-                        id: this.state.variables.length +1,
-                        nombre: `Variable_${this.state.variables.length + 1}`
-                    }
-                ]
-            }
-        )
+        AddOneElement(e,this,this.state.variables,"Variable",[
+            {"nombre":"etapas","valor":aEtapas},
+            {"nombre":"valorTotal","valor": 0}
+        ])
     }
     /**
      * Añadira el mando haciendo los cambios de estados necesarios a empty, le asignara los valores correctos, limpiara las cadenas y realizara la petición del usuario.
@@ -149,7 +145,6 @@ class MandosAdd extends React.Component
                 usuarios:[],
             }
         })
-        this.asignaValores = await this.asignarValores();
         const creaDatos = {
             variables: this.state.variables,
             datos: this.state.datos,
@@ -157,31 +152,23 @@ class MandosAdd extends React.Component
             acciones: this.state.acciones,
             rangos: this.state.rangos
         }
-        const Datos = JSON.stringify(creaDatos);
-        let cadenaLimpia = Datos.replace(/&/gi,"%26");
-        const req = await fetch(`${this.props.url}&action=add&data=${cadenaLimpia}`);
-        const response = await req.json();
-        if(response.status)
-        {
-            this.props.history.push("/mandos")
-        }
-    }
-    /**
-     * Agregara una acción de así requerirlo.
-     */
-    handleAddAction = e =>{
-        e.preventDefault()
-        this.setState(
+        const input = ValidaCampos("input"),
+        select = ValidaCampos("select");
+        if(input && select){
+            const Datos = JSON.stringify(creaDatos);
+            let cadenaLimpia = Datos.replace(/&/gi,"%26");
+            const req = await fetch(`${this.props.url}&action=add&data=${cadenaLimpia}`);
+            const response = await req.json();
+            if(response.status)
             {
-                acciones:[
-                    ...this.state.acciones,
-                    {
-                         id: this.state.acciones.length +1,
-                         nombre: `Acción ${this.state.acciones.length + 1}`
-                    }
-                ]
+                this.props.history.push("/mandos")
             }
-        )
+        }else{
+            this.setState({
+                "emptyField":true
+            })
+            window.scrollTo(0,0)
+        }
     }
     /**
      * Se encargara de llevarnos hacía la página de los mandos
@@ -193,10 +180,16 @@ class MandosAdd extends React.Component
     } 
     // Renderizaremos los componentes necesarios para mostrar el formulario para agregar indicadores.
     render(){
+        let emptyField;
+        if(this.state.emptyField){
+            emptyField = <EmptyFields />
+        }
         return (
-            <form className="row col-12 col-lg-9 mx-auto p-3">
+            <BodyFormulario>
+                {emptyField}
                 <TitleAndDescription objeto={this} lugarDeDatos={this.state} />
                 <Variables objeto={this} lugarDeDatos={this.state} />
+                <Subindicadores objeto={this} lugarDeDatos={this.state} />
                 <Acciones objeto={this} lugarDeDatos={this.state} />
                 <DatosGenerales objeto={this} lugarDeDatos={this.state} />
                 <Etapas objeto={this} lugarDeDatos={this.state} />
@@ -204,7 +197,7 @@ class MandosAdd extends React.Component
                     <button className="btn btn-success" onClick={this.handleAddMando}>Agregar</button>
                     <button className="btn btn-danger ml-3" onClick={this.handleBack}>Volver</button>
                 </div>
-            </form>
+            </BodyFormulario>
         );
     }
 }

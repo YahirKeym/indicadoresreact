@@ -11,38 +11,6 @@ import BuscadorIncremental from "../../components/Generales/BuscadorIncremental.
 import DecodificaMalos from "../../components/Generales/DecodificaMalos.js";
 import VariablesMando from '../../components/Mandos/VariablesMando.js';
 /**
- * Guardara los badges de Jerarquias
- * @param {*} props
- */
-function JerarquiasMando(props) {
-    let jerarquias = props.jerarquias;
-    let rangos = props.rangos;
-    return (
-        <React.Fragment>
-            {jerarquias.datos.map(rangoMando => {
-                return (
-                    <React.Fragment key={rangoMando.id}>
-                        {rangos.map(rango => {
-                            let Element = <span key={rango.id} />;
-                            if (rangoMando.id === rango.id) {
-                                Element = (
-                                    <span
-                                        key={rango.id}
-                                        className="badge badge-light mt-3 mr-3"
-                                    >
-                                        {rango.nombre}
-                                    </span>
-                                );
-                            }
-                            return Element;
-                        })}
-                    </React.Fragment>
-                );
-            })}
-        </React.Fragment>
-    );
-}
-/**
  * Será la clase de mandos donde se visualizaran todos
  */
 class Mandos extends React.Component {
@@ -128,12 +96,6 @@ class Mandos extends React.Component {
                                             porcentaje={porcentaje}
                                             etapa={mando.datos.tipoDeEtapa}
                                             muestraPorcentaje={true}
-                                        />
-                                    </div>
-                                    <div className="col-12">
-                                        <JerarquiasMando
-                                            jerarquias={mando.datos.jerarquias}
-                                            rangos={mando.rangos}
                                         />
                                     </div>
                                     <div className="col-12 mt-2">

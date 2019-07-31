@@ -95,6 +95,7 @@ export default class MandosProfile extends React.Component{
      * Agregara una acción de así requerirlo.
      */
     handleAddAction = e =>{
+        e.preventDefault()
         this.setState(
             {
                 data:{
@@ -114,6 +115,7 @@ export default class MandosProfile extends React.Component{
      * Quitara una acción de abajo hacía arriba
      */
     handleQuitAction = e =>{
+        e.preventDefault()
         const cantidadDeAciones = this.state.data.acciones.length;
         if(cantidadDeAciones > 0)
         {
@@ -191,8 +193,9 @@ export default class MandosProfile extends React.Component{
         let porcentaje = {
             porcentajeBueno: this.state.data.datos.AceptacionBuena,
             porcentajeMedio: this.state.data.datos.AceptacionMedia,
-        }
-        let mensajeEditar = "Editar datos";
+        },
+        mensajeEditar = "Editar datos",
+        analisisDeInformacion;
         if(this.state.editar){
             mensajeEditar = "Dejar de editar";
         }
@@ -219,15 +222,9 @@ export default class MandosProfile extends React.Component{
             })                
         }
         if(this.state.data.datos.analisisDeInformacion === undefined){
-            this.setState({
-                data:{
-                    ...this.state.data,
-                    datos:{
-                        ...this.state.data.datos,
-                        analisisDeInformacion : ""
-                    }
-                }
-            })
+            analisisDeInformacion = "";
+        }else{
+            analisisDeInformacion = this.state.data.datos.analisisDeInformacion;
         }
         let descripcion;
         if(this.state.data.objetivosData.descripcion.length === 0){
@@ -310,21 +307,21 @@ export default class MandosProfile extends React.Component{
                                     })}
                                     <div className="col-12 mt-3 row">
                                         <div className="col-4">
-                                            <a className="text-primary accion" onClick={this.handleAddAction}>Agregar Acción a tomar +</a>
+                                            <button className="text-primary accion" onClick={this.handleAddAction}>Agregar Acción a tomar +</button>
                                         </div>
                                         {this.state.data.acciones.length !== 0 && (
                                             <div className="col-4">
-                                                <a className="text-primary accion" onClick={this.handleQuitAction}>Eliminar Acción -</a>
+                                                <button className="text-primary accion" onClick={this.handleQuitAction}>Eliminar Acción -</button>
                                             </div>
                                         )}
                                     </div>
                                 </div>
                                 <div className="col-12 row m-0 mt-2">
-                                            <textarea placeholder="Analisis de información" onChange={this.handleChangeAnalisisDeInformacion} className="form-control" defaultValue={this.state.data.datos.analisisDeInformacion}></textarea>
+                                        <textarea placeholder="Analisis de información" onChange={this.handleChangeAnalisisDeInformacion} className="form-control" defaultValue={analisisDeInformacion}></textarea>
                                 </div>
                             </React.Fragment>
                         )}
-                        {this.state.data.datos.analisisDeInformacion.length !== 0 && (
+                        {analisisDeInformacion.length !== 0 && (
                             <React.Fragment>
                                 <div className="col-12">
                                     <h4>Análisis de información</h4>
