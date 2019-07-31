@@ -3,7 +3,7 @@ import ChangeData from "./ChangeData";
 function Select(props){
     const {_self,lugar,zona} = props.datos,
     elementos = props.elementos,
-    callback= props.callback,
+    callback = props.callback,
     callFunction = props.function,
     placeholder=props.plhold,
     className=props.className,

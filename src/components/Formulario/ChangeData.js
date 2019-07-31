@@ -4,6 +4,12 @@ function ChangeData(e,_self, lugar, zona, valorRepuesto){
     let valor = e.target.value;
     if(valor.length === 0){
         valor = valorRepuesto;
+        _self.state.emptyField = true;
+        e.target.classList.add("border");
+        e.target.classList.add("border-danger");
+    }else{
+        e.target.classList.remove("border");
+        e.target.classList.remove("border-danger");        
     }
     lugar[zona] = CodificaMalos(valor);
     _self.setState(_self.state);
