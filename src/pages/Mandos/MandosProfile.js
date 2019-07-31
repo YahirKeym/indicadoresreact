@@ -48,7 +48,6 @@ export default class MandosProfile extends React.Component{
         let aEtapas = [
             ["Etapas",nombreDeVariableUno,nombreDeVariableDos]
         ];
-        this.contadorEtapas = 1;
         this.state.data.variables[0].etapas.map(etapas1=>{
             return this.state.data.variables[1].etapas.map(etapas2 => {
                 if(etapas1.idEtapa === etapas2.idEtapa)
@@ -59,7 +58,6 @@ export default class MandosProfile extends React.Component{
                     return [];
                 }
             })
-            this.contadorEtapas++;
         }
         )
         this.setState({
@@ -199,13 +197,37 @@ export default class MandosProfile extends React.Component{
             mensajeEditar = "Dejar de editar";
         }
         if(this.state.data.datos.minimaEscala === undefined){
-            this.state.data.datos.minimaEscala = 0;            
+            this.setState({
+                data:{
+                    ...this.state.data,
+                    datos:{
+                        ...this.state.data.datos,
+                        minimaEscala : 0
+                    }
+                }
+            })          
         }
         if(this.state.data.datos.maximaEscala === undefined){
-            this.state.data.datos.maximaEscala = 0;            
+            this.setState({
+                data:{
+                    ...this.state.data,
+                    datos:{
+                        ...this.state.data.datos,
+                        maximaEscala : 0
+                    }
+                }
+            })                
         }
         if(this.state.data.datos.analisisDeInformacion === undefined){
-            this.state.data.datos.analisisDeInformacion = "";
+            this.setState({
+                data:{
+                    ...this.state.data,
+                    datos:{
+                        ...this.state.data.datos,
+                        analisisDeInformacion : ""
+                    }
+                }
+            })
         }
         let descripcion;
         if(this.state.data.objetivosData.descripcion.length === 0){
