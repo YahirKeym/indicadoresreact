@@ -23,10 +23,10 @@ function Aceptacion(props){
                 <label htmlFor="AceptacionBuena">Aceptación %</label>
             </div>
             <div className="col-4">
-                <Input datos={{_self:objeto,lugar:lugarDeDatos.datos,zona:"AceptacionBuena"}} plhold="94" className="form-control border border-success" />
+                <Input datos={{_self:objeto,lugar:lugarDeDatos.datos,zona:"AceptacionBuena"}} plhold="94" dfv={lugarDeDatos.datos.AceptacionBuena} className="form-control border border-success" />
             </div>
             <div className="col-4">
-                <Input datos={{_self:objeto,lugar:lugarDeDatos.datos,zona:"AceptacionMedia"}} plhold="80" className="form-control border border-warning"/>
+                <Input datos={{_self:objeto,lugar:lugarDeDatos.datos,zona:"AceptacionMedia"}} plhold="80" dfv={lugarDeDatos.datos.AceptacionMedia} className="form-control border border-warning"/>
             </div>
         </div>
     )

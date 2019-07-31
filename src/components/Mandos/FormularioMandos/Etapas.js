@@ -58,7 +58,7 @@ function ValoresEtapas(props){
                                 {
                                     color = "border border-danger";
                                 }
-                                return(<input type="number" placeholder="0" idetapa={etapa.idEtapa} onChange={e=>{CambiarEtapas(e,objeto,lugarDeDatos.variables,lugarDeDatos,lugarDeDatos.datos.valorMinimo)}} tipo="etapa" name={etapa.id} idvariable={variable.id} className={`col-2 form-control ${color}`} key={etapa.id} />)
+                                return(<input type="number" placeholder="0" defaultValue={etapa.valor} idetapa={etapa.idEtapa} onChange={e=>{CambiarEtapas(e,objeto,lugarDeDatos.variables,lugarDeDatos,lugarDeDatos.datos.valorMinimo)}} tipo="etapa" name={etapa.id} idvariable={variable.id} className={`col-2 form-control ${color}`} key={etapa.id} />)
                             })}
                         </div>
                         <div className="col-12 col-lg-4 text-center">
