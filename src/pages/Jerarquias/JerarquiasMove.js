@@ -55,6 +55,7 @@ export default class JerarquiasMove extends React.Component
                     jerarquia.orden = parseInt(jerarquia.orden)-1
                 }
             }
+            return true;
         });
         this.setState({
             datos: this.state.datos,
@@ -83,6 +84,7 @@ export default class JerarquiasMove extends React.Component
                     jerarquia.orden = parseInt(jerarquia.orden)+1
                 }
             }
+            return true;
         });
         this.setState({
             datos: this.state.datos,
