@@ -86,6 +86,7 @@ export default class Jerarquias extends React.Component{
                                                 </Link>
                                             );
                                         }
+                                        return false
                                     })}
                                 </div>
                             </div>
