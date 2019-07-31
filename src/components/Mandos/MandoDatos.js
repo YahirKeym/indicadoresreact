@@ -25,6 +25,7 @@ function MandoDatos(variables){
             "titulo":"",
             "descripcion":""
         },
+        "subindicadores":[],
         "tipoDeIndicador":[
             {
                 "id":0,
