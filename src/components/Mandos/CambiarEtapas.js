@@ -6,8 +6,6 @@ function handleMantenerEtapas(idVariable, idEtapa, Valor, nombreEtapa,_self, dat
         let Suma = 0;
         const Etapas = nuevoStado.variables[idVariable]["etapas"];
         Etapas[idEtapa]["valor"] = Valor;
-        const valorPrincipalDePorcentaje =
-            nuevoStado.variables[0]["etapas"][idEtapa]["valor"];
         for (let index = 0; index < Etapas.length; index++) {
             Suma = Suma + parseFloat(Etapas[index]["valor"]);
         }
