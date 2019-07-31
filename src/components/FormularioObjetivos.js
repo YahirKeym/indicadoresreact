@@ -1,5 +1,6 @@
 import React from "react";
 import DeleteAction from './DeleteAction.js';
+import BodyFormulario from "./Formulario/BodyFormulario.js";
 /**
  * Será el formulario para editar y agregar objetivos
  * @param {*} props 
@@ -8,8 +9,9 @@ function Formulario(props) {
     const datos = {url:"a",id:0,history:"",oneProfile:false}
     let {url,id,history,oneProfile} = props.Delete ? props.Delete  : datos;
     return (
-        <form className="form row m-0 p-3 col-md-8 col-sm-12 mx-auto">
-            <div className="col-8">
+        <BodyFormulario>
+
+        <div className="col-8">
                 <input
                     type="text"
                     className="form-control"
@@ -17,7 +19,7 @@ function Formulario(props) {
                     placeholder="Título"
                     defaultValue={props.formulario ? props.formulario.datos.titulo : ''}
                     onChange={props.onChange}
-                />
+                    />
             </div>
             <div className="col-11 mt-3">
                 <textarea
@@ -36,7 +38,7 @@ function Formulario(props) {
                         onChange={props.onChange}
                         name="tipoAlcance"
                         value={props.formulario ? props.formulario.datos.tipoAlcance : 0}
-                    >
+                        >
                         <option disabled defaultValue="0">
                             Tipo de alcance
                         </option>
@@ -53,14 +55,14 @@ function Formulario(props) {
                         onChange={props.onChange}
                         name="paisAlcance"
                         value={props.formulario ? props.formulario.datos.paisAlcance : 0}
-                    >
+                        >
                         <option disabled defaultValue="0">
                             Seleccionar país
                         </option>
                         {props.formulario.paises.map(pais=>{
                             return(
                                 <option key={pais.id} value={pais.id}>{pais.nombre}</option>
-                            );
+                                );
                         })}
                     </select>
                 </div>
@@ -79,8 +81,8 @@ function Formulario(props) {
                         {props.formulario.paises.map(pais=>{
                             return(
                                 <option key={pais.id} value={pais.id}>{pais.nombre}</option>
-                            );
-                        })}
+                                );
+                            })}
                         <option value="0">México</option>
                     </select>
                 </div>
@@ -94,7 +96,7 @@ function Formulario(props) {
                         className="form-control"
                         name="inicia"
                         defaultValue={props.formulario ? props.formulario.datos.inicia : ''}
-                    />
+                        />
                 </div>
                 <div className="col-6 form-group">
                     <label htmlFor="finaliza">Fecha cuando finaliza</label>
@@ -104,7 +106,7 @@ function Formulario(props) {
                         className="form-control"
                         name="finaliza"
                         defaultValue={props.formulario ? props.formulario.datos.finaliza : ''}
-                    />
+                        />
                 </div>
             </div>
             <div className="col-12 mt-3">
@@ -114,14 +116,14 @@ function Formulario(props) {
                 <button
                     className="btn btn-danger ml-3"
                     onClick={props.back}
-                >
+                    >
                     Volver
                 </button>
                 {props.edit && (
                     <DeleteAction url={url} id={id} history={history} oneProfile={oneProfile} />
-                )}
+                    )}
             </div>
-        </form>
+        </BodyFormulario>
     );
 }
 export default Formulario;
