@@ -43,16 +43,17 @@ class App extends React.Component {
         this.logged = false;
         this.session = ObtenCookie("indicadores_i");
         const URL_BASE = "http://172.16.100.94";
+        const LUGAR = "indicadoresreact";
         try {
-            this.urlAutentica = `${URL_BASE}/indicadoresreact/api/controller/autentica.php?token=${this.session}`;
+            this.urlAutentica = `${URL_BASE}/${LUGAR}/api/controller/autentica.php?token=${this.session}`;
             const response = await fetch(this.urlAutentica);
             const datos = await response.json();
-            this.urlObjetivos = `${URL_BASE}/indicadoresreact/api/controller/objetivos.php?token=${this.session}`;
-            this.urlMandos = `${URL_BASE}/indicadoresreact/api/controller/mandos.php?token=${this.session}`;
-            this.urlAlcance = `${URL_BASE}/indicadoresreact/api/controller/alcance.php?token=${this.session}`;
-            this.urlPaises = `${URL_BASE}/indicadoresreact/api/controller/paises.php?token=${this.session}`;
-            this.urlJerarquias = `${URL_BASE}/indicadoresreact/api/controller/jerarquias.php?token=${this.session}`;
-            this.urlRango = `${URL_BASE}/indicadoresreact/api/controller/rango.php?token=${this.session}`;
+            this.urlObjetivos = `${URL_BASE}/${LUGAR}/api/controller/objetivos.php?token=${this.session}`;
+            this.urlMandos = `${URL_BASE}/${LUGAR}/api/controller/mandos.php?token=${this.session}`;
+            this.urlAlcance = `${URL_BASE}/${LUGAR}/api/controller/alcance.php?token=${this.session}`;
+            this.urlPaises = `${URL_BASE}/${LUGAR}/api/controller/paises.php?token=${this.session}`;
+            this.urlJerarquias = `${URL_BASE}/${LUGAR}/api/controller/jerarquias.php?token=${this.session}`;
+            this.urlRango = `${URL_BASE}/${LUGAR}/api/controller/rango.php?token=${this.session}`;
             if(datos.autenticado)
             {
                 this.setState({
@@ -199,6 +200,18 @@ class App extends React.Component {
                             <Route
                                 exact
                                 path="/mandos/:mandoId"
+                                component={({ match, history }) => (
+                                    <MandosProfile
+                                        history={history}
+                                        match={match}
+                                        url={this.urlMandos}
+                                        urlObjetivos={this.urlObjetivos}
+                                    />
+                                )}
+                            />
+                            <Route
+                                exact
+                                path="/mandos/:mandoId/subindicador"
                                 component={({ match, history }) => (
                                     <MandosProfile
                                         history={history}
