@@ -9,3 +9,6 @@ a.accion:hover{
 a.accion:active{
     cursor: grabbing;
 }
+.subindicador{
+    background: #162254;
+}
