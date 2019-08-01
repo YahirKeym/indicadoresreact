@@ -130,13 +130,9 @@ class Autenticacion
         }
         return $aRegreso;
     }
-    /**
-     * Undocumented function
-     *
-     * @return void
-     */
+    // Traera a los usurios del departamento que el usuario que los está pidiendo este
     public function view(){
-        $cQuery = "SELECT IdEmpleado, IdPuesto, IdDepto, Nombre, ApellidoP,ApellidoM FROM general_empleado";
+        $cQuery = "SELECT IdEmpleado, IdPuesto, IdDepto, Nombre, ApellidoP,ApellidoM FROM general_empleado WHERE IdDepto='{$this->cDepartamento}'";
         $oConsulta = $this->oNewConexion->query($cQuery);
         $aStatus = [
             'status'=>false,

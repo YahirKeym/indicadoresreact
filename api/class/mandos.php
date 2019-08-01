@@ -47,33 +47,20 @@ class Mandos
      */
     public function add($aDatos = [])
     {
-        $cDatos = json_encode($aDatos);
-        $aUsuarios = $aDatos['datos']['usuarios']['datos'];
-        $aDepartamento = $aDatos['datos']['rangos']['datos'];
-        $aArea = $aDatos['datos']['jerarquias']['datos'];
         $iTipoIndicador = (int)$aDatos['datos']['tipoIndicador'];
         $iNivel = 0;
         $cFecha = date("Y-m-d H:i:s");
-        if(!empty($aUsuarios))
-        {
-            $iNivel = 10;
-            foreach($aUsuarios as $aUsers){
-                if($aUsers['nivel'] === null){
-                    $aUsers['nivel'] = 0;
-                }
-                if($aUsers['nivel'] < $iNivel)
-                {
-                    $iNivel = $aUsers['nivel'];
-                }
-            }
-        }
-        $cDepartamento = $this->repetidorDeDatos($aDepartamento);
-        $cArea= $this->repetidorDeDatos($aArea);
-        $cUsuarios = (string)$this->repetidorDeDatos($aUsuarios);
+        $aDatosAGuardar = [
+            "variables" => $aDatos['variables'],
+            "datos" => $aDatos['datos'],
+            "objetivosData" => $aDatos['objetivosData'],
+            "acciones" => $aDatos['acciones'],
+        ];
+        $cDatos = json_encode($aDatosAGuardar);
         $cQueryMandoObjetivo = "INSERT INTO {$this->cTabla}
-        (DatosMando,NivelPuesto,IdDepartamento,IdArea,IdUsuario,TipoIndicador,UsuarioCreo,Creado,Editado,UsuarioEdito) 
+        (DatosMando,NivelPuesto,TipoIndicador,UsuarioCreo,Creado,Editado,UsuarioEdito) 
         VALUES 
-        ('{$cDatos}',{$iNivel},'{$cDepartamento}','{$cArea}','{$cUsuarios}',{$iTipoIndicador},{$this->oAutentica->getId()},'{$cFecha}','{$cFecha}',{$this->oAutentica->getId()})";
+        ('{$cDatos}',{$iNivel},{$iTipoIndicador},{$this->oAutentica->getId()},'{$cFecha}','{$cFecha}',{$this->oAutentica->getId()})";
         $oConsultaMandoObjetivo = $this->oConexion->query($cQueryMandoObjetivo);
         $aStatus = [
             'status' => false
@@ -81,21 +68,55 @@ class Mandos
         if($oConsultaMandoObjetivo != false)
         {
             $aStatus['status'] = true;
+            $aStatus['subindicador'] = $this->addSubIndicador($aDatos['subindicadores']);
         }
         return json_encode($aStatus);
     }
-    /**
-     * Undocumented function
-     *
-     * @return void
-     */
+    // Ayudara a añadir los subindicadores que hay.
+    private function addSubIndicador($aDatos=[]){
+        $cQueryLastIndicadorOfUser = "SELECT Id FROM general_mando WHERE UsuarioCreo={$this->oAutentica->getId()} ORDER BY Id DESC LIMIT 1";
+        $oConsultaLastIndicadorOfUser = $this->oConexion->query($cQueryLastIndicadorOfUser);
+        $aDatosLastIndicador = $oConsultaLastIndicadorOfUser->fetch(PDO::FETCH_ASSOC);
+        $IdLatIndicador = $aDatosLastIndicador['Id'];
+        $lStatus = false;
+        if(!empty($aDatos)){
+            foreach ($aDatos as $subIndicadores) {
+                $lStatus = false;
+                $aDatosAEnviar = [
+                    "id" => $subIndicadores['id'],
+                    "nombre" => $subIndicadores['nombre'],
+                    "variables" => $subIndicadores['variables'],
+                ];
+                $iCantidadDeResponsables = count($subIndicadores['responsables']);
+                $iContadorDeResponsables = 0;
+                $cResponsable = "";
+                foreach ($subIndicadores['responsables'] as $responsable) {
+                    $cResponsable .= $responsable['idUsuario'];
+                    $iContadorDeResponsables++;
+                    if($iContadorDeResponsables !== $iCantidadDeResponsables){
+                        $cResponsable .= ",";
+                    }
+                }
+                $cDatosAEnviar = json_encode($aDatosAEnviar);
+                $cQuery ="INSERT INTO general_subindicadores (DatosSubIndicador,IdIndicador,IdUsuariosResponsables) VALUES ('{$cDatosAEnviar}',{$IdLatIndicador},'{$cResponsable}')";
+                $oConsulta = $this->oConexion->query($cQuery);
+                if($oConsulta !== false){
+                    $lStatus = true;
+                }
+            }
+        }else{
+            $lStatus = true;
+        }
+        return $lStatus;
+    }
+    // La función view mandara a llamar a todos los indicadores que el usuario pueda ver
     public function view()
     {
         $idUsuario = $this->oAutentica->getId();
-    $cQuery = "SELECT * FROM {$this->cTabla} WHERE IdUsuario LIKE '{$idUsuario}%' 
-    OR IdUsuario LIKE  '%{$idUsuario}%' 
-    OR IdUsuario LIKE '%{$idUsuario}'
-    OR UsuarioCreo={$this->oAutentica->getId()}";
+        $cQuery = "SELECT * FROM {$this->cTabla} WHERE IdUsuario LIKE '{$idUsuario}%' 
+        OR IdUsuario LIKE  '%{$idUsuario}%' 
+        OR IdUsuario LIKE '%{$idUsuario}'
+        OR UsuarioCreo={$idUsuario}";
         $oConsulta = $this->oConexion->query($cQuery);
         $aStatus =[
             'status' => false,
@@ -123,7 +144,9 @@ class Mandos
     public function select($iId = 0)
     {
         $cQuery = "SELECT * FROM {$this->cTabla} WHERE Id={$iId}";
+        $cQuerySubIndicador = "SELECT DatosSubIndicador FROM general_subindicadores WHERE IdIndicador={$iId}";
         $oConsulta = $this->oConexion->query($cQuery);
+        $oConsultaSubIndicador = $this->oConexion->query($cQuerySubIndicador);
         $aStatus = [
             'status' => false,
             'datos' => []
@@ -132,6 +155,19 @@ class Mandos
             $aStatus['status'] = true;
             $aDatos = $oConsulta->fetch(PDO::FETCH_ASSOC);
             $aStatus['datos'] = json_decode($aDatos['DatosMando'], true);
+            $aStatus['datos']['subindicadores'] = [];
+            $iContadorSubIndicadores = 0;
+            foreach($oConsultaSubIndicador as $aSubindicador){
+                if(!empty($aSubindicador)){
+                    $aDatosSubIndicador = json_decode($aSubindicador['DatosSubIndicador'],true);
+                    $aStatus['datos']['subindicadores'][$iContadorSubIndicadores]["id"] = $aDatosSubIndicador['id'];
+                    $aStatus['datos']['subindicadores'][$iContadorSubIndicadores]["nombre"] = $aDatosSubIndicador['nombre'];
+                    $aStatus['datos']['subindicadores'][$iContadorSubIndicadores]["variables"] = $aDatosSubIndicador['variables'];                    
+                    $iContadorSubIndicadores++;
+                }else{
+                    $aStatus['datos']['subindicadores'] = [];
+                }
+            }
             $aStatus['datos']['id'] = $aDatos['Id'];
         }
         return json_encode($aStatus);
@@ -155,13 +191,7 @@ class Mandos
         }
         return json_encode($aStatus);
     }
-    /**
-     * Undocumented function
-     *
-     * @param array $aDatos
-     * @param string $cDatos
-     * @return void
-     */
+    // Modificara los datos del indicador que le dictemos
     public function modify($aDatos = [],$cDatos = "")
     {
         $cFecha = date("Y-m-d H:i:s");
