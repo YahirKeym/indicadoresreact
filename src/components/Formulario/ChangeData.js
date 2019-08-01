@@ -10,8 +10,8 @@ function ChangeData(e,_self, lugar, zona, valorRepuesto){
     }else{
         e.target.classList.remove("border");
         e.target.classList.remove("border-danger");        
+        lugar[zona] = CodificaMalos(valor);
     }
-    lugar[zona] = CodificaMalos(valor);
     _self.setState(_self.state);
 }
 export default ChangeData;
