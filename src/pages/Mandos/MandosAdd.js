@@ -13,6 +13,7 @@ import ValidaCampos from '../../components/Formulario/ValidaCampos';
 import EmptyFields from '../../components/Errores/EmptyFields';
 import AddOneElement from '../../components/Generales/AddOneElement';
 import Subindicadores from '../../components/Mandos/FormularioMandos/Subindicadores';
+import CreaEtapas from '../../components/Mandos/CreaEtapas';
 
 // Creara un nuevo indicador mediante los campos solicitados
 class MandosAdd extends React.Component
@@ -43,6 +44,8 @@ class MandosAdd extends React.Component
     {   
         this.entregaEtapasALasVariables();
         TraeDatos({url: this.props.urlObjetivos,_self: this}, "objetivos");
+        TraeDatos({url: this.props.urlAutentica,_self: this}, "usuarios");
+
     }
     // Si llegase a ser el caso de que salgamos de los indicadores antes de terminar la petición
     // en cuanto desmontemos el componente, se limpiara la petición echa.
@@ -110,22 +113,10 @@ class MandosAdd extends React.Component
         })
     }
     // Nos ayudara a agregar una variable con sus etapas.
-    handleAddVariable = (e) =>
+    handleAddVariable = (e,OBJETO,LUGAR_DE_DATOS) =>
     {
         e.preventDefault();
-        let aEtapas = [];
-        const idVariable = this.state.variables.length;
-        for (let indexEtapas = 1; indexEtapas <= this.state.datos.etapas; indexEtapas++) {
-            aEtapas = [
-                ...aEtapas,
-                {
-                    id: `${idVariable}_${indexEtapas}`,
-                    valor: 0,
-                    idEtapa: indexEtapas,
-                    porcentaje: 0
-                }
-            ]
-        }
+        let aEtapas = CreaEtapas(this.state.variables,this.state);
         AddOneElement(e,this,this.state.variables,"Variable",[
             {"nombre":"etapas","valor":aEtapas},
             {"nombre":"valorTotal","valor": 0}
@@ -137,20 +128,12 @@ class MandosAdd extends React.Component
     handleAddMando = async e =>
     {
         e.preventDefault();
-        this.cambioEstado = await this.setState({
-            datos:{
-                ...this.state.datos,
-                rangos:[],
-                jerarquias:[],
-                usuarios:[],
-            }
-        })
         const creaDatos = {
             variables: this.state.variables,
             datos: this.state.datos,
             objetivosData: this.state.objetivosData,
             acciones: this.state.acciones,
-            rangos: this.state.rangos
+            subindicadores: this.state.subindicadores
         }
         const input = ValidaCampos("input"),
         select = ValidaCampos("select");
@@ -161,7 +144,14 @@ class MandosAdd extends React.Component
             const response = await req.json();
             if(response.status)
             {
-                this.props.history.push("/mandos")
+                if(response.subindicador){
+
+                    this.props.history.push("/mandos")
+                }else{
+                    this.setState({
+                        "envioSubindicador": false
+                    }) 
+                }
             }
         }else{
             this.setState({
@@ -188,7 +178,7 @@ class MandosAdd extends React.Component
             <BodyFormulario>
                 {emptyField}
                 <TitleAndDescription objeto={this} lugarDeDatos={this.state} />
-                <Variables objeto={this} lugarDeDatos={this.state} />
+                <Variables objeto={this} lugarDeDatos={this.state} lugarDeDatosPrincipal={this.state}/>
                 <Subindicadores objeto={this} lugarDeDatos={this.state} />
                 <Acciones objeto={this} lugarDeDatos={this.state} />
                 <DatosGenerales objeto={this} lugarDeDatos={this.state} />
