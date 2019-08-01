@@ -14,7 +14,7 @@ function TipoDeEtapas(props){
                 <Input type="text" datos={{_self:objeto,lugar:lugarDeDatos.datos,zona:"tipoDeEtapa"}} plhold="Meses" /> 
             </div>
             <div className="col-12 col-lg-6 mb-3">
-                <Input type="number" datos={{_self:objeto,lugar:lugarDeDatos.datos,zona:"etapas"}} plhold="12" callback={true} function={objeto.entregaEtapasALasVariables}/>
+                <Input type="number" datos={{_self:objeto,lugar:lugarDeDatos.datos,zona:"etapas"}} plhold="12" dfv="12" callback={true} function={objeto.entregaEtapasALasVariables}/>
             </div>
         </div>
     )
@@ -79,7 +79,6 @@ function Etapas(props){
             <div className="col-12 mt-3">
                 <h4>Etapas del indicador</h4>
             </div>
-
             <TipoDeEtapas objeto={objeto} lugarDeDatos={lugarDeDatos} />
             <div className="col-12 row mt-3 m-0">
                 <NombreDeEtapas objeto={objeto} lugarDeDatos={lugarDeDatos} />
