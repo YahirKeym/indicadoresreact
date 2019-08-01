@@ -28,7 +28,9 @@ function VariablesMando(props)
                                 }
                                 if(seEdita){
                                     return (
-                                        <input type="number" name={etapa.id} idetapa={etapa.idEtapa} idvariable={variable.id} onChange={onChange} className={`col-2 text-center ${color}`} key={etapa.id} defaultValue={etapa.valor} />
+                                        <React.Fragment>
+                                            <input type="number" name={etapa.id} idetapa={etapa.idEtapa} idvariable={variable.id} onChange={onChange} className={`col-2 text-center ${color}`} key={etapa.id} defaultValue={etapa.valor} />
+                                        </React.Fragment>
                                     )
                                 }
                                 let valor = etapa.valor;
@@ -36,9 +38,16 @@ function VariablesMando(props)
                                     valor = `${Math.round(etapa.porcentaje*100)/100}%`;
                                 }
                                 return(
-                                <div className={`col-2 text-center etapa ${color}`} key={etapa.id}>
-                                    {valor}
-                                </div>
+                                    <div className={`col-2 text-center`} key={etapa.id}>
+                                        {variable.id === 1 && (
+                                                <div className="col-12">
+                                                    {DecodificaMalos(etapa.nombre)}
+                                                </div>
+                                            )}
+                                        <div className={`etapa ${color}`}>
+                                            {valor}
+                                        </div>
+                                    </div>
                                 )
                             })}
                         </div>
