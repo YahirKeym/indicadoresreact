@@ -1,3 +1,6 @@
+// Es una función asyncrona que nos traera los datos de la url que le pidamos siempre y cuando su acción sea "View"
+// También los insertara en el lugar donde le digamos y por automatico nos pintara error de haberlo
+// y quitara el loading
 async function TraeDatos({url,_self},lugar = ""){
     try{
         const response = await fetch(`${url}&action=view`);
