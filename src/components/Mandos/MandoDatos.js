@@ -51,6 +51,7 @@ function MandoDatos(variables){
                 "titulo":"decremento"
             }
         ],
+        "usuarios": [],
         "acciones":[],
         "objetivoShow":true,
         "etapas":[]
