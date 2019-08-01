@@ -37,30 +37,47 @@ export default class MandosProfile extends React.Component{
                 data: responseMando.datos
             })
         }
-        this.datosParaChart();
+        this.datosParaChart(this,this.state.data);
     }
     /**
      * 
      */
-    datosParaChart = () => {
-        let nombreDeVariableUno = DecodificaMalos(this.state.data.variables[0].nombre);
-        let nombreDeVariableDos = DecodificaMalos(this.state.data.variables[1].nombre);
-        let aEtapas = [
-            ["Etapas",nombreDeVariableUno,nombreDeVariableDos]
-        ];
-        this.state.data.variables[0].etapas.map(etapas1=>{
-            return this.state.data.variables[1].etapas.map(etapas2 => {
-                if(etapas1.idEtapa === etapas2.idEtapa)
-                {
-                    return aEtapas.push([etapas1.nombreEtapa,parseInt(etapas1.valor),parseInt(etapas2.valor)])
-
-                }else{
-                    return [];
-                }
-            })
+    datosParaChart = (OBJETO,LUGAR_DE_DATOS) => {
+        let firstDatos = ["Etapas"], secondData = [],aEtapas = [];
+        LUGAR_DE_DATOS.variables.map(variable => firstDatos.push(variable.nombre) )
+        if(LUGAR_DE_DATOS.subindicadores !== undefined){
+            if(LUGAR_DE_DATOS.subindicadores.length !== 0){
+                LUGAR_DE_DATOS.subindicadores.map(subindicador =>{
+                    subindicador.variables.map(variable=>firstDatos.push(`${subindicador.nombre} ${variable.nombre}`))
+                })
+            }
         }
-        )
-        this.setState({
+        for (let index = 0; index < LUGAR_DE_DATOS.datos.etapas; index++) {
+            let guardaValores = [];
+            LUGAR_DE_DATOS.variables.map(variable => {
+                if(variable.id === 1){
+                    guardaValores.push(LUGAR_DE_DATOS.variables[0].etapas[index].nombre);
+                }
+                guardaValores.push(parseInt(variable.etapas[index].valor))
+                return true
+            })
+            if(LUGAR_DE_DATOS.subindicadores !== undefined){
+                if(LUGAR_DE_DATOS.subindicadores.length !== 0){
+                    LUGAR_DE_DATOS.subindicadores.map(subindicador => 
+                        subindicador.variables.map(variable=> 
+                            guardaValores.push(variable.etapas[index].valor)
+                            ) 
+                        )
+                }
+            }
+            secondData.push(guardaValores);
+        }
+        aEtapas = [firstDatos];
+        aEtapas = [
+            ...aEtapas,
+            ...secondData
+        ];
+        OBJETO.setState({
             etapasChart: aEtapas,
         })
     }
@@ -342,7 +359,7 @@ export default class MandosProfile extends React.Component{
                         data={this.state.etapasChart}
                         options={{
                             title: DecodificaMalos(this.state.data.datos.titulo),
-                            chartArea: { width: '70%', backgroundColor:'rgba(0,0,0,0)' },
+                            chartArea: { width: '80%', backgroundColor:'rgba(0,0,0,0)' },
                             backgroundColor: {
                                 fill: '#000',
                                 fillOpacity: 0
@@ -356,7 +373,7 @@ export default class MandosProfile extends React.Component{
                                 minValue: this.state.data.datos.minimaEscala,
                                 maxValue: this.state.data.datos.maximaEscala
                             },
-                            colors:["#289c7c","#007bff"]
+                            colors:["#289c7c","#007bff","#dc3545","#000d42","#000","#633836","#485051","#a3371f","#c5674a","#6b3e3e","#472019","#f2dede","#438efa"]
                         }}
                         
                         legendToggle
