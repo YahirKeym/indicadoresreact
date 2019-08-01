@@ -12,7 +12,7 @@ function Layout(props)
             {State.logged && (
                     <SideBar state={State} />
             )}
-            <div className="col-sm-12 col-md-12 mt-5">
+            <div className="col-sm-12 col-md-12 mt-5 p-0">
                 {Children}
             </div>
             <Footer />
