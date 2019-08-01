@@ -28,7 +28,11 @@ function generaPorcentaje({idEtapa },valorMinimo,nuevoStado,variables,datos) {
                     datos.datos.formaDeIndicador = "incremento";
                 }
                 if (datos.datos.formaDeIndicador === "incremento") {
-                    formula = (100 * etapa) / etapaEstadoUno.valor;
+                    let valor = etapaEstadoUno.valor;
+                    if(valor === 0 || valor === "0"){
+                        valor = 100;
+                    }
+                    formula = (100 * etapa) / valor;
                     if (etapa === 0 || formula === Infinity) {
                         formula = 0;
                     }
