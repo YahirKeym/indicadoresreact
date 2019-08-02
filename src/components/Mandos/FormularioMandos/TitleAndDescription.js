@@ -26,11 +26,16 @@ function TitleAndDescription(props){
             )}
             {lugarDeDatos.objetivoShow && (
                 <div className="col-12 col-lg-9 mt-3 row">
+                    <h4>Objetivo</h4>
                     <div className="col-12">
-                        <Input type="text" datos={{_self:objeto, lugar: lugarDeDatos.objetivosData,zona:"titulo"}} plhold="Titulo de objetivo" dfv={DecodificaMalos(lugarDeDatos.objetivosData.titulo)} />
+                        <div>
+                            {DecodificaMalos(lugarDeDatos.objetivosData.titulo)}
+                        </div>
                     </div>
                     <div className="col-12 mt-3">
-                        <TextArea datos={{_self:objeto, lugar: lugarDeDatos.objetivosData,zona:"descripcion"}} plhold="Descripción del objetivo" dfv={DecodificaMalos(lugarDeDatos.objetivosData.descripcion)} />
+                        <div>
+                            {DecodificaMalos(lugarDeDatos.objetivosData.descripcion)}
+                        </div>
                     </div>
                 </div>
             )}

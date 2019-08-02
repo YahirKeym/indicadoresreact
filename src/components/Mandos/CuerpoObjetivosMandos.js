@@ -62,13 +62,20 @@ function CuerpoObjetivosMandos(props){
     history = props.history,
     oneProfile = props.oneProfile,
     onClickSave = props.save;
+    let size = props.size;
+    if(size === undefined){
+        size = 6; 
+    }
+    if(size === 0){
+        size = 6;
+    }
     let isProfile = false;
     if(props.isProfile)
     {
         isProfile = true;
     }
     return(
-        <div className="col-12 p-3 col-md-6 row mando m-0 text-white">
+        <div className={`col-12 p-3 col-md-${size} row mando m-0 text-white`}>
             <div  className="col-12 text-center">
                 <Titulo titulo={titulo} objetivo={subtitulo} />
             </div>

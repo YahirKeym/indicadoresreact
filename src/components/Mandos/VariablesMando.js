@@ -38,7 +38,7 @@ function VariablesMando(props)
                                     valor = `${Math.round(etapa.porcentaje*100)/100}%`;
                                 }
                                 return(
-                                    <div className={`col-2 text-center`} key={etapa.id}>
+                                    <div className={`col-1 text-center`} key={etapa.id}>
                                         {variable.id === 1 && (
                                                 <div className="col-12">
                                                     {DecodificaMalos(etapa.nombre)}

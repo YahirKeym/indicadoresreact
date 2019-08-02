@@ -285,6 +285,7 @@ export default class MandosProfile extends React.Component {
                         id={this.state.data.id}
                         isProfile={true}
                         save={this.handleUpdate}
+                        size="12"
                     >
                         <div className="col-12 mt-3 row  d-flex justify-content-center">
                             {this.state.data.acciones.length !== 0 && (
