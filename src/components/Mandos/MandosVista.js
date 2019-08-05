@@ -7,16 +7,20 @@ import DecodificaMalos from '../Generales/DecodificaMalos';
 function MandosVista(props){
     const OBJETO = props.objeto,
     LUGAR_DE_DATOS = props.lugarDeDatos;
+    let heredado = props.heredado;
+    if(heredado === undefined){
+        heredado="";
+    }
     return(
         <div className="col-12 row m-0">
-            {LUGAR_DE_DATOS.data.length === 0 && (
+            {LUGAR_DE_DATOS.length === 0 && (
                 <SinDatos />
             )}
             <div
                 className="col-12 row d-flex justify-content-between m-0"
                 search-name="mandos"
             >
-                {LUGAR_DE_DATOS.data.map(mando => {
+                {LUGAR_DE_DATOS.map(mando => {
                     let AceptacionBuena, AceptacionMedio;
                     if(mando.datos.AceptacionBuena === undefined || mando.datos.AceptacionBuena === 0 ){
                         AceptacionBuena = 94;
@@ -56,7 +60,7 @@ function MandosVista(props){
                             <div className="col-12 mt-2">
                                 <Link
                                     className="btn btn-success"
-                                    to={`/mandos/${mando.id}`}
+                                    to={`/mandos/${mando.id}/${heredado}`}
                                 >
                                     Ver
                                 </Link>
