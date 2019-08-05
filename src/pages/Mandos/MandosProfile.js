@@ -7,6 +7,7 @@ import DecodificaMalos from "../../components/Generales/DecodificaMalos.js";
 import VariablesMando from "../../components/Mandos/VariablesMando.js";
 import MandoDatos from "../../components/Mandos/MandoDatos.js";
 import CambiarEtapas from "../../components/Mandos/CambiarEtapas.js";
+import TraeDatos from "../../components/TraeDatos.js";
 export default class MandosProfile extends React.Component {
     constructor(props) {
         super(props);
@@ -21,7 +22,11 @@ export default class MandosProfile extends React.Component {
      *
      */
     componentDidMount() {
-        this.traerDatos();
+        if(!this.props.match.params.esHeredado){
+            this.traerDatos();
+        }else{
+            TraeDatos({url:this.props.url,_self:this},"data",`heredado&id=${this.props.match.params.mandoId}`,this.datosParaChart)
+        }
     }
     /**
      * Traera los datos de los objetivos y del mando.
@@ -34,11 +39,13 @@ export default class MandosProfile extends React.Component {
         );
         const responseMando = await mando.json();
         if (responseMando.status) {
-            this.setState({
-                data: responseMando.datos
-            });
+            if(responseMando.datos.datos !== undefined){
+                this.setState({
+                    data: responseMando.datos
+                });
+            }
+            this.datosParaChart(this, this.state.data);
         }
-        this.datosParaChart(this, this.state.data);
     };
     /**
      *
@@ -47,21 +54,22 @@ export default class MandosProfile extends React.Component {
         let firstDatos = ["Etapas"],
             secondData = [],
             aEtapas = [];
+
         // Guardamos el nombre de las variables principales del indicador
         LUGAR_DE_DATOS.variables.map(variable =>
-            firstDatos.push(variable.nombre)
-        );
-        // Guardamos el nombre de los subindicadores con sus respectivas variables
-        if (LUGAR_DE_DATOS.subindicadores !== undefined) {
-            if (LUGAR_DE_DATOS.subindicadores.length !== 0) {
-                LUGAR_DE_DATOS.subindicadores.map(subindicador => {
+            firstDatos.push(DecodificaMalos(variable.nombre))
+            );
+            // Guardamos el nombre de los subindicadores con sus respectivas variables
+            if (LUGAR_DE_DATOS.subindicadores !== undefined) {
+                if (LUGAR_DE_DATOS.subindicadores.length !== 0) {
+                    LUGAR_DE_DATOS.subindicadores.map(subindicador => {
                     subindicador.variables.map(variable =>
                         firstDatos.push(
-                            `${subindicador.nombre} ${variable.nombre}`
-                        )
-                    );
-                });
-            }
+                            `${DecodificaMalos(subindicador.nombre)} ${DecodificaMalos(variable.nombre)}`
+                            )
+                            );
+                        });
+                    }
         }
         // Comienza el proceso para guardar los datos de las variables principales
         // con las variables de los subindicadores
@@ -71,31 +79,31 @@ export default class MandosProfile extends React.Component {
                 if (variable.id === 1) {
                     // Guardamos el nombre de las etapas
                     guardaValores.push(
-                        LUGAR_DE_DATOS.variables[0].etapas[index].nombre
-                    );
-                }
-                // Guardamos el valor de las variables
-                guardaValores.push(parseInt(variable.etapas[index].valor));
-                return true;
-            });
-            if (LUGAR_DE_DATOS.subindicadores !== undefined) {
-                if (LUGAR_DE_DATOS.subindicadores.length !== 0) {
-                    // Guardamos los valores de las variables de los subindicadores
-                    LUGAR_DE_DATOS.subindicadores.map(subindicador =>
-                        subindicador.variables.map(variable =>
-                            guardaValores.push(variable.etapas[index].valor)
-                        )
-                    );
-                }
-            }
-            secondData.push(guardaValores);
-        }
-        aEtapas = [firstDatos];
-        aEtapas = [...aEtapas, ...secondData];
-        OBJETO.setState({
-            etapasChart: aEtapas
+                        DecodificaMalos(LUGAR_DE_DATOS.variables[0].etapas[index].nombre)
+                        );
+                    }
+                    // Guardamos el valor de las variables
+                    guardaValores.push(parseInt(variable.etapas[index].valor));
+                    return true;
+                });
+                if (LUGAR_DE_DATOS.subindicadores !== undefined) {
+                    if (LUGAR_DE_DATOS.subindicadores.length !== 0) {
+                        // Guardamos los valores de las variables de los subindicadores
+                        LUGAR_DE_DATOS.subindicadores.map(subindicador =>
+                            subindicador.variables.map(variable =>
+                                guardaValores.push(variable.etapas[index].valor)
+                                )
+                                );
+                            }
+                        }
+                        secondData.push(guardaValores);
+                    }
+                    aEtapas = [firstDatos];
+                    aEtapas = [...aEtapas, ...secondData];
+                    OBJETO.setState({
+                        etapasChart: aEtapas
         });
-    };
+    }
     handleChangeEscala = e => {
         let valor = e.target.value;
         let name = e.target.name;
@@ -191,10 +199,17 @@ export default class MandosProfile extends React.Component {
     handleUpdate = async e => {
         e.preventDefault();
         const datos = JSON.stringify(this.state.data);
+        let req;
         let cadenaLimpia = datos.replace(/&/gi, "%26");
-        const req = await fetch(
-            `${this.props.url}&action=edit&data=${cadenaLimpia}`
-        );
+        if(this.props.match.params.esHeredado){
+            req = await fetch(
+                `${this.props.url}&action=heredadoedit&data=${cadenaLimpia}`
+            );
+        }else{
+            req = await fetch(
+                `${this.props.url}&action=edit&data=${cadenaLimpia}`
+            );
+        }
         const response = await req.json();
         if (response.status) {
             this.setState({
@@ -233,7 +248,7 @@ export default class MandosProfile extends React.Component {
             this.setState({
                 data: {
                     ...this.state.data,
-                    datos: {
+                     datos: {
                         ...this.state.data.datos,
                         minimaEscala: 0
                     }
