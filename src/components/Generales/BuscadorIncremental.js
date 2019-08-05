@@ -56,6 +56,8 @@ function BuscadorIncremental({claseCorrecta,claseIncorrecta,buscador,seBusca}) {
      * @param  {strign} nameParametroBusqueda Es el nombre de los lugares donde se buscara
      */
     let cBusqueda = document.querySelector(`input[name='${buscador}'`);
-    cBusqueda.addEventListener("keyup", event=>{keysUp(event,{claseCorrecta: claseCorrecta,claseIncorrecta: claseIncorrecta,seBusca:seBusca})});
+    if(cBusqueda){
+        cBusqueda.addEventListener("keyup", event=>{keysUp(event,{claseCorrecta: claseCorrecta,claseIncorrecta: claseIncorrecta,seBusca:seBusca})});
+    }
 }
 export default BuscadorIncremental;
