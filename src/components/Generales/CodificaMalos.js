@@ -4,6 +4,7 @@ function CodificaMalos(cCadena ){
     cCadena = cCadena.replace(/"/gi,"comiDouble;");
     cCadena = cCadena.replace(/'/gi,"comiSingle;");
     cCadena = cCadena.replace(/¿/gi,"openQuestion;");
+    cCadena = cCadena.replace(/\t/gi," ");
     cCadena = cCadena.replace(/ /gi,"spaceString;")
     return cCadena;
 }
