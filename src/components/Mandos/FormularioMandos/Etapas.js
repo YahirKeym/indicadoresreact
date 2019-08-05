@@ -1,6 +1,7 @@
 import React from 'react';
 import {Input} from '../../Formulario/ModulosFormulario';
 import CambiarEtapas from '../CambiarEtapas';
+import DecodificaMalos from '../../Generales/DecodificaMalos';
 // Será el tipo de etapas y la cantidad de ellas que manejaremos. Ejemplo: meses : 12 
 function TipoDeEtapas(props){
     const objeto = props.objeto,
@@ -10,8 +11,8 @@ function TipoDeEtapas(props){
             <div className="col-12">
                 <label htmlFor="etapas">Etapas que tendra este mando </label>
             </div>
-            <div className="col-12 col-lg-6">
-                <Input type="text" datos={{_self:objeto,lugar:lugarDeDatos.datos,zona:"tipoDeEtapa"}} plhold="Meses" /> 
+            <div className="col-12 col-lg-6"> 
+                <Input type="text" datos={{_self:objeto,lugar:lugarDeDatos.datos,zona:"tipoDeEtapa"}} plhold="Meses" dfv="Meses"/> 
             </div>
             <div className="col-12 col-lg-6 mb-3">
                 <Input type="number" datos={{_self:objeto,lugar:lugarDeDatos.datos,zona:"etapas"}} plhold="12" dfv="12" callback={true} function={objeto.entregaEtapasALasVariables}/>
@@ -45,7 +46,7 @@ function ValoresEtapas(props){
                 return(
                     <div className="row col-12 mt-3" key={variable.id}>
                         <div className="col-12">
-                            Valor de las etapas de {variable.nombre} 
+                            Valor de las etapas de {DecodificaMalos(variable.nombre)} 
                         </div>
                         <div className="col-12 p-0 col-lg-8 row">
                             {variable.etapas.map(etapa=>{
@@ -62,7 +63,7 @@ function ValoresEtapas(props){
                             })}
                         </div>
                         <div className="col-12 col-lg-4 text-center">
-                            <h5>{variable.nombre}: <span style={{fontWeight:100}}>{Math.round(variable.valorTotal* 100) / 100} {lugarDeDatos.datos.unidadDeMedida}</span></h5>
+                            <h5>{DecodificaMalos(variable.nombre)}: <span style={{fontWeight:100}}>{Math.round(variable.valorTotal* 100) / 100} {DecodificaMalos(lugarDeDatos.datos.unidadDeMedida)}</span></h5>
                         </div>
                     </div>
                 )
