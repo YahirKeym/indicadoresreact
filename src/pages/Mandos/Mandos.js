@@ -55,16 +55,16 @@ class Mandos extends React.Component {
                 <Tabs>
                     <TabList>
                         <Tab>Indicadores creados</Tab>
-                        <Tab>Indicadores Generales</Tab>
+                        {/* <Tab>Indicadores Generales</Tab> */}
                         <Tab>Indicadores heredados</Tab>
                     </TabList>
                     <TabPanel>
                         <ButtonDirectTop to="/mandos/add" text="Añadir nuevo mando" />
                         <MandosVista objeto={this} lugarDeDatos={this.state.data} />
                     </TabPanel>
-                    <TabPanel>
+                    {/* <TabPanel>
                         <MandosGenerales objeto={this} lugarDeDatos={this.state}/>
-                    </TabPanel>
+                    </TabPanel> */}
                     <TabPanel>
                         <MandosVista objeto={this} lugarDeDatos={this.state.heredados} heredado={true}/>
                     </TabPanel>
