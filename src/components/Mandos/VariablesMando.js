@@ -8,7 +8,8 @@ function VariablesMando(props)
     variables = props.variables,
     seEdita = props.editar,
     onChange = props.onChange,
-    porcentaje = props.muestraPorcentaje;
+    porcentaje = props.muestraPorcentaje,
+    heredado = props.heredado;
     return(
         <React.Fragment>
            {variables.map(variable =>{
@@ -26,10 +27,14 @@ function VariablesMando(props)
                                 if(etapa.porcentaje < porcentajeMedio){
                                     color ="bg-danger"
                                 }
+                                let idVariable = variable.id;
+                                if(heredado){
+                                    idVariable = variable.id+1;
+                                }
                                 if(seEdita){
                                     return (
                                         <React.Fragment>
-                                            <input type="number" name={etapa.id} idetapa={etapa.idEtapa} idvariable={variable.id} onChange={onChange} className={`col-2 text-center ${color}`} key={etapa.id} defaultValue={etapa.valor} />
+                                            <input type="number" name={etapa.id} idetapa={etapa.idEtapa} idvariable={idVariable} onChange={onChange} className={`col-2 text-center ${color}`} key={etapa.id} defaultValue={etapa.valor} />
                                         </React.Fragment>
                                     )
                                 }
