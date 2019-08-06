@@ -211,7 +211,7 @@ class App extends React.Component {
                             />
                             <Route
                                 exact
-                                path="/mandos/:mandoId/subindicador"
+                                path="/mandos/:mandoId/:esHeredado"
                                 component={({ match, history }) => (
                                     <MandosProfile
                                         history={history}
