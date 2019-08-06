@@ -8,6 +8,7 @@ import VariablesMando from "../../components/Mandos/VariablesMando.js";
 import MandoDatos from "../../components/Mandos/MandoDatos.js";
 import CambiarEtapas from "../../components/Mandos/CambiarEtapas.js";
 import TraeDatos from "../../components/TraeDatos.js";
+import CambiarSubEtapas from "../../components/Mandos/CambiarSubEtapas.js";
 export default class MandosProfile extends React.Component {
     constructor(props) {
         super(props);
@@ -91,7 +92,7 @@ export default class MandosProfile extends React.Component {
                         // Guardamos los valores de las variables de los subindicadores
                         LUGAR_DE_DATOS.subindicadores.map(subindicador =>
                             subindicador.variables.map(variable =>
-                                guardaValores.push(variable.etapas[index].valor)
+                                guardaValores.push(parseInt(variable.etapas[index].valor))
                                 )
                                 );
                             }
@@ -198,14 +199,22 @@ export default class MandosProfile extends React.Component {
      */
     handleUpdate = async e => {
         e.preventDefault();
-        const datos = JSON.stringify(this.state.data);
-        let req;
-        let cadenaLimpia = datos.replace(/&/gi, "%26");
+        let datos, req ,cadenaLimpia;
         if(this.props.match.params.esHeredado){
+            datos = JSON.stringify(this.state.data);
+            cadenaLimpia =datos.replace(/&/gi, "%26");
             req = await fetch(
                 `${this.props.url}&action=heredadoedit&data=${cadenaLimpia}`
             );
         }else{
+            this.setState({
+                data: {
+                    ...this.state.data,
+                    subindicadores:[]
+                }
+            })
+            datos = JSON.stringify(this.state.data);
+            cadenaLimpia =datos.replace(/&/gi, "%26");
             req = await fetch(
                 `${this.props.url}&action=edit&data=${cadenaLimpia}`
             );
@@ -277,6 +286,16 @@ export default class MandosProfile extends React.Component {
         } else {
             descripcion = this.state.data.objetivosData.descripcion;
         }
+        let variablesSubIndicadores = [];
+        if(this.state.data.subindicadores.length !== 0){
+            variablesSubIndicadores = this.state.data.subindicadores[0].variables;
+        }
+        let seEditaPrincipal = this.state.editar,
+        seEditaSecundarios = false;
+        if(this.props.match.params.esHeredado){
+            seEditaPrincipal = false;
+            seEditaSecundarios = this.state.editar;
+        }
         descripcion = DecodificaMalos(descripcion);
         return (
             <React.Fragment>
@@ -345,13 +364,33 @@ export default class MandosProfile extends React.Component {
                                         this.state.data,
                                         this.state.data.datos.valorMinimo
                                     );
-                                    this.datosParaChart();
+                                    this.datosParaChart(this,this.state.data);
                                 }}
                                 etapa={this.state.data.datos.tipoDeEtapa}
-                                editar={this.state.editar}
+                                editar={seEditaPrincipal}
                                 variables={this.state.data.variables}
                                 porcentaje={porcentaje}
                             />
+                            {this.state.data.subindicadores.map(subindicador => {
+                                return(
+                                    <VariablesMando
+                                        onChange={e => {
+                                            CambiarSubEtapas(
+                                                e,
+                                                this,
+                                                subindicador.variables,
+                                                this.state.data,
+                                                this.state.data.datos.valorMinimo
+                                            );
+                                            this.datosParaChart(this,this.state.data);
+                                        }}
+                                        etapa={this.state.data.datos.tipoDeEtapa}
+                                        editar={seEditaSecundarios}
+                                        variables={subindicador.variables}
+                                        porcentaje={porcentaje}
+                                    />
+                                )
+                            })}
                         </div>
                         {this.state.editar && (
                             <React.Fragment>
