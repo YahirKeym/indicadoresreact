@@ -113,14 +113,35 @@ class Mandos
             $iContadorMandos = 0;
             foreach($oConsulta as $aMandos)
             {
+                $iId = $aMandos['Id'];
                 $aStatus['datos'][$iContadorMandos]= json_decode($aMandos['DatosMando'],true);
+                $cQuerySubIndicadores = "SELECT * FROM general_subindicadores WHERE IdIndicador = {$iId}";
+                $oConsultaSubindicadores = $this->oConexion->query($cQuerySubIndicadores);
+                $iContadorSubindicadores = 0;
+                foreach ($oConsultaSubindicadores as $aSubindicador) {
+                    $aStatus['datos'][$iContadorMandos]['subindicadores'][$iContadorSubindicadores] = json_decode($aSubindicador['DatosSubIndicador'],true);
+                    $iContadorSubindicadores++;
+                }
                 if(json_last_error() !== 0){
                     $aStatus['status'] = false;
                     $aStatus['error'] = json_last_error();
                 }
-                $aStatus['datos'][$iContadorMandos]['id'] = $aMandos['Id'];
+                $aStatus['datos'][$iContadorMandos]['id'] = $iId;
                 $iContadorMandos++;
             }
+        }
+        return json_encode($aStatus);
+    }
+    public function editarHeredado($aDatos = []){
+        $cDatos = json_encode($aDatos['subindicadores'][0]);
+        $iIdSubindicador = (int)$aDatos['id'];
+        $cQuery = "UPDATE general_subindicadores SET DatosSubIndicador='{$cDatos}' WHERE IdSubIndicador={$iIdSubindicador}";
+        $oConsulta = $this->oConexion->query($cQuery);
+        $aStatus = [
+            'status'=>false,
+        ];
+        if($oConsulta !== false){
+            $aStatus['status'] = true;
         }
         return json_encode($aStatus);
     }
@@ -200,6 +221,12 @@ class Mandos
         $aDatosGuardados['heredado'] =true;
         return $aDatosGuardados;
     }
+    /**
+     * Traera los indicadores heredados
+     *
+     * @param integer $iId
+     * @return void
+     */
     public function traeHeredado($iId = 0)
     {
         $cQuery = "SELECT * FROM general_subindicadores WHERE IdSubIndicador={$iId}"; 

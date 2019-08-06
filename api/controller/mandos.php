@@ -31,6 +31,9 @@ switch ($cAccion) {
     case 'heredado':
         $cRegreso = $oMandos->traeHeredado($iIdMando);
     break;
+    case 'heredadoedit':
+        $cRegreso = $oMandos->editarHeredado($aDatos);
+    break;
     default:
         $aRegreso = [
             'status' => 'error',
