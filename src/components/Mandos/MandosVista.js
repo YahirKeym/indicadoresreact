@@ -42,6 +42,9 @@ function MandosVista(props){
                             mando.objetivosData.titulo
                         );
                     }
+                    if(mando.subindicadores === undefined){
+                        mando.subindicadores = [];
+                    }
                     return (
                         <div
                             className="mando col-12 text-white p-3"
@@ -56,6 +59,17 @@ function MandosVista(props){
                                     etapa={mando.datos.tipoDeEtapa}
                                     muestraPorcentaje={true}
                                 />
+                                {mando.subindicadores.map(subindicador => {
+                                    return(
+                                        <VariablesMando
+                                        key={subindicador.id}
+                                        variables={subindicador.variables}
+                                        porcentaje={porcentaje}
+                                        etapa={mando.datos.tipoDeEtapa}
+                                        muestraPorcentaje={true}
+                                    />
+                                    )
+                                })}
                             </div>
                             <div className="col-12 mt-2">
                                 <Link
