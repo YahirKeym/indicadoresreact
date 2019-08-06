@@ -1,5 +1,5 @@
 <?php
-$cRuta = "/indicadoresdev/api";
+$cRuta = "/indicadoresreact/api";
 require_once $_SERVER["DOCUMENT_ROOT"] . $cRuta . "/class/dependencias.php";
 $cAction = isset($_REQUEST['action']) ? $_REQUEST['action'] : '';
 $cId = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
