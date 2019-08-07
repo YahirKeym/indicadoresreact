@@ -2,6 +2,7 @@ import React from 'react';
 import {Input,Select} from '../../Formulario/ModulosFormulario';
 import BottonAddandDelete from '../../Generales/BottonAddAndDelete';
 import Variables from './Variables';
+import DecodificaMalos from '../../Generales/DecodificaMalos';
 // Guardara el input que contiene para darle un titulo al subindicador
 function TituloSubIndicador(props){
     const OBJETO = props.objeto,
@@ -10,18 +11,6 @@ function TituloSubIndicador(props){
     return(
         <div className="col-12 col-md-12">
             <Input datos={{_self: OBJETO, lugar:LUGAR_DE_DATOS.subindicadores[SUB_INDICADOR.id-1], zona: "nombre"}} className="col-8" plhold="Nombre del subindicador" />
-        </div>
-    )
-}
-function VariablesSubindicadores(props){
-    const OBJETO = props.objeto,
-    LUGAR_DE_DATOS = props.lugarDeDatos,
-    SUB_INDICADOR = props.subindicador;
-    return(
-        <div className="col-12 col-md-12 row mt-3 row d-flex justify-content-center">
-            {SUB_INDICADOR.variables.map(variable =>
-                <Input datos={{_self: OBJETO, lugar: LUGAR_DE_DATOS.subindicadores[SUB_INDICADOR.id-1].variables[variable.id-1], zona:"nombre"}} className="col-3 mb-2 ml-4" key={variable.id} plhold={variable.nombre} />
-            )}
         </div>
     )
 }
@@ -93,7 +82,7 @@ function Subindicadores(props){
                 return (
                     <div className="col-12 row p-3 subindicador mb-3" key={id}>
                         <div className="col-12">
-                            <h5>{subindicador.nombre}</h5>
+                            <h5>{DecodificaMalos(subindicador.nombre)}</h5>
                         </div>
                         <TituloSubIndicador objeto={OBJETO} lugarDeDatos={LUGAR_DE_DATOS} subindicador={subindicador} />
                         <Variables objeto={OBJETO} lugarDeDatos={LUGAR_DE_DATOS.subindicadores[id-1]} lugarDeDatosPrincipal={OBJETO.state} />
