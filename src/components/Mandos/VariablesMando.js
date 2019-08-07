@@ -16,7 +16,9 @@ function VariablesMando(props)
                 return(
                     <div className="col-12 row variable" key={variable.id}>
                         <div className="col-9">
-                            <span style={{fontWeight:700}}>{DecodificaMalos(variable.nombre)}</span> <span className="float-right"><span style={{fontWeight:700}}>Tipo de etapa:</span> {tipoDeEtapa}</span>
+                            <span style={{fontWeight:700}}>{DecodificaMalos(variable.nombre)}</span> {variable.id === 1 &&  (
+                                <span className="float-right"><span style={{fontWeight:700}}>Tipo de etapa:</span> {tipoDeEtapa}</span>
+                            )}
                         </div>
                         <div className="col-10 row">
                             {variable.etapas.map(etapa =>{
