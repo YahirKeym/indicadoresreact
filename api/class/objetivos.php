@@ -79,6 +79,49 @@ class Objetivos
        }
        return json_encode($aStatus);
     }
+    private function limpiaTextos($cTexto = ""){
+        $cTexto = str_replace("comiDouble;",'"',$cTexto);
+        $cTexto = str_replace("comiSingle;","'",$cTexto);
+        $cTexto = str_replace("openQuestion;",'¿',$cTexto);
+        $cTexto = str_replace("closeQuestion;",'?',$cTexto);
+        $cTexto = str_replace("u00e1",'á',$cTexto);
+        $cTexto = str_replace("u00C1",'Á',$cTexto);
+        $cTexto = str_replace("u00E9",'é',$cTexto);
+        $cTexto = str_replace("u00C9",'É',$cTexto);
+        $cTexto = str_replace("u00ED",'í',$cTexto);
+        $cTexto = str_replace("u00CD",'Í',$cTexto);
+        $cTexto = str_replace("u00f3",'ó',$cTexto);
+        $cTexto = str_replace("u00D3",'Ó',$cTexto);
+        $cTexto = str_replace("u00fa",'ú',$cTexto);
+        $cTexto = str_replace("u00DA",'Ú',$cTexto);
+        $cTexto = str_replace("u00F1",'ñ',$cTexto);
+        $cTexto = str_replace("u00D1",'Ñ',$cTexto);
+        $cTexto = str_replace("_",' ',$cTexto);
+        $cTexto = str_replace("spaceString;",' ',$cTexto);
+        return $cTexto;
+    }
+    private function codificaTexto($cTexto = ""){
+        $cTexto = str_replace('"',"comiDouble;",$cTexto);
+        $cTexto = str_replace("'","comiSingle;",$cTexto);
+        $cTexto = str_replace("¿","openQuestion;",$cTexto);
+        $cTexto = str_replace("?","closeQuestion;",$cTexto);
+        $cTexto = str_replace("á","u00e1",$cTexto);
+        $cTexto = str_replace("Á","u00C1",$cTexto);
+        $cTexto = str_replace("é","u00E9",'é',$cTexto);
+        $cTexto = str_replace("É","u00C9",$cTexto);
+        $cTexto = str_replace("í","u00ED",$cTexto);
+        $cTexto = str_replace("Í","u00CD",$cTexto);
+        $cTexto = str_replace("ó","u00f3",$cTexto);
+        $cTexto = str_replace("Ó","u00D3",$cTexto);
+        $cTexto = str_replace("ú","u00fa",$cTexto);
+        $cTexto = str_replace("Ú","u00DA",$cTexto);
+        $cTexto = str_replace("ñ","u00F1",$cTexto);
+        $cTexto = str_replace("Ñ","u00D1",$cTexto);
+        $cTexto = str_replace("\t"," ",$cTexto);
+        $cTexto = str_replace(" ","_",$cTexto);
+        $cTexto = str_replace(" ","spaceString;",$cTexto);
+        return $cTexto;
+    }
     /**
      * Nos ayudara a mandar los datos de los objetivos a mostrar
      * @return string Regresa un string tipo Json con los datos para mostrar
@@ -112,6 +155,9 @@ class Objetivos
             $iContadorDeIndicadores++;
         }
         return json_encode($aStatus);
+    }
+    public function objetivosConIndicadores(){
+        $cQuery = "SELECT * FROM objetivos";        
     }
     /**
      * Nos ayudara a seleccionar un solo objetivo

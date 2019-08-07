@@ -27,6 +27,8 @@ if ($oAutentica->lAutenticado) {
         case 'select':
             $cRegreso = $oObjetivos->selectoneObjetive($iIdObjetive);
             break;
+        case'general':
+        break;
         default:
             $aRegreso = [
                 'status' => 'error',
