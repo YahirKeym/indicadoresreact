@@ -1,6 +1,6 @@
 import React from 'react';
 import {DecodificaMalos} from '../../Generales/ModulosGenerales';
-import {Input, TextArea, Select} from '../../Formulario/ModulosFormulario';
+import {Input,Select} from '../../Formulario/ModulosFormulario';
 // Será el formulario para editar titulo y la descripción base al objetivo seleccionado
 // ó de manera individual.
 function TitleAndDescription(props){
