@@ -34,7 +34,7 @@ function VariablesMando(props)
                                 if(seEdita){
                                     return (
                                         <React.Fragment>
-                                            <input type="number" name={etapa.id} idetapa={etapa.idEtapa} idvariable={idVariable} onChange={onChange} className={`col-2 text-center ${color}`} key={etapa.id} defaultValue={etapa.valor} />
+                                            <input type="number" name={etapa.id} idetapa={etapa.idEtapa} idvariable={idVariable} onChange={onChange} className={`col-2 text-center ${color}`} key={`${idVariable}_${etapa.id}`} defaultValue={etapa.valor} />
                                         </React.Fragment>
                                     )
                                 }
