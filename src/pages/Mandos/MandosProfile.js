@@ -8,7 +8,6 @@ import VariablesMando from "../../components/Mandos/VariablesMando.js";
 import MandoDatos from "../../components/Mandos/MandoDatos.js";
 import CambiarEtapas from "../../components/Mandos/CambiarEtapas.js";
 import TraeDatos from "../../components/TraeDatos.js";
-import CambiarSubEtapas from "../../components/Mandos/CambiarSubEtapas.js";
 export default class MandosProfile extends React.Component {
     constructor(props) {
         super(props);
@@ -63,13 +62,11 @@ export default class MandosProfile extends React.Component {
             // Guardamos el nombre de los subindicadores con sus respectivas variables
             if (LUGAR_DE_DATOS.subindicadores !== undefined) {
                 if (LUGAR_DE_DATOS.subindicadores.length !== 0) {
-                    LUGAR_DE_DATOS.subindicadores.map(subindicador => {
-                    subindicador.variables.map(variable =>
-                        firstDatos.push(
-                            `${DecodificaMalos(subindicador.nombre)} ${DecodificaMalos(variable.nombre)}`
+                    LUGAR_DE_DATOS.subindicadores.map(subindicador => 
+                        subindicador.variables.map(variable => 
+                            firstDatos.push(`${DecodificaMalos(subindicador.nombre)} ${DecodificaMalos(variable.nombre)}`)
                             )
-                            );
-                        });
+                        );
                     }
         }
         // Comienza el proceso para guardar los datos de las variables principales
@@ -286,10 +283,6 @@ export default class MandosProfile extends React.Component {
         } else {
             descripcion = this.state.data.objetivosData.descripcion;
         }
-        let variablesSubIndicadores = [];
-        if(this.state.data.subindicadores.length !== 0){
-            variablesSubIndicadores = this.state.data.subindicadores[0].variables;
-        }
         let seEditaPrincipal = this.state.editar,
         seEditaSecundarios = false;
         if(this.props.match.params.esHeredado){
@@ -374,13 +367,15 @@ export default class MandosProfile extends React.Component {
                             {this.state.data.subindicadores.map(subindicador => {
                                 return(
                                     <VariablesMando
+                                        key={subindicador.id}
                                         onChange={e => {
-                                            CambiarSubEtapas(
+                                            CambiarEtapas(
                                                 e,
                                                 this,
                                                 subindicador.variables,
                                                 this.state.data,
-                                                this.state.data.datos.valorMinimo
+                                                this.state.data.datos.valorMinimo,
+                                                true
                                             );
                                             this.datosParaChart(this,this.state.data);
                                         }}
