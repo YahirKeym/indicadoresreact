@@ -237,9 +237,7 @@ export default class MandosProfile extends React.Component {
             editar: Valor
         });
     };
-    /**
-     *
-     */
+    // Renderizaremos el perfil del indicador   
     render() {
         let porcentaje = {
                 porcentajeBueno: this.state.data.datos.AceptacionBuena,
