@@ -1,26 +1,40 @@
 import IndicadorReductor from './IndicadorReductor.js';
 // ayudara a mantener la etapa que estamos editando
-function handleMantenerEtapas(idVariable, idEtapa, Valor, nombreEtapa,_self, datos){
-    let nuevoStado = datos;
+function handleMantenerEtapas(idVariable, idEtapa, Valor, nombreEtapa,_self, datos, subindicador){
+    let nuevoStado = datos, Etapas;
     if (nombreEtapa === `${idVariable}_${idEtapa + 1}`) {
         let Suma = 0;
-        const Etapas = nuevoStado.variables[idVariable]["etapas"];
+        Etapas = nuevoStado.variables[idVariable]["etapas"];
+        if(subindicador){
+            Etapas = nuevoStado.subindicadores[0].variables[idVariable]["etapas"];
+        }
         Etapas[idEtapa]["valor"] = Valor;
         for (let index = 0; index < Etapas.length; index++) {
             Suma = Suma + parseFloat(Etapas[index]["valor"]);
         }
-        nuevoStado.variables[idVariable]["valorTotal"] = Suma;
+        if(subindicador){
+            nuevoStado.subindicadores[0].variables[idVariable]["valorTotal"] = Suma;
+        }else{
+            nuevoStado.variables[idVariable]["valorTotal"] = Suma;
+        }
     }
     return nuevoStado;
 };
 // Generara el porcentaje dependiendo del tipo de indicador que es (Incremento/Decremento)
-function generaPorcentaje({idEtapa },valorMinimo,nuevoStado,variables,datos) {
+function generaPorcentaje({idEtapa },valorMinimo,nuevoStado,variables,datos,subindicador) {
     let formula;
     variables.map(variable => {
-        let idVariable = variable.id - 1;
-        let etapa = parseInt(
-            nuevoStado.variables[idVariable].etapas[idEtapa].valor
-        );
+        let idVariable = variable.id - 1,
+        etapa; 
+        if(subindicador){
+            etapa = parseInt(
+                nuevoStado.subindicadores[0].variables[idVariable].etapas[idEtapa].valor
+            );
+        }else{
+            etapa= parseInt(
+                nuevoStado.variables[idVariable].etapas[idEtapa].valor
+            ); 
+        }
         let ideEtapa = idEtapa;
         nuevoStado.variables[0].etapas.map(etapaEstadoUno => {
             if (ideEtapa === etapaEstadoUno.idEtapa - 1) {
@@ -52,14 +66,20 @@ function generaPorcentaje({idEtapa },valorMinimo,nuevoStado,variables,datos) {
         if( idVariable === 0){
             formula = 100;
         }
-        nuevoStado.variables[idVariable].etapas[
-            idEtapa
-        ].porcentaje = formula;
+        if(subindicador){
+            nuevoStado.subindicadores[0].variables[idVariable].etapas[
+                idEtapa
+            ].porcentaje = formula;
+        }else{
+            nuevoStado.variables[idVariable].etapas[
+                idEtapa
+            ].porcentaje = formula;
+        }
         return true;
     });
 }
 // Está función ayudara a cambiar las etapas de los mandos, asignandole el valor de la formula a cada uno.
-async function CambiarEtapas(e,_self,Variables,datos,valorMinimo) {
+async function CambiarEtapas(e,_self,Variables,datos,valorMinimo,subindicador = false) {
     const idVariable = e.target.getAttribute("idvariable") - 1;
     const idEtapa = e.target.getAttribute("idetapa") - 1;
     const nombreEtapa = e.target.name;
@@ -70,9 +90,9 @@ async function CambiarEtapas(e,_self,Variables,datos,valorMinimo) {
         idEtapa,
         Valor,
         nombreEtapa,
-        _self,datos
+        _self,datos,subindicador
     );
-    generaPorcentaje({idEtapa: idEtapa },valorMinimo,nuevoStado,Variables,datos);
+    generaPorcentaje({idEtapa: idEtapa },valorMinimo,nuevoStado,Variables,datos,subindicador);
     _self.setState(nuevoStado);
 }
 export default CambiarEtapas;
