@@ -86,27 +86,6 @@ class Objetivos
        }
        return json_encode($aStatus);
     }
-    private function limpiaTextos($cTexto = ""){
-        $cTexto = str_replace("comiDouble;",'"',$cTexto);
-        $cTexto = str_replace("comiSingle;","'",$cTexto);
-        $cTexto = str_replace("openQuestion;",'¿',$cTexto);
-        $cTexto = str_replace("closeQuestion;",'?',$cTexto);
-        $cTexto = str_replace("u00e1",'á',$cTexto);
-        $cTexto = str_replace("u00C1",'Á',$cTexto);
-        $cTexto = str_replace("u00E9",'é',$cTexto);
-        $cTexto = str_replace("u00C9",'É',$cTexto);
-        $cTexto = str_replace("u00ED",'í',$cTexto);
-        $cTexto = str_replace("u00CD",'Í',$cTexto);
-        $cTexto = str_replace("u00f3",'ó',$cTexto);
-        $cTexto = str_replace("u00D3",'Ó',$cTexto);
-        $cTexto = str_replace("u00fa",'ú',$cTexto);
-        $cTexto = str_replace("u00DA",'Ú',$cTexto);
-        $cTexto = str_replace("u00F1",'ñ',$cTexto);
-        $cTexto = str_replace("u00D1",'Ñ',$cTexto);
-        $cTexto = str_replace("_",' ',$cTexto);
-        $cTexto = str_replace("spaceString;",' ',$cTexto);
-        return $cTexto;
-    }
     private function codificaTexto($cTexto = ""){
         $cTexto = str_replace('"',"comiDouble;",$cTexto);
         $cTexto = str_replace("'","comiSingle;",$cTexto);
@@ -199,6 +178,7 @@ class Objetivos
      */
     public function selectObjectives()
     {
+        echo "Hoal";
         $idUsuario = $this->oAutentica->getId();
         $cQuery = "SELECT * FROM objetivos 
         WHERE 
@@ -213,18 +193,23 @@ class Objetivos
             'status' => false,
         ];
         $iContadorDeIndicadores = 0;
-        foreach ($oConsulta as $aIndicadores) {
+        if($oConsulta !== false){
             $aStatus['status'] = true;
             $aStatus['view'] = true;
-            $aStatus['datos'][$iContadorDeIndicadores]['id'] = $aIndicadores['id'];
-            $aStatus['datos'][$iContadorDeIndicadores]['titulo'] = $aIndicadores['nombre'];
-            $aStatus['datos'][$iContadorDeIndicadores]['descripcion'] = $aIndicadores['descripcion'];
-            $aStatus['datos'][$iContadorDeIndicadores]['alcance'] = $aIndicadores['paisalcanceid'];
-            $aStatus['datos'][$iContadorDeIndicadores]['iniciativa'] = $aIndicadores['paisiniciativaid'];
-            $aStatus['datos'][$iContadorDeIndicadores]['inicia'] = $aIndicadores['inicio'];
-            $aStatus['datos'][$iContadorDeIndicadores]['finaliza'] = $aIndicadores['finaliza'];
-            $iContadorDeIndicadores++;
+            foreach ($oConsulta as $aIndicadores) {
+                $aStatus['datos'][$iContadorDeIndicadores]['id'] = $aIndicadores['id'];
+                $aStatus['datos'][$iContadorDeIndicadores]['titulo'] = $aIndicadores['nombre'];
+                $aStatus['datos'][$iContadorDeIndicadores]['descripcion'] = $aIndicadores['descripcion'];
+                $aStatus['datos'][$iContadorDeIndicadores]['alcance'] = $aIndicadores['paisalcanceid'];
+                $aStatus['datos'][$iContadorDeIndicadores]['iniciativa'] = $aIndicadores['paisiniciativaid'];
+                $aStatus['datos'][$iContadorDeIndicadores]['inicia'] = $aIndicadores['inicio'];
+                $aStatus['datos'][$iContadorDeIndicadores]['finaliza'] = $aIndicadores['finaliza'];
+                $iContadorDeIndicadores++;
+            }
         }
+        echo '<pre>';
+        var_dump($this->oConexion->errorInfo());
+        echo '</pre>';
         return json_encode($aStatus);
     }
     /**

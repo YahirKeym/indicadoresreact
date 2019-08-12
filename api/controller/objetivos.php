@@ -1,5 +1,5 @@
 <?php
-$cRuta = "/indicadoresreact/api";
+$cRuta = "/indicadoresdev/api";
 require_once $_SERVER["DOCUMENT_ROOT"] . $cRuta . "/class/dependencias.php";
 require_once $_SERVER["DOCUMENT_ROOT"] . $cRuta . "/class/objetivos.php";
 $cToken = isset($_REQUEST['token']) ? $_REQUEST['token'] :'';
