@@ -7,23 +7,30 @@ error_reporting(E_ALL);
 class Objetivos
 {
     /**
-     * Guardara el objeto de conexión
-     * @var Object
-     */
-    private $oConexion = null;
-    /**
      * Guardara el objeto de autenticación
      * @var Object
      */
     private $oAutentica = null;
     /**
+     * Guardara el objeto de conexión
+     * @var Object
+     */
+    private $oConexion = null;
+    /**
+     * Guardara la conexión para la tabla de usuarios
+     *
+     * @var Object
+     */
+    private $oConexionUsers = null;
+    /**
      * Nos ayudara a obtener los parametros necesarios para la configuración de la clase
      *
      * @param ObjetoDeAutenticacion $oAutentica Será el objeto de autenticación
      */
-    public function __construct($oAutentica = null, $oConexion = null)
+    public function __construct($oAutentica = null, $oConexion = null,$oConexionUsers = null)
     {
         $this->oConexion = $oConexion->oConexion;
+        $this->oConexionUsers = $oConexionUsers->oConexion;
         $this->oAutentica = $oAutentica;
     }
     /**
@@ -106,21 +113,85 @@ class Objetivos
         $cTexto = str_replace("¿","openQuestion;",$cTexto);
         $cTexto = str_replace("?","closeQuestion;",$cTexto);
         $cTexto = str_replace("á","u00e1",$cTexto);
-        $cTexto = str_replace("Á","u00C1",$cTexto);
-        $cTexto = str_replace("é","u00E9",'é',$cTexto);
-        $cTexto = str_replace("É","u00C9",$cTexto);
-        $cTexto = str_replace("í","u00ED",$cTexto);
-        $cTexto = str_replace("Í","u00CD",$cTexto);
+        $cTexto = str_replace("Á","u00c1",$cTexto);
+        $cTexto = str_replace("é","u00e9",$cTexto);
+        $cTexto = str_replace("É","u00c9",$cTexto);
+        $cTexto = str_replace("í","u00ed",$cTexto);
+        $cTexto = str_replace("Í","u00cd",$cTexto);
         $cTexto = str_replace("ó","u00f3",$cTexto);
-        $cTexto = str_replace("Ó","u00D3",$cTexto);
+        $cTexto = str_replace("Ó","u00d3",$cTexto);
         $cTexto = str_replace("ú","u00fa",$cTexto);
-        $cTexto = str_replace("Ú","u00DA",$cTexto);
-        $cTexto = str_replace("ñ","u00F1",$cTexto);
-        $cTexto = str_replace("Ñ","u00D1",$cTexto);
+        $cTexto = str_replace("Ú","u00da",$cTexto);
+        $cTexto = str_replace("ñ","u00f1",$cTexto);
+        $cTexto = str_replace("Ñ","u00d1",$cTexto);
         $cTexto = str_replace("\t"," ",$cTexto);
-        $cTexto = str_replace(" ","_",$cTexto);
         $cTexto = str_replace(" ","spaceString;",$cTexto);
         return $cTexto;
+    }
+    private function codificacionSimple($cTexto = ""){
+        $cTexto = str_replace("á","u00e1",$cTexto);
+        $cTexto = str_replace("Á","u00c1",$cTexto);
+        $cTexto = str_replace("é","u00e9",$cTexto);
+        $cTexto = str_replace("É","u00c9",$cTexto);
+        $cTexto = str_replace("í","u00ed",$cTexto);
+        $cTexto = str_replace("Í","u00cd",$cTexto);
+        $cTexto = str_replace("ó","u00f3",$cTexto);
+        $cTexto = str_replace("Ó","u00d3",$cTexto);
+        $cTexto = str_replace("ú","u00fa",$cTexto);
+        $cTexto = str_replace("Ú","u00da",$cTexto);
+        $cTexto = str_replace("ñ","u00f1",$cTexto);
+        $cTexto = str_replace("Ñ","u00d1",$cTexto);
+        return $cTexto;
+    }
+    public function extractAllObjetivesWithIndicators(){
+        $cQuery = "SELECT * FROM objetivos";
+        $oConsulta = $this->oConexion->query($cQuery);
+        $aStatus = [
+            'status' => false,
+            'datos' => []
+        ];
+        if($oConsulta !== false){
+            $aStatus['status'] = true;
+            $iContadorDeObjetivos = 0;
+            foreach ($oConsulta as $aObjetivos) {
+                $cTitulo = $this->codificaTexto($aObjetivos['nombre']);
+                $cTituloDos = $this->codificacionSimple($aObjetivos['nombre']);
+                // echo "//// Titulo uno ///";
+                // echo $cTitulo."<br>";
+                // echo "//// titulo dos///";
+                // echo $cTituloDos."<br>";
+                $iId = $aObjetivos['id'];
+                $cQueryIndicadores = "SELECT 
+                DatosMando, UsuarioCreo, Editado, UsuarioEdito 
+                FROM general_mando 
+                WHERE JSON_EXTRACT(DatosMando,'$.objetivosData.titulo')='{$cTitulo}' 
+                OR JSON_EXTRACT(DatosMando,'$.objetivosData.titulo')='{$cTituloDos}'
+                OR IdObjetivo={$iId}";
+                $oConsultaIndicadores = $this->oConexion->query($cQueryIndicadores);
+                $cQueryPaises = "SELECT * FROM paises WHERE id={$aObjetivos['paisalcanceid']}";
+                $oConsultaPais = $this->oConexion->query($cQueryPaises);
+                $aPais = $oConsultaPais->fetch(PDO::FETCH_ASSOC);
+                $iContadorDeIndicadores = 0;
+                $aStatus['datos'][$iContadorDeObjetivos]['nombre'] = $aObjetivos['nombre'];
+                $aStatus['datos'][$iContadorDeObjetivos]['paisAlcance'] = $aPais['nombre'];
+                $aStatus['datos'][$iContadorDeObjetivos]['descripcion'] = $aObjetivos['descripcion'];
+                $aStatus['datos'][$iContadorDeObjetivos]['inicio'] = $aObjetivos['inicio'];
+                $aStatus['datos'][$iContadorDeObjetivos]['finaliza'] = $aObjetivos['finaliza'];
+                $aStatus['datos'][$iContadorDeObjetivos]['yafinalizo'] = $aObjetivos['finalizo'];
+                if($oConsultaIndicadores !== false){
+                    foreach($oConsultaIndicadores as $aIndicador){
+                        $cQueryUsuarios = "SELECT Nombre, ApellidoP, ApellidoM FROM general_empleado WHERE IdEmpleado={$aIndicador['UsuarioCreo']}";
+                        $oConsultaUsuario = $this->oConexionUsers->query($cQueryUsuarios);
+                        $aDatosUser = $oConsultaUsuario->fetch(PDO::FETCH_ASSOC);
+                        $aStatus['datos'][$iContadorDeObjetivos]['indicadores'][$iContadorDeIndicadores] = json_decode($aIndicador['DatosMando'],true);                
+                        $aStatus['datos'][$iContadorDeObjetivos]['indicadores'][$iContadorDeIndicadores]['usuario'] = $aDatosUser['Nombre']." ".$aDatosUser['ApellidoP']." ".$aDatosUser['ApellidoM'];
+                        $iContadorDeIndicadores++;
+                    }
+                }             
+                $iContadorDeObjetivos++;
+            }
+            return json_encode($aStatus);
+        }
     }
     /**
      * Nos ayudara a mandar los datos de los objetivos a mostrar
@@ -155,9 +226,6 @@ class Objetivos
             $iContadorDeIndicadores++;
         }
         return json_encode($aStatus);
-    }
-    public function objetivosConIndicadores(){
-        $cQuery = "SELECT * FROM objetivos";        
     }
     /**
      * Nos ayudara a seleccionar un solo objetivo

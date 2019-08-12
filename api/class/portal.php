@@ -124,60 +124,63 @@ class Portal
     private function arrayMenuHeader()
     {
         return [
-            'Inicio' => [
-                'path' => 'index.php',
+            [
+                'nombre' => 'Inicio',
+                'path' => '/',
                 'atributospadre' => 'class="nav-item"',
                 'atributos' => 'class="nav-link"',
                 'autenticado' => false,
             ],
-            'Objetivos' => [
-                'path' => 'objetivos.php',
+            [
+                'nombre' => 'Objetivos',
+                'path' => 'objetivos',
                 'atributospadre' => 'class="nav-item"',
                 'atributos' => 'class="nav-link"',
                 'autenticado' => true,
             ],
-            'Mando' => [
+            [
+                'nombre' => 'Mando',
                 'path' => 'mando.php',
                 'atributospadre' => 'class="nav-item"',
                 'atributos' => 'class="nav-link"',
                 'autenticado' => true,
             ],
-            'Catalogos' => [
-                'path' => '',
-                'atributospadre' => 'class="nav-item"',
-                'atributos' => 'class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"',
-                'dropdown' => [
-                    'Tipos de Alcance' => [
-                        'path' => 'tiposdealcance.php',
-                        'atributos' => 'class="dropdown-item"',
-                    ],
-                    'Alcance' => [
-                        'path' => 'alcance.php',
-                        'atributos' => 'class="dropdown-item"',
-                    ],
-                    'Periodos' => [
-                        'path' => 'periodos.php',
-                        'atributos' => 'class="dropdown-item"',
-                    ],
-                    'Valores de Periodos' => [
-                        'path' => 'valoresdeperiodos.php',
-                        'atributos' => 'class="dropdown-item"',
-                    ],
-                    'Indicador' => [
-                        'path' => 'indicador.php',
-                        'atributos' => 'class="dropdown-item"',
-                    ],
-                    'Procesos' => [
-                        'path' => 'procesos.php',
-                        'atributos' => 'class="dropdown-item"',
-                    ],
-                    'Frecuencias' => [
-                        'path' => 'frecuencias.php',
-                        'atributos' => 'class="dropdown-item"',
-                    ],
-                ],
-                'autenticado' => true,
-            ],
+            // 'Catalogos' => [
+            //     'path' => '',
+            //     'atributospadre' => 'class="nav-item"',
+            //     'atributos' => 'class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"',
+            //     'dropdown' => [
+            //         'Tipos de Alcance' => [
+            //             'path' => 'tiposdealcance.php',
+            //             'atributos' => 'class="dropdown-item"',
+            //         ],
+            //         'Alcance' => [
+            //             'path' => 'alcance.php',
+            //             'atributos' => 'class="dropdown-item"',
+            //         ],
+            //         'Periodos' => [
+            //             'path' => 'periodos.php',
+            //             'atributos' => 'class="dropdown-item"',
+            //         ],
+            //         'Valores de Periodos' => [
+            //             'path' => 'valoresdeperiodos.php',
+            //             'atributos' => 'class="dropdown-item"',
+            //         ],
+            //         'Indicador' => [
+            //             'path' => 'indicador.php',
+            //             'atributos' => 'class="dropdown-item"',
+            //         ],
+            //         'Procesos' => [
+            //             'path' => 'procesos.php',
+            //             'atributos' => 'class="dropdown-item"',
+            //         ],
+            //         'Frecuencias' => [
+            //             'path' => 'frecuencias.php',
+            //             'atributos' => 'class="dropdown-item"',
+            //         ],
+            //     ],
+            //     'autenticado' => true,
+            // ],
             'Cerrar Sesión' => [
                 'path' => '#',
                 'atributospadre' => 'class="nav-item" close-session',

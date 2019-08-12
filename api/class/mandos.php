@@ -41,11 +41,12 @@ class Mandos
             "objetivosData" => $aDatos['objetivosData'],
             "acciones" => $aDatos['acciones'],
         ];
+        $iIdObjetivo = $aDatos['objetivosData']['id'];
         $cDatos = json_encode($aDatosAGuardar);
         $cQueryMandoObjetivo = "INSERT INTO {$this->cTabla}
-        (DatosMando,NivelPuesto,TipoIndicador,UsuarioCreo,Creado,Editado,UsuarioEdito) 
+        (DatosMando,NivelPuesto,TipoIndicador,UsuarioCreo,Creado,Editado,UsuarioEdito,IdObjetivo) 
         VALUES 
-        ('{$cDatos}',{$iNivel},{$iTipoIndicador},{$this->oAutentica->getId()},'{$cFecha}','{$cFecha}',{$this->oAutentica->getId()})";
+        ('{$cDatos}',{$iNivel},{$iTipoIndicador},{$this->oAutentica->getId()},'{$cFecha}','{$cFecha}',{$this->oAutentica->getId()},{$iIdObjetivo})";
         $oConsultaMandoObjetivo = $this->oConexion->query($cQueryMandoObjetivo);
         $aStatus = [
             'status' => false

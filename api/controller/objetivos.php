@@ -9,7 +9,7 @@ if ($oAutentica->lAutenticado) {
     $cDatos = isset($_REQUEST['data']) ? $_REQUEST['data'] : '';
     $iIdObjetive = isset($_REQUEST['id']) ? $_REQUEST['id'] : 0;
     $aDatos = json_decode($cDatos);
-    $oObjetivos = new Objetivos($oAutentica, $oConexionMandos);
+    $oObjetivos = new Objetivos($oAutentica, $oConexionMandos, $oConexionUsers);
     $aDatos = json_decode($cDatos, true);
     switch ($cAccion) {
         case 'add':
@@ -28,6 +28,15 @@ if ($oAutentica->lAutenticado) {
             $cRegreso = $oObjetivos->selectoneObjetive($iIdObjetive);
             break;
         case'general':
+        if($oAutentica->getIdPuesto() === "DIRGEN"){
+            $cRegreso = $oObjetivos->extractAllObjetivesWithIndicators();
+        }else{
+            $aRegreso = [
+                'status' => true,
+                'datos' => []
+            ];
+            $cRegreso = json_encode($aRegreso);
+        }
         break;
         default:
             $aRegreso = [
