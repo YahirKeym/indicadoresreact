@@ -30,9 +30,85 @@ class Portal
      * Nos ayudara a definir el objeto de autenticación
      * @param Autenticación $oAutentica será el objeto de autenticación
      */
-    public function __construct($oAutentica = null)
+    public function __construct($oConexionMandos = null,$oAutentica = null)
     {
         $this->oAutentica = $oAutentica;
+    }
+    /**
+     * Obtendremos el menú dependiendo del tipo de usuario que sea.
+     *
+     * @return void
+     */
+    public function getMenu(){
+        $aMenu = $this->inicioMenu();
+        if($this->oAutentica->lAutenticado){
+            $aMenu = $this->userMenu();
+            if($this->oAutentica->getPermisoDirectorGeneral()){
+                $aMenu = $this->dirgenMenu();
+            }
+        }
+        return json_encode($aMenu);
+    }
+    /**
+     * Será el menú que se le mostrara al usuario no logueado
+     * @return array regresara el menú del usuario no logueado
+     */
+    private function inicioMenu()
+    {
+        return [
+            [
+                'nombre' => 'Inicio',
+                'path' => ''
+            ]
+        ];
+    }
+    /**
+     * Será el menú del usuario logueado
+     *
+     * @return array Regresara el menú del usuario logueado
+     */
+    private function userMenu()
+    {
+        return [
+            [
+                'nombre' => 'Inicio',
+                'path' => ''
+            ],
+            [
+                'nombre' => 'Objetivos',
+                'path' => 'objetivos'
+            ],
+            [
+                'nombre' => 'Indicadores',
+                'path' => 'mandos'
+            ]
+        ];
+    }
+    /**
+     * Regresara el menú del director general
+     *
+     * @return array
+     */
+    private function dirgenMenu()
+    {
+        return [
+            [
+                'nombre' => 'Inicio',
+                'path' => ''
+            ],
+            [
+                'nombre' => 'Objetivos',
+                'path' => 'objetivos'
+            ],
+            [
+                'nombre' => 'Indicadores',
+                'path' => 'mandos'
+            ],
+            [
+                'nombre' => 'General',
+                'path' => 'general'
+            ]
+            ];
     }
     /**
      * Nos ayudara a generar el header del portal ya construido

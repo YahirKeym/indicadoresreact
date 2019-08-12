@@ -9,6 +9,7 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import "react-tabs/style/react-tabs.css";
 import MandosVista from "../../components/Mandos/MandosVista.js";
 import MandosGenerales from "../../components/Mandos/MandosGenerales.js";
+import AllObjetives from "../Objetivos/AllObjetives.js";
 /**
  * Será la clase de mandos donde se visualizaran todos
  */
@@ -55,15 +56,11 @@ class Mandos extends React.Component {
                 <Tabs>
                     <TabList>
                         <Tab>Indicadores creados</Tab>
-                        <Tab>Indicadores Generales</Tab>
                         <Tab>Indicadores heredados</Tab>
                     </TabList>
                     <TabPanel>
                         <ButtonDirectTop to="/mandos/add" text="Añadir nuevo mando" />
                         <MandosVista objeto={this} lugarDeDatos={this.state.data} />
-                    </TabPanel>
-                    <TabPanel>
-                        <MandosGenerales objeto={this} lugarDeDatos={this.state}/>
                     </TabPanel>
                     <TabPanel>
                         <MandosVista objeto={this} lugarDeDatos={this.state.heredados} heredado={true}/>

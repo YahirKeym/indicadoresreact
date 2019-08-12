@@ -96,7 +96,8 @@ class MandosAdd extends React.Component
             objetivosData:{
                 ...this.state.objetivosData,
                 'titulo':'',
-                'descripcion':''
+                'descripcion':'',
+                "id": valor
             },
             objetivoShow:false,
             objetivoSelect: true

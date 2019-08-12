@@ -27,6 +27,7 @@ import PaisesEdit from '../pages/Paises/PaisesEdit.js';
 import PaisesDelete from '../pages/Paises/PaisesDeleted.js';
 import UserLogin from "../pages/UserLogin.js";
 import BrouserName from "./Generales/BrouserName.js";
+import AllObjetives from "../pages/Objetivos/AllObjetives.js";
 /**
  * Nos ayudara a ajustar las opciones de la web
  */
@@ -43,7 +44,7 @@ class App extends React.Component {
         this.logged = false;
         this.session = ObtenCookie("indicadores_i");
         const URL_BASE = "http://172.16.100.94";
-        const LUGAR = "indicadoresreact";
+        const LUGAR = "indicadoresdev";
         try {
             this.urlAutentica = `${URL_BASE}/${LUGAR}/api/controller/autentica.php?token=${this.session}`;
             const response = await fetch(this.urlAutentica);
@@ -147,6 +148,18 @@ class App extends React.Component {
                                         url={this.urlObjetivos}
                                         urlAlcance={this.urlAlcance}
                                         urlPais={this.urlPaises}
+                                    />
+                                )}
+                            />
+                            {/* Mostraremos todos los indicadores que cada objetivo contenga. */}
+                            <Route
+                                exact
+                                path="/general"
+                                component={({match,history}) => (
+                                    <AllObjetives
+                                        url={this.urlObjetivos}
+                                        match={match}
+                                        history={history}
                                     />
                                 )}
                             />

@@ -5,6 +5,7 @@ import ButtonDirectTop from '../../components/Generales/ButtonDirectTop.js';
 import SinDatos from '../../components/Errores/SinDatos.js';
 import ErrorConexion from '../../components/Errores/ErrorConexion.js';
 import TraeDatos from '../../components/TraeDatos.js';
+import BuscadorIncremental from '../../components/Generales/BuscadorIncremental.js';
 // Pintara todos los objetivos disponibles por usuario.
 class Objetivos extends React.Component
 {
@@ -43,6 +44,7 @@ class Objetivos extends React.Component
                 <ErrorConexion />
             );
         }
+        this.buscadorTime = setTimeout(()=>{BuscadorIncremental({claseCorrecta: "d-block",claseIncorrecta:"d-none",buscador: "buscaObjetivos",seBusca:"objetives"})},1000);
         return ( // Si todo salió bien, renderizaremos los objetivos del usuario
             <div className="col-12 row">
                 <ButtonDirectTop to="/objetivos/add" text="Añadir objetivo" />
@@ -50,22 +52,27 @@ class Objetivos extends React.Component
                     {this.state.data.length === 0 && ( // En caso de que el usuario no cuente con datos, le mandaremos el componente de que no cuenta con datos
                         <SinDatos />
                     )}
-                    {this.state.data.map(objetivo => { // Si el usuario si llegase a tener datos, hacemos un mapping de ellos y los mostramos.
-                        return(
-                            <CuerpoObjetivosMandos titulo={objetivo.titulo} textSuccess="Editar" 
-                            url={`/objetivos/${objetivo.id}/edit`} 
-                            Delete={this.props.url}
-                            descripcion={objetivo.descripcion} 
-                            id={objetivo.id}
-                            history={this.props.history}
-                            key={objetivo.id}>
-                                <div className="col-12 mt-3">
-                                    <p>Inicia: <span>{objetivo.inicia}</span></p>
-                                    <p>Finaliza: <span>{objetivo.finaliza}</span></p>
-                                </div>
-                            </CuerpoObjetivosMandos>
-                        )
-                    })}
+                    <div className="col-12">
+                        <input name="buscaObjetivos" type="text" className="form-control mb-3 col-6" placeholder="Buscar objetivo" />
+                    </div>
+                    <div className="col-12 row" search-name="objetives">
+                        {this.state.data.map(objetivo => { // Si el usuario si llegase a tener datos, hacemos un mapping de ellos y los mostramos.
+                            return(
+                                <CuerpoObjetivosMandos titulo={objetivo.titulo} textSuccess="Editar" 
+                                url={`/objetivos/${objetivo.id}/edit`} 
+                                Delete={this.props.url}
+                                descripcion={objetivo.descripcion} 
+                                id={objetivo.id}
+                                history={this.props.history}
+                                key={objetivo.id}>
+                                    <div className="col-12 mt-3">
+                                        <p>Inicia: <span>{objetivo.inicia}</span></p>
+                                        <p>Finaliza: <span>{objetivo.finaliza}</span></p>
+                                    </div>
+                                </CuerpoObjetivosMandos>
+                            )
+                        })}
+                    </div>
                 </div>
             </div>
         );

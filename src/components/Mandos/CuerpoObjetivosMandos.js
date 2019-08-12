@@ -60,7 +60,7 @@ function CuerpoObjetivosMandos(props){
         isProfile = true;
     }
     return(
-        <div className={`col-12 p-3 col-md-${size} row mando m-0 text-white`}>
+        <div className={`col-12 p-3 col-md-${size} row mando m-0 text-white`} data-search={`${titulo}`}>
             <div  className="col-12 text-center">
                 <Titulo titulo={titulo} objetivo={subtitulo} />
             </div>

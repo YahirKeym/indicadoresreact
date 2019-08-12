@@ -1,5 +1,6 @@
 import React from 'react';
 import DecodificaMalos from '../Generales/DecodificaMalos.js';
+import './styles/VariablesDeMandos.css';
 // Generara las variables que tenga el mando con las etapas que tenga la variable
 function VariablesMando(props)
 {
@@ -16,11 +17,10 @@ function VariablesMando(props)
                 return(
                     <div className="col-12 row variable" key={variable.id}>
                         <div className="col-9">
-                            <span style={{fontWeight:700}}>{DecodificaMalos(variable.nombre)}</span> {variable.id === 1 &&  (
-                                <span className="float-right"><span style={{fontWeight:700}}>Tipo de etapa:</span> {tipoDeEtapa}</span>
-                            )}
+                            <span style={{fontWeight:700}}>{DecodificaMalos(variable.nombre)}</span> 
+                                <span className="float-right"><span style={{fontWeight:700}}>Tipo de etapa:</span> {tipoDeEtapa} <span style={{fontWeight:700, marginLeft:50}}>Total:</span> {Math.round(variable.valorTotal * 100) / 100}</span>
                         </div>
-                        <div className="col-10 row">
+                        <div className="col-12 row">
                             {variable.etapas.map(etapa =>{
                                 let color = "";
                                 if(etapa.porcentaje < porcentajeBueno){
@@ -47,7 +47,7 @@ function VariablesMando(props)
                                 return(
                                     <div className={`col-1 text-center`} key={etapa.id}>
                                         {variable.id === 1 && (
-                                                <div className="col-12">
+                                                <div className="col-12 variable_nombre">
                                                     {DecodificaMalos(etapa.nombre)}
                                                 </div>
                                             )}
@@ -59,7 +59,7 @@ function VariablesMando(props)
                             })}
                         </div>
                         <div className="col-2">
-                            Total: {Math.round(variable.valorTotal * 100) / 100}
+                            
                         </div>
                     </div>
                 );

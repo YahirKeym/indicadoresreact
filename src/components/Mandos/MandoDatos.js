@@ -18,12 +18,13 @@ function MandoDatos(variables){
             "personaResponsable": "",
             "tipoIndicador" :0,
             "formaDeIndicador":"incremento" ,
-            "valorMinimo": 0,
+            "valorMinimo": 0
         },
         "objetivos":[],
         "objetivosData":{  
             "titulo":"",
-            "descripcion":""
+            "descripcion":"",
+            "id": 0
         },
         "subindicadores":[],
         "tipoDeIndicador":[
@@ -49,6 +50,10 @@ function MandoDatos(variables){
             {
                 "id" :1,
                 "titulo":"decremento"
+            },
+            {
+                "id" :1,
+                "titulo":"acumulativo"
             }
         ],
         "usuarios": [],

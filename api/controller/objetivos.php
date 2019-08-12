@@ -1,5 +1,5 @@
 <?php
-$cRuta = "/indicadoresreact/api";
+$cRuta = "/indicadoresdev/api";
 require_once $_SERVER["DOCUMENT_ROOT"] . $cRuta . "/class/dependencias.php";
 require_once $_SERVER["DOCUMENT_ROOT"] . $cRuta . "/class/objetivos.php";
 $cToken = isset($_REQUEST['token']) ? $_REQUEST['token'] :'';
@@ -28,7 +28,7 @@ if ($oAutentica->lAutenticado) {
             $cRegreso = $oObjetivos->selectoneObjetive($iIdObjetive);
             break;
         case'general':
-        if($oAutentica->getIdPuesto() === "DIRGEN"){
+        if($oAutentica->getPermisoDirectorGeneral()){
             $cRegreso = $oObjetivos->extractAllObjetivesWithIndicators();
         }else{
             $aRegreso = [

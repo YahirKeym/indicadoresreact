@@ -41,24 +41,25 @@ class Autenticacion
      * @var string
      */
     private $cUserName = "";
+    private $lEsDirectorGeneral = 0;
+    private $lPuedeCrearUsuarios = 0;
+    private $lPuedeVerTodosLosObjetivos = 0;
+    private $PuedeVerTodosLosIndicadores = 0;
     /**
      * Guardara el rango del usuario
      * @var string
      */
     private $cDepartamento = "";
-    /**
-     * Guardara el area donde se encuentra ubicado el usuario
-     * @var string
-     */
-    private $cArea = "";
     private $oNewConexion = null;
+    private $oConexionIndicadores = null;
     /**
      * Nos ayudara a iniciar la autenticación para poder obtener datos de usuario o bien, validar si su sesión se encuentra activa.
      */
-    public function __construct($oConexion = null)
+    public function __construct($oConexion = null,$oConexionIndicadores = null)
     {
         $this->oConexion = $oConexion;
         $this->oNewConexion = $this->oConexion->oConexion;
+        $this->oConexionIndicadores =  $oConexionIndicadores->oConexion;
     }
     /**
      * Nos ayudara a validar los datos del usuario para saber si es correcto el logueo o no
@@ -122,7 +123,10 @@ class Autenticacion
                 foreach ($oConsulta as $aUsuario) {
                     if ($aUsuario['Cookie'] === $cCookie) {
                         $this->lAutenticado = true;
-                        $this->saveData($aUsuario);
+                        $cQueryPermisos = "SELECT * FROM permisos_indicadores WHERE IdEmpleado={$aUsuario['IdEmpleado']}";
+                        $oConsultaPermisos = $this->oConexionIndicadores->query($cQueryPermisos);
+                        $aPermisos = $oConsultaPermisos->fetch(PDO::FETCH_ASSOC);
+                        $this->saveData($aUsuario, $aPermisos);
                         $aRegreso['autenticado'] = true;
                     }
                 }
@@ -157,7 +161,7 @@ class Autenticacion
      * Guardara los datos del usuario
      * @param array $aUsuario Serán los datos que guardaremos
      */
-    private function saveData($aUsuario = [])
+    private function saveData($aUsuario = [], $aPermisos = [])
     {
         $this->iUserId = $aUsuario['IdEmpleado'];
         $this->cUserNombre = $aUsuario['Nombre'];
@@ -165,6 +169,12 @@ class Autenticacion
         $this->cUserName =  $aUsuario['UserName'];
         $this->cPuesto = $aUsuario['IdPuesto'];
         $this->cDepartamento = $aUsuario['IdDepto'];
+        if(!empty($aPermisos)){
+            $this->lEsDirectorGeneral = $aPermisos['DirectorGeneral'];
+            $this->lPuedeCrearUsuarios = $aPermisos['CrearUsuarios'];
+            $this->lPuedeVerTodosLosObjetivos = $aPermisos['VerTodosLosObjetivos'];
+            $this->PuedeVerTodosLosIndicadores = $aPermisos['VerTodosLosIndicadores'];
+        }
     }
     /**
      * Nos ayudara a obtener el id del usuario
@@ -174,6 +184,38 @@ class Autenticacion
     public function getId()
     {
         return $this->iUserId;
+    }
+    /**
+     * Nos dictara si tiene los permisos de director general o no
+     *
+     * @return integer - boolean
+     */
+    public function getPermisoDirectorGeneral(){
+        return $this->lEsDirectorGeneral;
+    }
+    /**
+     * Nos regresara si tiene permiso de crear usuarios o no
+     *
+     * @return integer
+     */
+    public function getPermisoCreateUsuarios(){
+        return $this->lPuedeCrearUsuarios;
+    }
+    /**
+     * Regresara el permiso para poder ver todos los objetivos creados
+     *
+     * @return integer
+     */
+    public function getPermisoAllObjetivos(){
+        return $this->lPuedeVerTodosLosObjetivos;
+    }
+    /**
+     * Regresara el permiso para poder ver o no todos los indicadores creados
+     *
+     * @return integer
+     */
+    public function getPermisoAllIndicadores(){
+        return $this->PuedeVerTodosLosIndicadores;
     }
     /**
      * Nos ayudara a obtener el nombre del usuario
