@@ -178,7 +178,6 @@ class Objetivos
      */
     public function selectObjectives()
     {
-        echo "Hoal";
         $idUsuario = $this->oAutentica->getId();
         $cQuery = "SELECT * FROM objetivos 
         WHERE 
@@ -207,9 +206,6 @@ class Objetivos
                 $iContadorDeIndicadores++;
             }
         }
-        echo '<pre>';
-        var_dump($this->oConexion->errorInfo());
-        echo '</pre>';
         return json_encode($aStatus);
     }
     /**
