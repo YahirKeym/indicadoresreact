@@ -122,8 +122,9 @@ class Objetivos
         $cTexto = str_replace("Ñ","u00d1",$cTexto);
         return $cTexto;
     }
+    // Traera los indicadores que existan por objetivos que haya.
     public function extractAllObjetivesWithIndicators(){
-        $cQuery = "SELECT * FROM objetivos";
+        $cQuery = "SELECT * FROM objetivos WHERE deleted=0";
         $oConsulta = $this->oConexion->query($cQuery);
         $aStatus = [
             'status' => false,
@@ -135,10 +136,6 @@ class Objetivos
             foreach ($oConsulta as $aObjetivos) {
                 $cTitulo = $this->codificaTexto($aObjetivos['nombre']);
                 $cTituloDos = $this->codificacionSimple($aObjetivos['nombre']);
-                // echo "//// Titulo uno ///";
-                // echo $cTitulo."<br>";
-                // echo "//// titulo dos///";
-                // echo $cTituloDos."<br>";
                 $iId = $aObjetivos['id'];
                 $cQueryIndicadores = "SELECT 
                 DatosMando, UsuarioCreo, Editado, UsuarioEdito 

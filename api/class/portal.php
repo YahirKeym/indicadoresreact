@@ -56,9 +56,12 @@ class Portal
     private function inicioMenu()
     {
         return [
-            [
-                'nombre' => 'Inicio',
-                'path' => ''
+            'status'=>true,
+            'datos'=>[
+                [
+                    'nombre' => 'Inicio',
+                    'path' => ''
+                ]
             ]
         ];
     }
@@ -70,17 +73,20 @@ class Portal
     private function userMenu()
     {
         return [
-            [
-                'nombre' => 'Inicio',
-                'path' => ''
-            ],
-            [
-                'nombre' => 'Objetivos',
-                'path' => 'objetivos'
-            ],
-            [
-                'nombre' => 'Indicadores',
-                'path' => 'mandos'
+            'status'=>true,
+            'datos'=>[
+                [
+                    'nombre' => 'Inicio',
+                    'path' => ''
+                ],
+                [
+                    'nombre' => 'Objetivos',
+                    'path' => 'objetivos'
+                ],
+                [
+                    'nombre' => 'Indicadores',
+                    'path' => 'mandos'
+                ]
             ]
         ];
     }
@@ -92,23 +98,26 @@ class Portal
     private function dirgenMenu()
     {
         return [
-            [
-                'nombre' => 'Inicio',
-                'path' => ''
-            ],
-            [
-                'nombre' => 'Objetivos',
-                'path' => 'objetivos'
-            ],
-            [
-                'nombre' => 'Indicadores',
-                'path' => 'mandos'
-            ],
-            [
-                'nombre' => 'General',
-                'path' => 'general'
+            'status'=>true,
+            'datos'=>[
+                [
+                    'nombre' => 'Inicio',
+                    'path' => ''
+                ],
+                [
+                    'nombre' => 'Objetivos',
+                    'path' => 'objetivos'
+                ],
+                [
+                    'nombre' => 'Indicadores',
+                    'path' => 'mandos'
+                ],
+                [
+                    'nombre' => 'General',
+                    'path' => 'general'
+                ]
             ]
-            ];
+        ];
     }
     /**
      * Nos ayudara a generar el header del portal ya construido

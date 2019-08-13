@@ -1,6 +1,6 @@
 <?php
     error_reporting(E_ALL);
-    $cRuta = "/indicadoresdev/api";
+    $cRuta = "/indicadoresreact/api";
     require_once $_SERVER["DOCUMENT_ROOT"].$cRuta."/class/conexion.php";
     require_once $_SERVER["DOCUMENT_ROOT"].$cRuta."/class/portal.php";
     require_once $_SERVER["DOCUMENT_ROOT"].$cRuta."/class/autenticacion.php";

@@ -44,11 +44,12 @@ class App extends React.Component {
         this.logged = false;
         this.session = ObtenCookie("indicadores_i");
         const URL_BASE = "http://172.16.100.94";
-        const LUGAR = "indicadoresdev";
+        const LUGAR = "indicadoresreact";
         try {
             this.urlAutentica = `${URL_BASE}/${LUGAR}/api/controller/autentica.php?token=${this.session}`;
             const response = await fetch(this.urlAutentica);
             const datos = await response.json();
+            this.urlPortal = `${URL_BASE}/${LUGAR}/api/controller/portal.php?token=${this.session}`;
             this.urlObjetivos = `${URL_BASE}/${LUGAR}/api/controller/objetivos.php?token=${this.session}`;
             this.urlMandos = `${URL_BASE}/${LUGAR}/api/controller/mandos.php?token=${this.session}`;
             this.urlAlcance = `${URL_BASE}/${LUGAR}/api/controller/alcance.php?token=${this.session}`;
@@ -87,7 +88,7 @@ class App extends React.Component {
         if(this.state.error){
             return(
                 <BrowserRouter>
-                    <Layout state={this.state}>
+                    <Layout state={this.state} url={this.urlPortal}>
                         <ErrorConexion />
                     </Layout>
                 </BrowserRouter>
@@ -97,7 +98,7 @@ class App extends React.Component {
         {
         return (
             <BrowserRouter>
-                <Layout state={this.state}>
+                <Layout state={this.state} url={this.urlPortal}>
                     <Loader />
                 </Layout>
             </BrowserRouter>
@@ -110,7 +111,7 @@ class App extends React.Component {
         // Esté return manejara las rutas de la web así de a donde nos  lleve la web, se encargaran estos switch
         return (
             <BrowserRouter>
-                <Layout state={this.state}>
+                <Layout state={this.state} url={this.urlPortal}>
                     {errorIE}
                     {/* Si no nos encontramos logueados, se mostrara el loguin de usuario de inicio */}
                     {!logueado && (
