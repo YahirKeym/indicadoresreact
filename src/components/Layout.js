@@ -8,7 +8,9 @@ function Layout(props)
     const Children = props.children;
     return (
         <div className="col-12 row p-0 m-0">
-            <Navbar state={State} />
+            {props.url !== undefined && (
+                <Navbar state={State} url={props.url}/>
+            )}
             {State.logged && (
                     <SideBar state={State} />
             )}
