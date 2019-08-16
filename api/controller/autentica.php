@@ -7,6 +7,9 @@ $cDatos = isset($_REQUEST['data']) ? $_REQUEST['data'] : '{}';
 $aDatos = json_decode($cDatos,true);
 $cToken = isset($_REQUEST['token']) ? $_REQUEST['token'] : '';
 $oAutentica->validarCookie($cToken);
+$aRegreso = [
+    'autenticado' => false
+];
 switch ($cAction) {
     case 'close':
     $aRegreso = $oAutentica->closeSession();

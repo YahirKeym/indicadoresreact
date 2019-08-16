@@ -251,7 +251,7 @@ class Mandos
      */
     public function delete($iIdMando = 0)
     {
-        $cQuery = "DELETE FROM {$this->cTabla} WHERE Id={$iIdMando}";
+        $cQuery = "DELETE FROM {$this->cTabla} WHERE Id={$iIdMando} AND UsuarioCreo={$this->oAutentica->getId()}";
         $oConsulta = $this->oConexion->query($cQuery);
         $aStatus = [
             'status' => false
