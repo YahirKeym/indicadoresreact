@@ -138,11 +138,47 @@ class Mandos
         $iIdSubindicador = (int)$aDatos['id'];
         $cQuery = "UPDATE general_subindicadores SET DatosSubIndicador='{$cDatos}' WHERE IdSubIndicador={$iIdSubindicador}";
         $oConsulta = $this->oConexion->query($cQuery);
+        $cQueryTraeDatosSubindicador = "SELECT * FROM general_subindicadores WHERE IdSubIndicador={$iIdSubindicador}";
+        $aDatosSubIndicador = $this->oConexion->query($cQueryTraeDatosSubindicador)->fetch(PDO::FETCH_ASSOC);
+        $cQueryTraeSubindicadores = "SELECT DatosSubIndicador FROM general_subindicadores WHERE IdIndicador={$aDatosSubIndicador['IdIndicador']}";
+        $cQueryTraeIndicador = "SELECT DatosMando FROM general_mando WHERE Id={$aDatosSubIndicador['IdIndicador']}";
+        $aDatosIndicador = $this->oConexion->query($cQueryTraeIndicador)->fetch(PDO::FETCH_ASSOC);
+        $aDatosDelMando = json_decode($aDatosIndicador['DatosMando'],true);
+        $oConsultaSubindicadores = $this->oConexion->query($cQueryTraeSubindicadores);
+        foreach ($aDatosDelMando['variables'] as $aVariables) {
+            foreach ($aVariables['etapas'] as $aEtapas) {
+                $aDatosDelMando['variables'][$aVariables['id']-1]['etapas'][$aEtapas['idEtapa']-1]['valor'] = 0;
+            }
+        }
+        foreach ($oConsultaSubindicadores as $subindicador) {
+            $aDatosSubindicador = json_decode($subindicador['DatosSubIndicador'],true);
+            foreach ($aDatosSubindicador['variables'] as $aVariable) {
+                $iSuma = 0;
+                foreach ($aVariable['etapas'] as $aEtapa) {
+                    $iValorActual = $aDatosDelMando['variables'][$aVariable['id']-1]['etapas'][$aEtapa['idEtapa']-1]['valor'];
+                    $iSumaDeEtapas = $iValorActual+$aEtapa['valor'];
+                    $iSuma = $iSuma +$aEtapa['valor'];
+                    $aDatosDelMando['variables'][$aVariable['id']-1]['etapas'][$aEtapa['idEtapa']-1]['valor'] = $iSumaDeEtapas; 
+                    $iValorVariableUno = $aDatosDelMando['variables'][0]['etapas'][$aEtapa['idEtapa']-1]['valor'];
+                    $iPorcentaje = (100*(int)$aEtapa['valor'])/(int)$iValorVariableUno;
+                    if($aVariable['id'] === 1){
+                        $iPorcentaje = 100;
+                    }
+                    $aDatosDelMando['variables'][$aVariable['id']-1]['etapas'][$aEtapa['idEtapa']-1]['porcentaje'] = $iPorcentaje;   
+                }
+                $aDatosDelMando['variables'][$aVariable['id']-1]['valorTotal'] = $iSuma;
+            }
+        }
+        $cDatosActualizadosDelMando = json_encode($aDatosDelMando);
+        $cQueryDelMandoAactualizar = "UPDATE general_mando SET DatosMando='{$cDatosActualizadosDelMando}' WHERE Id={$aDatosSubIndicador['IdIndicador']}";
+        $oConsultaDelMando = $this->oConexion->query($cQueryDelMandoAactualizar);
         $aStatus = [
             'status'=>false,
+            'datos' => []
         ];
         if($oConsulta !== false){
             $aStatus['status'] = true;
+            $aStatus['datos'] = $aDatosDelMando['variables'];
         }
         return json_encode($aStatus);
     }
@@ -213,7 +249,9 @@ class Mandos
         $aDatosIndicador = $oConsultaIndicador->fetch(PDO::FETCH_ASSOC);
         $aDatosConvertidos = json_decode($aDatosIndicador['DatosMando'],true);
         $aDatosGuardados['variables'] = [];
-        array_push($aDatosGuardados['variables'],$aDatosConvertidos['variables'][0]);
+        foreach ($aDatosConvertidos['variables'] as $variables) {
+            array_push($aDatosGuardados['variables'],$variables);
+        }
         $aDatosGuardados['subindicadores'] = [json_decode($aSubindicador['DatosSubIndicador'],true)];
         $aDatosGuardados['datos'] = $aDatosConvertidos['datos'];
         $aDatosGuardados['objetivosData'] = $aDatosConvertidos['objetivosData'];
@@ -253,11 +291,13 @@ class Mandos
     {
         $cQuery = "DELETE FROM {$this->cTabla} WHERE Id={$iIdMando} AND UsuarioCreo={$this->oAutentica->getId()}";
         $oConsulta = $this->oConexion->query($cQuery);
+        $cQuerySubindicador = "DELETE FROM general_subindicadores WHERE IdIndicador={$iIdMando}";
         $aStatus = [
             'status' => false
         ];
         if($oConsulta != false)
         {
+            $oConsultaSubIndicador = $this->oConexion->query($cQuerySubindicador);
             $aStatus['status'] = true;
         }
         return json_encode($aStatus);
