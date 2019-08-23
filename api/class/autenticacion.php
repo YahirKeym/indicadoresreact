@@ -45,6 +45,7 @@ class Autenticacion
     private $lPuedeCrearUsuarios = 0;
     private $lPuedeVerTodosLosObjetivos = 0;
     private $PuedeVerTodosLosIndicadores = 0;
+    private $cPuestos = "";
     /**
      * Guardara el rango del usuario
      * @var string
@@ -136,7 +137,22 @@ class Autenticacion
     }
     // Traera a los usurios del departamento que el usuario que los está pidiendo este
     public function view(){
-        $cQuery = "SELECT IdEmpleado, IdPuesto, IdDepto, Nombre, ApellidoP,ApellidoM FROM general_empleado WHERE IdDepto='{$this->cDepartamento}' OR IdPuesto='{$this->cPuesto}'";
+        if(!empty($this->cPuestos)){
+            $aPuestos = explode(",",$this->cPuestos);
+            $cConsultaDePuestos = "";
+            $iConteoDePuestos = count($aPuestos);
+            $iRepetidorDePuestos = 0;
+            foreach ($aPuestos as $cPuesto) {
+                $cConsultaDePuestos .= "IdPuesto='{$cPuesto}' ";
+                if($iConteoDePuestos-1 > $iRepetidorDePuestos){
+                    $cConsultaDePuestos .= "OR ";
+                }
+                $iRepetidorDePuestos++;
+            }   
+        }
+        $cQuery = "SELECT IdEmpleado, IdPuesto, IdDepto, Nombre, ApellidoP,ApellidoM 
+        FROM general_empleado
+        WHERE IdDepto='{$this->cDepartamento}' OR IdPuesto='{$this->cPuesto}' OR {$cConsultaDePuestos}";
         $oConsulta = $this->oNewConexion->query($cQuery);
         $aStatus = [
             'status'=>false,
@@ -174,6 +190,7 @@ class Autenticacion
             $this->lPuedeCrearUsuarios = $aPermisos['CrearUsuarios'];
             $this->lPuedeVerTodosLosObjetivos = $aPermisos['VerTodosLosObjetivos'];
             $this->PuedeVerTodosLosIndicadores = $aPermisos['VerTodosLosIndicadores'];
+            $this->cPuestos = $aPermisos['PuestosQueControla'];
         }
     }
     /**
