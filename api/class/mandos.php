@@ -160,6 +160,12 @@ class Mandos
                     $iSuma = $iSuma +$aEtapa['valor'];
                     $aDatosDelMando['variables'][$aVariable['id']-1]['etapas'][$aEtapa['idEtapa']-1]['valor'] = $iSumaDeEtapas; 
                     $iValorVariableUno = $aDatosDelMando['variables'][0]['etapas'][$aEtapa['idEtapa']-1]['valor'];
+                    if($iValorVariableUno === 0){
+                        $iValorVariableUno = 100;
+                    }
+                    if($aEtapa['valor'] === 0){
+                        $aEtapa['valor'] = 100;
+                    }
                     $iPorcentaje = (100*(int)$aEtapa['valor'])/(int)$iValorVariableUno;
                     if($aVariable['id'] === 1){
                         $iPorcentaje = 100;

@@ -138,8 +138,9 @@ class Autenticacion
     // Traera a los usurios del departamento que el usuario que los está pidiendo este
     public function view(){
         if(!empty($this->cPuestos)){
-            $aPuestos = explode(",",$this->cPuestos);
             $cConsultaDePuestos = "";
+            $aPuestos = explode(",",$this->cPuestos);
+            $cConsultaDePuestos .= "OR ";  
             $iConteoDePuestos = count($aPuestos);
             $iRepetidorDePuestos = 0;
             foreach ($aPuestos as $cPuesto) {
@@ -152,7 +153,7 @@ class Autenticacion
         }
         $cQuery = "SELECT IdEmpleado, IdPuesto, IdDepto, Nombre, ApellidoP,ApellidoM 
         FROM general_empleado
-        WHERE IdDepto='{$this->cDepartamento}' OR IdPuesto='{$this->cPuesto}' OR {$cConsultaDePuestos}";
+        WHERE IdDepto='{$this->cDepartamento}' OR IdPuesto='{$this->cPuesto}' {$cConsultaDePuestos}";
         $oConsulta = $this->oNewConexion->query($cQuery);
         $aStatus = [
             'status'=>false,
