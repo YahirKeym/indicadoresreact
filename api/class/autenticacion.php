@@ -41,17 +41,52 @@ class Autenticacion
      * @var string
      */
     private $cUserName = "";
+    /**
+     * Guardara el permiso para saber si es o no director general
+     *
+     * @var integer
+     */
     private $lEsDirectorGeneral = 0;
+    /**
+     * Nos dira si tiene el permiso de crear usuarios
+     *
+     * @var integer
+     */
     private $lPuedeCrearUsuarios = 0;
+    /**
+     * Nos dirá si puede visualizar todos los objetivos creados por los usuarios
+     *
+     * @var integer
+     */
     private $lPuedeVerTodosLosObjetivos = 0;
+    /**
+     * Marcara si puede ver todos los indicadores de los usuarios
+     *
+     * @var integer
+     */
     private $PuedeVerTodosLosIndicadores = 0;
+    /**
+     * Nos marcara los puestos que controla, y así si puede ver los objetivos y indicadores de esos puestos
+     *
+     * @var string
+     */
     private $cPuestos = "";
     /**
-     * Guardara el rango del usuario
+     * Guardara el departamento en el que se encuentra el usuario
      * @var string
      */
     private $cDepartamento = "";
+    /**
+     * La nueva conexión es la que irá remplazando la conexión que se usaba antes con las funciones que tiene. (Remplantear la conexión)
+     *
+     * @var object
+     */
     private $oNewConexion = null;
+    /**
+     * Guardara la conexión de la base de datos de indicadores 
+     *
+     * @var object Conexión de indicadores
+     */
     private $oConexionIndicadores = null;
     /**
      * Nos ayudara a iniciar la autenticación para poder obtener datos de usuario o bien, validar si su sesión se encuentra activa.
@@ -64,8 +99,8 @@ class Autenticacion
     }
     /**
      * Nos ayudara a validar los datos del usuario para saber si es correcto el logueo o no
-     * @param string $cDatos Serán los datos convertidos en Json.
-     * @return void
+     * @param string $cDatos Serán los datos usuario/correo y pass del usuario a intentar loguear
+     * @return array con los datos del usuario en caso de tenerlos
      */
     public function validarLogin($aDatos = [])
     {
@@ -83,7 +118,7 @@ class Autenticacion
      * Nos ayudara a hacer comprobación de las credenciales de los usuarios con lo que trae de la base de datos
      * @param array $aDatosBaseDeDatos
      * @param array $aDatosRecibidos
-     * @return void
+     * @return array Mandara un array con el estado del usuario y una cookie en caso de tenerla
      */
     private function comparadorDedatos($aDatosBaseDeDatos = [], $aDatosRecibidos = [])
     {
@@ -109,7 +144,10 @@ class Autenticacion
         return $aStatus;
     }
     /**
-     * Nos ayudara a validar la cookie del usuario, para así loguearlo o no
+     * Validara la cookie que el se le haya pasado el usuario por parametro
+     *
+     * @param string $cToken Será la cookie que se validara
+     * @return array regresara el estado si el usuario fue validado o no.
      */
     public function validarCookie($cToken = "")
     {
@@ -135,7 +173,11 @@ class Autenticacion
         }
         return $aRegreso;
     }
-    // Traera a los usurios del departamento que el usuario que los está pidiendo este
+    /**
+     * Traera los usuarios del departamento que es el usuario y los departamentos que controla.
+     *
+     * @return array Regresara un array con los usuarios encontrados
+     */
     public function view(){
         if(!empty($this->cPuestos)){
             $cConsultaDePuestos = "";
@@ -185,6 +227,7 @@ class Autenticacion
         $this->cNombreCompleto = $aUsuario['Nombre']." ".$aUsuario['ApellidoP']." ".$aUsuario['ApellidoM'];
         $this->cUserName =  $aUsuario['UserName'];
         $this->cPuesto = $aUsuario['IdPuesto'];
+        $this->cCorreo = $aUsuario['Correo'];
         $this->cDepartamento = $aUsuario['IdDepto'];
         if(!empty($aPermisos)){
             $this->lEsDirectorGeneral = $aPermisos['DirectorGeneral'];
@@ -290,6 +333,7 @@ class Autenticacion
         ];
         return $aStatus;        
     }
+    // Tengo que ver si estoy usando esta función, porque no que yo recuerde, pero gueno.
     public function selectForMandos($cId = "")
     {
         $cQuery = "SELECT IdEmpleado, Nombre, ApellidoP, ApellidoM,IdPuesto,IdDepto FROM general_empleado WHERE IdDepto = '{$cId}' AND Estatus='A'";

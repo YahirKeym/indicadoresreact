@@ -86,6 +86,12 @@ class Objetivos
        }
        return json_encode($aStatus);
     }
+    /**
+     * Codificara el texto a la ultima codificación proveniente del frontend.
+     *
+     * @param string $cTexto
+     * @return string  Regresara el texto codificado
+     */
     private function codificaTexto($cTexto = ""){
         $cTexto = str_replace('"',"comiDouble;",$cTexto);
         $cTexto = str_replace("'","comiSingle;",$cTexto);
@@ -107,6 +113,12 @@ class Objetivos
         $cTexto = str_replace(" ","spaceString;",$cTexto);
         return $cTexto;
     }
+    /**
+     * Será de las primeras codificacion que llevan algunos indicadores
+     *
+     * @param string $cTexto
+     * @return string 
+     */
     private function codificacionSimple($cTexto = ""){
         $cTexto = str_replace("á","u00e1",$cTexto);
         $cTexto = str_replace("Á","u00c1",$cTexto);
@@ -122,7 +134,12 @@ class Objetivos
         $cTexto = str_replace("Ñ","u00d1",$cTexto);
         return $cTexto;
     }
-    // Traera los indicadores que existan por objetivos que haya.
+    /**
+     * Mandara a llamar a todos los indicadores que se encuentren por objetivo allá. Como al inicio no se registraba el id del objetivo que llevaba
+     * Se tuvo que traer algunos indicadores por medio del titulo del objetivo que tenian.
+     *
+     * @return void
+     */
     public function extractAllObjetivesWithIndicators(){
         $cQuery = "SELECT * FROM objetivos WHERE deleted=0";
         $oConsulta = $this->oConexion->query($cQuery);

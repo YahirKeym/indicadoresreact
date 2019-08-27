@@ -1,4 +1,7 @@
 <?php 
+/**
+ * Guardara las funciones principales para poder armar un mando/indicador.
+ */
 class Mandos
 {
     /**
@@ -6,6 +9,7 @@ class Mandos
      * @var string
      */
     private $cTabla = "general_mando";
+    private $cRuta = "";
     /**
      * Guardara el objeto de conexión
      * @var Object
@@ -17,16 +21,17 @@ class Mandos
      */
     private $oAutentica = null;
     /**
-     * Nos ayudara a iniciar los requerimientos de los mandos.
+     * Nos ayudara a iniciar los requerimientos de los mandos mandando a la conexión y al objeto de autenticación
      */
-    function __construct($oAutentica = null, $oConexion)
+    function __construct($oAutentica = null, $oConexion = null, $cRuta = "")
     {
         $oConexion = $oConexion;
         $this->oConexion = $oConexion->oConexion;
         $this->oAutentica = $oAutentica;
+        $this->cRuta = $cRuta;
     }
     /**
-     * Podremos añadir un mando
+     * añadira un mando con su cuerpo en formato json y sus caracteristicas principales separadas en formato de entidad
      * @param array $aDatos
      * @return string Regresara un string tipo json con el estado de la consulta
      */
@@ -58,7 +63,13 @@ class Mandos
         }
         return json_encode($aStatus);
     }
-    // Ayudara a añadir los subindicadores que hay.
+    /**
+     * Añadira los subindicadores que contenga un mando, el mando lo manda a llamar y en caso de tener subindicadores, va agregando uno por uno.
+     *
+     * @param array $aDatos
+     * @return bool Regresara true en caso de que haya insertado correctamente todos los subindicadores o en caso de que los subindicadores se encuentren
+     * vacios también regresara true, solo regresara false en caso de que haya un error en alguno de los subindicadores
+     */
     private function addSubIndicador($aDatos=[]){
         $cQueryLastIndicadorOfUser = "SELECT Id FROM general_mando WHERE UsuarioCreo={$this->oAutentica->getId()} ORDER BY Id DESC LIMIT 1";
         $oConsultaLastIndicadorOfUser = $this->oConexion->query($cQueryLastIndicadorOfUser);
@@ -95,7 +106,11 @@ class Mandos
         }
         return $lStatus;
     }
-    // La función view mandara a llamar a todos los indicadores que el usuario pueda ver
+    /**
+     * Mostrara todos los indicadores permitidos por el usuario mediante los parametros dados en la consulta.
+     *
+     * @return array Regresa un array convertido en json con las datos en caso de contener y con el estado de la consulta.
+     */
     public function view()
     {
         $idUsuario = $this->oAutentica->getId();
@@ -133,6 +148,13 @@ class Mandos
         }
         return json_encode($aStatus);
     }
+    /**
+     * Está función editara el subindicador que se mando a llamar. Ayudara también a sumar todos los subindicadores para poder darle un valor
+     * al indicador principal mediante los valores de cada uno de los subindicadores
+     *
+     * @param array $aDatos Serán los datos del subindicador
+     * @return array regresa un array en formato json con la respuesta del estado
+     */
     public function editarHeredado($aDatos = []){
         $cDatos = json_encode($aDatos['subindicadores'][0]);
         $iIdSubindicador = (int)$aDatos['id'];
@@ -226,7 +248,11 @@ class Mandos
         }
         return json_encode($aStatus);
     }
-    //
+    /**
+     * Traera los subindicadores disponibles que se le hayan dado al usuario que está solicitando
+     *
+     * @return array Regresa un array convertido en json el cual mandara los subindicadores del usuario con el indicador correspondiente
+     */
     public function traeSubIndicadores(){
         $idUsuario = $this->oAutentica->getId();
         $cQuery = "SELECT * FROM general_subindicadores WHERE IdUsuariosResponsables LIKE '{$idUsuario}%' 
@@ -247,7 +273,13 @@ class Mandos
         }
         return json_encode($aStatus);
     }
-    private function guardaSubIndicadores($aSubindicador)
+    /**
+     * Guardara los datos principales del indicador principal de cada subindicador.
+     *
+     * @param array $aSubindicador Trae los datos del subindicador, esto para saber a que indicador mandaremos a llamar.
+     * @return array Regresa un array con el subindicador y el indicador ya construidos.
+     */
+    private function guardaSubIndicadores($aSubindicador = [])
     {
         $iIdIndicador = $aSubindicador['IdIndicador'];
         $cQueryIndicador = "SELECT DatosMando from general_mando WHERE id={$iIdIndicador}";
@@ -308,7 +340,13 @@ class Mandos
         }
         return json_encode($aStatus);
     }
-    // Modificara los datos del indicador que le dictemos
+    /**
+     * Modificara el indicador que nosostros le pidamos, guardara la fecha de edición y el ultimo usuario que lo edito.
+     *
+     * @param array $aDatos serán los datos del indicador
+     * @param string $cDatos serán los datos en formato de json que guardaremos del indicador
+     * @return array Regresara un array en formato json el cual dara el estado de true o false si se guardo el indicador o no.
+     */
     public function modify($aDatos = [],$cDatos = "")
     {
         $cFecha = date("Y-m-d H:i:s");
@@ -320,6 +358,31 @@ class Mandos
         if($oConsulta != false)
         {
             $aStatus['status'] = true;
+        }
+        return json_encode($aStatus);
+    }
+    /**
+     * Recibira y guardara el archivo
+     *
+     * @param array $aFile serán los datos del archivo
+     * @return array 
+     */
+    public function uploadFileEtapas($aFile = []){
+        $cTipoDeArchivo = $aFile['type'];
+        $aStatus = [
+            'status' => false,
+            'ruta' => "",
+            'type' => false
+        ];
+        if($cTipoDeArchivo === "application/pdf" || $cTipoDeArchivo === "image/png" || $cTipoDeArchivo === "image/jpeg"){
+            $cIdUnico = uniqid();
+            $cExtencion = pathinfo($aFile['name'],PATHINFO_EXTENSION);
+            $lMueveArchivo = move_uploaded_file($aFile['tmp_name'],"c:/xampp/htdocs{$this->cRuta}/files/{$cIdUnico}.{$cExtencion}");
+            $aStatus['type'] = true;
+            if($lMueveArchivo){
+                $aStatus['status'] = true;
+                $aStatus['ruta'] = "http://172.16.100.94{$this->cRuta}/files/{$cIdUnico}.{$cExtencion}";
+            }
         }
         return json_encode($aStatus);
     }

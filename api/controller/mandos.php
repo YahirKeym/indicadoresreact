@@ -1,4 +1,5 @@
 <?php
+set_time_limit (99999999); 
 $cRuta = "/indicadoresreact/api";
 require_once $_SERVER["DOCUMENT_ROOT"] . $cRuta . "/class/dependencias.php";
 require_once $_SERVER["DOCUMENT_ROOT"] . $cRuta . "/class/mandos.php";
@@ -7,7 +8,7 @@ $cDatos = isset($_REQUEST['data']) ? $_REQUEST['data'] : '';
 $iIdMando = isset($_REQUEST['id']) ? $_REQUEST['id'] : 0;
 $aDatos = json_decode($cDatos, true);
 $oAutentica->validarCookie($cToken);
-$oMandos = new Mandos($oAutentica, $oConexionMandos);
+$oMandos = new Mandos($oAutentica, $oConexionMandos,$cRuta);
 if ($oAutentica->lAutenticado) {
 switch ($cAccion) {
     case 'add':
@@ -26,7 +27,10 @@ switch ($cAccion) {
         $cRegreso = $oMandos->select($iIdMando);
         break;
     case 'heredados':
-    $cRegreso = $oMandos->traeSubIndicadores();
+        $cRegreso = $oMandos->traeSubIndicadores();
+    break;
+    case 'upload':
+        $cRegreso = $oMandos->uploadFileEtapas($_FILES['file']);
     break;
     case 'heredado':
         $cRegreso = $oMandos->traeHeredado($iIdMando);
