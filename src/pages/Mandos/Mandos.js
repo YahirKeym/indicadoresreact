@@ -8,10 +8,8 @@ import BuscadorIncremental from "../../components/Generales/BuscadorIncremental.
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import "react-tabs/style/react-tabs.css";
 import MandosVista from "../../components/Mandos/MandosVista.js";
-import MandosGenerales from "../../components/Mandos/MandosGenerales.js";
-import AllObjetives from "../Objetivos/AllObjetives.js";
 /**
- * Será la clase de mandos donde se visualizaran todos
+ * La clase mandos nos ayudara a llevar la visualización de todos los mandos/indicadores disponibles por el usuario.
  */
 class Mandos extends React.Component {
     constructor(props) {
@@ -59,7 +57,7 @@ class Mandos extends React.Component {
                         <Tab>Indicadores heredados</Tab>
                     </TabList>
                     <TabPanel>
-                        <ButtonDirectTop to="/mandos/add" text="Añadir nuevo mando" />
+                        <ButtonDirectTop to="/mandos/add" text="Añadir nuevo indicador" />
                         <MandosVista objeto={this} lugarDeDatos={this.state.data} />
                     </TabPanel>
                     <TabPanel>

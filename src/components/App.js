@@ -1,3 +1,4 @@
+// Estás dependencias se encontraran aquí hasta que haga un inyector de dependencias.
 import React from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Alcance from "../pages/Alcance/Alcance.js";
@@ -29,9 +30,13 @@ import UserLogin from "../pages/UserLogin.js";
 import BrouserName from "./Generales/BrouserName.js";
 import AllObjetives from "../pages/Objetivos/AllObjetives.js";
 /**
- * Nos ayudara a ajustar las opciones de la web
+ * La clase app será la clase principal la cual mandara a llamar cada parte de la web que solicitemos.
  */
 class App extends React.Component {
+    /**
+     * Ayudara a inicializar la clase haciendo globales las propiedades que le pasemos y inicializando un estado
+     * @param {*} props Son las propiedades de la clase
+     */
     constructor(props) {
         super(props);
         this.state = {
@@ -40,10 +45,14 @@ class App extends React.Component {
         }
         this.varyfiLogged = this.veryfiLogged.bind(this);
     }
+    /**
+     * Está función le mandara la cookie que por default se encuentre y se la enviara a la api la cual verificara si el usuario se encuentra activo
+     * o Bien si el usuario se encuentra logueado. También armara las url necesarias para el uso de la api
+     */
     veryfiLogged = async () => {
         this.logged = false;
         this.session = ObtenCookie("indicadores_i");
-        const URL_BASE = "http://172.16.100.94";
+        const URL_BASE = "http://172.16.100.196";
         const LUGAR = "indicadoresreact";
         try {
             this.urlAutentica = `${URL_BASE}/${LUGAR}/api/controller/autentica.php?token=${this.session}`;
@@ -73,18 +82,25 @@ class App extends React.Component {
             })
         }
     };
+    /**
+     * Una vez montado el componente mandaremos a verificar el logue deo usuario y así poder darle la pestaña y menú que le corresponde.
+     */
     componentDidMount() {
         this.veryfiLogged();
     }
 
     /**
-     *
+     * Mandamos a llamar la renderización del componenten
      */
     render() {
         let errorIE;
+        // Si el usuario se encuentra usando Internet explorer 11, le mandaremos que muchas funciones no se encontraran activas y que el mal
+        // uso de la app podría deberse a eso.
         if(BrouserName() === "IE 11"){
             errorIE = <ErrorInternetExplorer />
         }
+        // Si por alguna razón no podemos verificar el usuario logueado o bien hay algún tipo de error de conexión con la api.
+        // Le diremos al usuario que cuenta con un error de conexión.
         if(this.state.error){
             return(
                 <BrowserRouter>
@@ -94,6 +110,7 @@ class App extends React.Component {
                 </BrowserRouter>
             )
         }
+        // Si el estado de logueo no se encuentra definido, le mandaremos un loader en lo que carga por completo el componente
         if(this.state.isLogged === undefined )
         {
         return (
@@ -104,6 +121,7 @@ class App extends React.Component {
             </BrowserRouter>
             );
         }
+        // Definimos el estado de usuario logueado en false, para despúes poder hacer una validación con los dos parametros que nos traiga el estado.
         let logueado = false;
         if(this.state.isLogged && this.state.logged){
             logueado = true;
@@ -235,6 +253,7 @@ class App extends React.Component {
                                     />
                                 )}
                             />
+                            {/** Pensando en refactorizar el alcance */}
                             <Route
                                 exact
                                 path="/tipos/alcance"
@@ -279,6 +298,7 @@ class App extends React.Component {
                                     />
                                 )}
                             />
+                            {/** Pensando en refactorizar los paises */}
                             <Route
                                 exact
                                 path="/paises"
@@ -323,7 +343,7 @@ class App extends React.Component {
                                     />
                                 )}
                             />
-                            <Route
+                            {/**Pensando en refactorizar las jerarquias */}
                                 exact
                                 path="/jerarquia"
                                 component={({ match, history }) => (

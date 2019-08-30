@@ -8,7 +8,9 @@ function CreaEtapas(LUGAR_VARIABLES,LUGAR_DE_DATOS){
                 id: `${idVariable}_${indexEtapas}`,
                 valor: 0,
                 idEtapa: indexEtapas,
-                porcentaje: 0
+                porcentaje: 0,
+                valorReal: 0,
+                aceptado:0
             }
         ]
     }

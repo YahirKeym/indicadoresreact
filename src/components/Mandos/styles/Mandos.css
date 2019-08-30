@@ -1,5 +1,5 @@
 .mando{
-    background: #000d42;
+    background: #dcdce8;
     border: 2px solid #fff;
     border-radius: 0 10px 10px 0;
 }
@@ -13,7 +13,7 @@
     border-radius: 0 0 0 10px;
 }
 .mando .mando-text{
-    background: #202c69;
+    background: #7d7f88;
     border-radius: 10px;
 }
 .mando .etapa{
@@ -33,5 +33,7 @@
     background: #202c69;
     border-left: 1px solid #000d42;
     border-right: 1px solid #000d42;
-
+}
+.card{
+    background: #dcdce8 !important;
 }

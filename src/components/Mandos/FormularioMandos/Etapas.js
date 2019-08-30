@@ -2,6 +2,9 @@ import React from 'react';
 import {Input} from '../../Formulario/ModulosFormulario';
 import CambiarEtapas from '../CambiarEtapas';
 import DecodificaMalos from '../../Generales/DecodificaMalos';
+import Meses from '../../Fechas/Meses';
+import OtorgaNombres from './OtorgaNombre';
+import Bimestres from '../../Fechas/Bimestres';
 // Será el tipo de etapas y la cantidad de ellas que manejaremos. Ejemplo: meses : 12 
 function TipoDeEtapas(props){
     const objeto = props.objeto,
@@ -12,7 +15,21 @@ function TipoDeEtapas(props){
                 <label htmlFor="etapas">Etapas que tendra este mando </label>
             </div>
             <div className="col-12 col-lg-6"> 
-                <Input type="text" datos={{_self:objeto,lugar:lugarDeDatos.datos,zona:"tipoDeEtapa"}} plhold="Meses" dfv="Meses"/> 
+                <Input type="text" 
+                datos={{_self:objeto,lugar:lugarDeDatos.datos,zona:"tipoDeEtapa"}} 
+                plhold="Meses" 
+                dfv="Meses"
+                callback={true}
+                function={e => {
+                    e.preventDefault();
+                    const valor = e.target.value.toLowerCase();
+                    if(valor ==="m" || valor ==="me" || valor ==="mes" || valor ==="mese" || valor ==="meses"){
+                        OtorgaNombres(objeto,lugarDeDatos,Meses())
+                    }
+                    if(valor ==="b" || valor ==="bi" || valor ==="bim" || valor ==="bime" || valor ==="bimestre"){
+                        OtorgaNombres(objeto,lugarDeDatos,Bimestres())
+                    }
+                }}/> 
             </div>
             <div className="col-12 col-lg-6 mb-3">
                 <Input type="number" datos={{_self:objeto,lugar:lugarDeDatos.datos,zona:"etapas"}} plhold="12" dfv="12" callback={true} function={objeto.entregaEtapasALasVariables}/>
@@ -29,7 +46,7 @@ function NombreDeEtapas(props){
             {lugarDeDatos.etapas.map(etapa => {
                 return(
                     <div className="col-3" key={etapa.id}>
-                        <Input type="text" datos={{_self:objeto,lugar:lugarDeDatos.variables[0].etapas[etapa.idEtapa - 1],zona:"nombre"}} plhold={`Etapa ${etapa.idEtapa} nombre`} />
+                        <Input type="text" datos={{_self:objeto,lugar:lugarDeDatos.variables[0].etapas[etapa.idEtapa - 1],zona:"nombre"}} dfv={lugarDeDatos.variables[0].etapas[etapa.idEtapa - 1].nombre} plhold={`Etapa ${etapa.idEtapa} nombre`} />
                     </div>
                 )
             })}

@@ -46,7 +46,8 @@ function TipoDeIndicador(props){
             <Select datos={{_self:objeto,lugar:lugarDeDatos.datos,zona:"formaDeIndicador"}} 
             plhold="Selecciona la forma en la que se dara el indicador"
             className="col-5 ml-3"
-            valor="nombre" 
+            valor="titulo"
+            titulo="nombre"
             elementos={lugarDeDatos.manejoDeIndicador}/>
         </div>
     )

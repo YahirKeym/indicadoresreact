@@ -69,7 +69,9 @@ class MandosAdd extends React.Component
                         valor: 0,
                         idEtapa: indexEtapas,
                         porcentaje: 100,
-                        nombreEtapa: ''
+                        nombreEtapa: '',
+                        valorReal: 0,
+                        aceptado: 0
                     }
                 ]
             }
@@ -112,16 +114,6 @@ class MandosAdd extends React.Component
             },
             objetivoShow:true
         })
-    }
-    // Nos ayudara a agregar una variable con sus etapas.
-    handleAddVariable = (e,OBJETO,LUGAR_DE_DATOS) =>
-    {
-        e.preventDefault();
-        let aEtapas = CreaEtapas(this.state.variables,this.state);
-        AddOneElement(e,this,this.state.variables,"Variable",[
-            {"nombre":"etapas","valor":aEtapas},
-            {"nombre":"valorTotal","valor": 0}
-        ])
     }
     /**
      * Añadira el mando haciendo los cambios de estados necesarios a empty, le asignara los valores correctos, limpiara las cadenas y realizara la petición del usuario.
@@ -180,10 +172,10 @@ class MandosAdd extends React.Component
                 {emptyField}
                 <TitleAndDescription objeto={this} lugarDeDatos={this.state} />
                 <Variables objeto={this} lugarDeDatos={this.state} lugarDeDatosPrincipal={this.state}/>
-                <Subindicadores objeto={this} lugarDeDatos={this.state} />
                 <Acciones objeto={this} lugarDeDatos={this.state} />
                 <DatosGenerales objeto={this} lugarDeDatos={this.state} />
                 <Etapas objeto={this} lugarDeDatos={this.state} />
+                <Subindicadores objeto={this} lugarDeDatos={this.state} />
                 <div className="col-12 mt-3">
                     <button className="btn btn-success" onClick={this.handleAddMando}>Agregar</button>
                     <button className="btn btn-danger ml-3" onClick={this.handleBack}>Volver</button>

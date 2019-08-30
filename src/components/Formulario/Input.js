@@ -13,7 +13,7 @@ function Input(props){
         <input className={`form-control ${className}`} type={type} onChange={e => {
             ChangeData(e, _self, lugar, zona, placeholder);
             if(callback){
-                callFunction()
+                callFunction(e)
             }
         }} placeholder={placeholder} defaultValue={defaultValue} />
     )

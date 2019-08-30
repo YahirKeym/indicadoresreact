@@ -46,14 +46,22 @@ function MandoDatos(variables){
             {
                 "id" : 0,
                 "titulo":"incremento",
+                "nombre": "Incremento"
             },
             {
                 "id" :1,
-                "titulo":"decremento"
+                "titulo":"decremento",
+                "nombre" : "Decremento"
             },
             {
                 "id" :1,
-                "titulo":"acumulativo"
+                "titulo":"acumulativoI",
+                "nombre" : "Acumulativo de incremento"
+            },
+            {
+                "id" :1,
+                "titulo":"acumulativoD",
+                "nombre" : "Acumulativo de decremento"
             }
         ],
         "usuarios": [],

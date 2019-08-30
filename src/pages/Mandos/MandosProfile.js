@@ -1,3 +1,4 @@
+// Se quedara así hasta que creer un inyectador de dependencias :(
 import React from "react";
 import CuerpoObjetivosMandos from "../../components/Mandos/CuerpoObjetivosMandos.js";
 import { Chart } from "react-google-charts";
@@ -8,28 +9,42 @@ import VariablesMando from "../../components/Mandos/VariablesMando.js";
 import MandoDatos from "../../components/Mandos/MandoDatos.js";
 import CambiarEtapas from "../../components/Mandos/CambiarEtapas.js";
 import TraeDatos from "../../components/TraeDatos.js";
+import CodificaMalos from "../../components/Generales/CodificaMalos.js";
+/**
+ * Exportaremos la calse del perfil del mando/indicador el cual armara toda la vista del perfil principal de cada indicador y subindicador
+ */
 export default class MandosProfile extends React.Component {
+    /**
+     * Llamaremos a su constructor para hacer todas las propiedades globales y le daremo un estado inicial para que el componente no se rompa
+     * @param {*} props 
+     */
     constructor(props) {
         super(props);
         this.state = {
             data: MandoDatos(),
             etapasChart: [],
             editar: false,
-            update: undefined
+            update: undefined,
+            guardar: false
         };
     }
     /**
-     *
+     * Montaremos el componente con los principales parametros a saber, si es un indicador heredado/subindicador o bien si es un indicador normal
      */
     componentDidMount() {
         if(!this.props.match.params.esHeredado){
             this.traerDatos();
         }else{
-            TraeDatos({url:this.props.url,_self:this},"data",`heredado&id=${this.props.match.params.mandoId}`,this.datosParaChart)
+            TraeDatos({url:this.props.url,_self:this},"data",`heredado&id=${this.props.match.params.mandoId}`,() =>{
+                this.datosParaChart(this,this.state.data);
+                if(this.state.data.datos.manejoDeIndicador === "acumulativoI" || this.state.data.datos.manejoDeIndicador === "acumulativoD"){
+                    this.datosParaChart(this, this.state.data,true);            
+                }    
+            })
         }
     }
     /**
-     * Traera los datos de los objetivos y del mando.
+     * Traera los datos de un indicador principal, aún no lo meto a la función global de traer datos.
      */
     traerDatos = async () => {
         const mando = await fetch(
@@ -45,12 +60,16 @@ export default class MandosProfile extends React.Component {
                 });
             }
             this.datosParaChart(this, this.state.data);
+            if(this.state.data.datos.formaDeIndicador === "acumulativoI" || this.state.data.datos.formaDeIndicador === "acumulativoD"){
+                this.datosParaChart(this, this.state.data,true);            
+            }            
         }
     };
     /**
-     *
+     * Está función ayudara a crear datos para la grafica que s emuestra en el perfil, extrayendo datos de las variables principales y las subvariables
+     * en caso de existir
      */
-    datosParaChart = (OBJETO, LUGAR_DE_DATOS) => {
+    datosParaChart = (OBJETO, LUGAR_DE_DATOS,lEsAcumulativo) => {
         let firstDatos = ["Etapas"],
             secondData = [],
             aEtapas = [];
@@ -68,40 +87,77 @@ export default class MandosProfile extends React.Component {
                             )
                         );
                     }
+                    firstDatos.push(`Tendencia`)
+
         }
         // Comienza el proceso para guardar los datos de las variables principales
         // con las variables de los subindicadores
         for (let index = 0; index < LUGAR_DE_DATOS.datos.etapas; index++) {
+            let suma = 0, valor;
             let guardaValores = [];
             LUGAR_DE_DATOS.variables.map(variable => {
                 if (variable.id === 1) {
                     // Guardamos el nombre de las etapas
                     guardaValores.push(
                         DecodificaMalos(LUGAR_DE_DATOS.variables[0].etapas[index].nombre)
-                        );
-                    }
-                    // Guardamos el valor de las variables
-                    guardaValores.push(parseInt(variable.etapas[index].valor));
-                    return true;
-                });
-                if (LUGAR_DE_DATOS.subindicadores !== undefined) {
-                    if (LUGAR_DE_DATOS.subindicadores.length !== 0) {
-                        // Guardamos los valores de las variables de los subindicadores
-                        LUGAR_DE_DATOS.subindicadores.map(subindicador =>
-                            subindicador.variables.map(variable =>
-                                guardaValores.push(parseInt(variable.etapas[index].valor))
-                                )
-                                );
+                    );
+                }
+                // Guardamos el valor de las variables
+                if(lEsAcumulativo){
+                    valor = parseInt(variable.etapas[index].valorReal);
+                }else{
+                    valor = parseInt(variable.etapas[index].valor);
+                }
+                suma = suma+valor;   
+                guardaValores.push(valor);
+                return true;
+            });
+            if (LUGAR_DE_DATOS.subindicadores !== undefined) {
+                if (LUGAR_DE_DATOS.subindicadores.length !== 0) {
+                    // Guardamos los valores de las variables de los subindicadores
+                    LUGAR_DE_DATOS.subindicadores.map(subindicador =>
+                        subindicador.variables.map(variable =>{
+                            if(lEsAcumulativo){
+                                valor = parseInt(variable.etapas[index].valorReal);
+                            }else{
+                                valor = parseInt(variable.etapas[index].valor);
                             }
-                        }
-                        secondData.push(guardaValores);
-                    }
-                    aEtapas = [firstDatos];
-                    aEtapas = [...aEtapas, ...secondData];
-                    OBJETO.setState({
-                        etapasChart: aEtapas
-        });
+                            suma = suma+valor;
+                            guardaValores.push(valor)
+                        })
+                    );
+                }
+            }
+            //Obtenemos la cantidad de variables para poder definir nuestra tendencia
+            let iVariablesPrincipales = LUGAR_DE_DATOS.variables.length,
+            iVariablesDeSubindicadores = 0, 
+            iCantidadDeVariables = 0;
+            if(LUGAR_DE_DATOS.subindicadores.length !== 0){
+                iVariablesDeSubindicadores = LUGAR_DE_DATOS.subindicadores[0].variables.length;
+            }
+            iCantidadDeVariables = iVariablesPrincipales+iVariablesDeSubindicadores;
+            suma = suma / iCantidadDeVariables;
+            OBJETO.setState({
+                'iVariables':iCantidadDeVariables,
+            })
+            guardaValores.push(suma);
+            secondData.push(guardaValores);
+        }
+        aEtapas = [firstDatos];
+        aEtapas = [...aEtapas, ...secondData];
+        if(lEsAcumulativo){
+            OBJETO.setState({
+                etapasChartReal: aEtapas
+            });
+        }else{
+            OBJETO.setState({
+                etapasChart: aEtapas
+            });
+        }
     }
+    /**
+     * Cambiara la escala de la grafica del indicador.
+     */
     handleChangeEscala = e => {
         let valor = e.target.value;
         let name = e.target.name;
@@ -116,7 +172,7 @@ export default class MandosProfile extends React.Component {
         });
     };
     /**
-     *
+     * Le dara un valor a la acción que le digamos del indicador que nos encontremos.
      */
     handleChangeAction = e => {
         var nuevoStado = this.state;
@@ -180,7 +236,7 @@ export default class MandosProfile extends React.Component {
         });
     };
     handleChangeAnalisisDeInformacion = e => {
-        let valor = e.target.value;
+        let valor = CodificaMalos(e.target.value);
         this.setState({
             data: {
                 ...this.state.data,
@@ -218,12 +274,22 @@ export default class MandosProfile extends React.Component {
         }
         const response = await req.json();
         if (response.status) {
-            this.setState({
-                update: true,
+            this.setState({pdate: true,
                 editar: false
             });
         }
+        if(response.datos !== undefined){
+            this.setState({
+               data:{
+                   ...this.state.data,
+                   variables: response.datos
+               }
+            });
+        }
     };
+    acceptEtapa = (e,idEtapa,idVariable,OBJETO,LUGAR_DE_DATOS)=>{
+        e.preventDefault();
+    }
     /**
      * Ayudara a abrir los campos para que puedan ser editados
      */
@@ -244,7 +310,62 @@ export default class MandosProfile extends React.Component {
                 porcentajeMedio: this.state.data.datos.AceptacionMedia
             },
             mensajeEditar = "Editar datos",
-            analisisDeInformacion;
+            analisisDeInformacion,
+            chartReal;
+        if(this.state.data.datos.formaDeIndicador === "acumulativoI" || this.state.data.datos.formaDeIndicador === "acumulativoD"){
+            chartReal = (
+                <Chart
+                        width="100%"
+                        height={300}
+                        chartType="ColumnChart"
+                        loader={<Loader />}
+                        data={this.state.etapasChartReal}
+                        options={{
+                            title: DecodificaMalos(
+                                this.state.data.datos.titulo
+                            ),
+                            chartArea: {
+                                width: "80%",
+                                backgroundColor: "rgba(0,0,0,0)"
+                            },
+                            backgroundColor: {
+                                fill: "#000",
+                                fillOpacity: 0
+                            },
+                            hAxis: {
+                                title: "Etapas",
+                                minValue: 0
+                            },
+                            vAxis: {
+                                title: DecodificaMalos(
+                                    this.state.data.datos.unidadDeMedida
+                                ),
+                                minValue: this.state.data.datos.minimaEscala,
+                                maxValue: this.state.data.datos.maximaEscala
+                            },
+                            colors: [
+                                "#289c7c",
+                                "#007bff",
+                                "#dc3545",
+                                "#000d42",
+                                "#000",
+                                "#633836",
+                                "#485051",
+                                "#a3371f",
+                                "#c5674a",
+                                "#6b3e3e",
+                                "#472019",
+                                "#f2dede",
+                                "#438efa",
+                                "#1f8c9d",
+                                "#de2a97",
+                                "#3b3b3b"
+                            ]
+                        }}
+                        legendToggle
+                    />
+            )   
+        }
         if (this.state.editar) {
             mensajeEditar = "Dejar de editar";
         }
@@ -321,7 +442,7 @@ export default class MandosProfile extends React.Component {
                                     {this.state.data.acciones.map(action => {
                                         return (
                                             <div
-                                                className="acciones col-12 p-2 mando-text mb-2"
+                                                className="col-12 p-2 mando-text mb-2"
                                                 key={action.id}
                                             >
                                                 <p>
@@ -356,11 +477,17 @@ export default class MandosProfile extends React.Component {
                                         this.state.data.datos.valorMinimo
                                     );
                                     this.datosParaChart(this,this.state.data);
+                                    if(this.state.data.datos.formaDeIndicador === "AcumulativoI" || this.state.data.datos.formaDeIndicador === "AcumulativoD"){
+                                        this.datosParaChart(this,this.state.data, true);
+                                    }
                                 }}
+                                objeto={this}
                                 etapa={this.state.data.datos.tipoDeEtapa}
                                 editar={seEditaPrincipal}
                                 variables={this.state.data.variables}
                                 porcentaje={porcentaje}
+                                lugarDeDatos={this.state.data}
+                                perfil={true}
                             />
                             {this.state.data.subindicadores.map(subindicador => {
                                 return(
@@ -376,7 +503,12 @@ export default class MandosProfile extends React.Component {
                                                 true
                                             );
                                             this.datosParaChart(this,this.state.data);
+                                            if(this.state.data.datos.formaDeIndicador === "AcumulativoI" || this.state.data.datos.formaDeIndicador === "AcumulativoD"){
+                                                this.datosParaChart(this,this.state.data, true);
+                                            }
                                         }}
+                                        objeto={this}
+                                        lugarDeDatos={this.state.data}
                                         etapa={this.state.data.datos.tipoDeEtapa}
                                         editar={seEditaSecundarios}
                                         variables={subindicador.variables}
@@ -500,7 +632,7 @@ export default class MandosProfile extends React.Component {
                     <Chart
                         width="100%"
                         height={300}
-                        chartType="ColumnChart"
+                        chartType="ComboChart"
                         loader={<Loader />}
                         data={this.state.etapasChart}
                         options={{
@@ -526,6 +658,13 @@ export default class MandosProfile extends React.Component {
                                 minValue: this.state.data.datos.minimaEscala,
                                 maxValue: this.state.data.datos.maximaEscala
                             },
+                            animation: {
+                                startup: true,
+                                easing: 'linear',
+                                duration: 1500,
+                              },
+                            seriesType: 'bars',
+                            series: { [this.state.iVariables]: { type: 'line' } },
                             colors: [
                                 "#289c7c",
                                 "#007bff",
@@ -545,8 +684,17 @@ export default class MandosProfile extends React.Component {
                                 "#3b3b3b"
                             ]
                         }}
+                        chartEvents={[
+                            {
+                              eventName: 'animationfinish',
+                              callback: () => {
+                                console.log('Animation Finished')
+                              },
+                            },
+                          ]}
                         legendToggle
                     />
+                    {chartReal}
                 </div>
             </React.Fragment>
         );

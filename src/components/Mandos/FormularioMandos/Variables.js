@@ -14,7 +14,7 @@ function Variables(props){
             {
                 return (
                 <div className="col-12 col-lg-4 mt-2" key={variable.id}>
-                    <Input type="text" datos={{_self:objeto, lugar: lugarDeDatos.variables[variable.id-1], zona:"nombre"}} plhold={`variable ${variable.id}`} />
+                    <Input type="text" datos={{_self:objeto, lugar: lugarDeDatos.variables[variable.id-1], zona:"nombre"}} plhold={`variable ${variable.id}`} dfv={variable.nombre} />
                 </div>)
             })}
             <div className="col-12 col-lg-4 mt-2">

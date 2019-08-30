@@ -9,6 +9,7 @@ function Select(props){
     className=props.className,
     valor = props.valor,
     opcion = props.opcion;
+    let titulo = props.titulo;
     return(
         <select className={`form-control ${className}`} onChange={
             e=> {
@@ -20,14 +21,20 @@ function Select(props){
             }
         }>
             <option>{placeholder}</option>
-    {elementos.map(elemento => {
+    {elementos.map((elemento,xId) => {
         let seMuestra;
         seMuestra = elemento[opcion]
         if(elemento.titulo !== undefined){
             seMuestra = elemento.titulo;
         }
+        if(titulo === undefined){
+            titulo = "";
+        }
+        if(titulo.length === 0){
+            titulo = "titulo";
+        }
         return (
-            <option value={elemento[valor]} key={elemento.id}>{seMuestra}</option>
+            <option value={elemento[valor]} key={xId}>{elemento[titulo]}</option>
             )
         })
     }

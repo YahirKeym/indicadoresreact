@@ -4,7 +4,7 @@ export default class CerrarSesion extends React.Component{
      * Cerrara la sesión y cambiara la cookie automaticamente
      */
     handleCloseSession = async e => {
-        const url = `http://172.16.100.94/indicadoresreact/api/controller/autentica.php?`;
+        const url = `http://172.16.100.196/indicadoresreact/api/controller/autentica.php?`;
         e.preventDefault();
         const req = await fetch(`${url}action=close`);
         const response = await req.json();

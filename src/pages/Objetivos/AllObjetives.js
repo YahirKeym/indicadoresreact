@@ -6,17 +6,18 @@ import DecodificaMalos from '../../components/Generales/DecodificaMalos';
 import VariablesMando from '../../components/Mandos/VariablesMando';
 import GeneraDatosParaChart from '../../components/Mandos/GeneraDatosParaChart';
 import BuscadorIncremental from '../../components/Generales/BuscadorIncremental';
+import IndicadorReductor from '../../components/Mandos/IndicadorReductor';
 // Serán los mini badges que guardaran un pequeño fragmento de información
 // Ejemplo: Tipo de indicador, alcance, país, etc.
 function BadgeOfInformation(props){
     const titulo = props.title,
     contenido = props.content;
     return(
-        <div className="row col-3 d-flex justify-content-center ml-3 ">
+        <div className="row col-3 d-flex justify-content-center ml-3">
             <div className="col-12 d-flex justify-content-center">
                 <h5>{titulo}</h5>
             </div>
-            <div className="mando-text col-12 p-3 d-flex justify-content-center border border-secondary">
+            <div className="mando-text col-12 p-3 d-flex justify-content-center border border-secondary text-white">
                 <h5>{contenido}</h5>
             </div>
         </div>
@@ -32,12 +33,16 @@ function ObjetiveData(props){
             <div className="col-12 m-0 p-0">
                 <h4>Objetivo</h4>
             </div>
-            <div className="col-12 mando-text p-3 mb-3">
+            <div className="col-12 mando-text p-3 mb-3 text-white">
                 <h4>{LUGAR_DE_DATOS.nombre}</h4>
             </div>
-            <div className="col-12 mando-text p-3 mb-3">
-                <p>{LUGAR_DE_DATOS.descripcion}</p>
-            </div>
+            {
+                LUGAR_DE_DATOS.descripcion.length !== 0 && (
+                    <div className="col-12 mando-text p-3 mb-3 text-white">
+                        <p>{LUGAR_DE_DATOS.descripcion}</p>
+                    </div>
+                )
+            }
             <div className="col-12 row p-0 mb-3 d-flex justify-content-center">
                 <BadgeOfInformation title="Alcance" content="Global" />
                 <BadgeOfInformation title="Periodo" content={OBJETO.darPeriodo(LUGAR_DE_DATOS.inicio,LUGAR_DE_DATOS.finaliza)} />
@@ -50,7 +55,9 @@ function ObjetiveData(props){
 function AccordionIndicador(props){
     const children = props.children,
     datos = props.datos,
-    idEvent = props.id;
+    idEvent = props.id,
+    color = props.color,
+    porcentaje = props.porcentaje;
     let titulo = datos.datos.titulo,
     tipoDeIndicador = datos.datos.formaDeIndicador; 
     if(titulo.length === 0){
@@ -69,7 +76,10 @@ function AccordionIndicador(props){
                     <h5 className="col-6">
                         {DecodificaMalos(titulo)}
                     </h5>
-                    <span className="float-right text-right">
+                    <div className={`col-3 ${color} text-white d-flex justify-content-center mr-3`}>
+                        {porcentaje}%
+                    </div>
+                    <span className="float-right text-right ">
                         {datos.usuario}
                     </span>
                 </div>    
@@ -79,13 +89,24 @@ function AccordionIndicador(props){
                     <div className="row col-12 d-flex justify-content-center mb-3">
                         <BadgeOfInformation title="Naturaleza" content={tipoDeIndicador.toUpperCase()} />
                         <BadgeOfInformation title="Responsable" content={datos.usuario} />
-                        <BadgeOfInformation title="Unidad de Medida" content={datos.datos.unidadDeMedida.toUpperCase()} />
+                        <BadgeOfInformation title="Unidad de Medida" content={DecodificaMalos(datos.datos.unidadDeMedida.toUpperCase())} />
                     </div>
                     {children}
                 </Card.Body>
             </Accordion.Collapse>
         </Card>
     )
+}
+function definePorcentaje(valor, etapa){
+    let formula;
+    if(valor === 0 || valor === "0"){
+        valor = 100;
+    }
+    formula = (100 * etapa) / valor;
+    if (etapa === 0 || formula === Infinity) {
+        formula = 0;
+    }
+    return formula;
 }
 // Serán los datos del indicador
 function IndicadorData(props){
@@ -113,12 +134,46 @@ function IndicadorData(props){
                     porcentajeBueno: AceptacionBuena,
                     porcentajeMedio: AceptacionMedio 
                 };
-                   return( <AccordionIndicador key={xId} id={xId} datos={indicador}>
+                const primerVariableDelIndicador = indicador.variables[0].valorTotal;
+                        let color = "bg-success",
+                        porcentajeIndicador;
+                if(indicador.variables[1] !== undefined){
+                    const segundaVariableDelIndicador = indicador.variables[1].valorTotal;
+                    if(indicador.datos.formaDeIndicador === "incremento" || indicador.datos.formaDeIndicador === "acumulativoI"){
+                        porcentajeIndicador = definePorcentaje(primerVariableDelIndicador,segundaVariableDelIndicador);
+                    }else{
+                        porcentajeIndicador = IndicadorReductor(primerVariableDelIndicador,0,segundaVariableDelIndicador);
+                    }
+                    if(porcentajeIndicador < AceptacionBuena){
+                        color = "bg-warning"
+                    }
+                    if(porcentajeIndicador < AceptacionMedio){
+                        color = "bg-danger"
+                    }
+                    porcentajeIndicador = Math.round(porcentajeIndicador * 100) /100;
+                }
+                let subindicadores;
+                if(indicador.subindicadores !== undefined){
+                    subindicadores = (
+                        <React.Fragment>
+                            {indicador.subindicadores.map(subindicador =>
+                                <VariablesMando
+                                key={subindicador.id}
+                                variables={subindicador.variables}
+                                porcentaje={porcentaje}
+                                etapa={indicador.datos.tipoDeEtapa}
+                                muestraPorcentaje={true} />
+                            )}
+                        </React.Fragment>
+                    )
+                }
+                   return( <AccordionIndicador key={xId} id={xId} datos={indicador} color={color} porcentaje={porcentajeIndicador}>
                         <VariablesMando
                                     variables={indicador.variables}
                                     porcentaje={porcentaje}
                                     etapa={indicador.datos.tipoDeEtapa}
                                 />
+                        {subindicadores}
                     </AccordionIndicador>)
                 }
                 )}
@@ -138,7 +193,7 @@ function BodyAllObjetives(props){
         Indicadores = <IndicadorData objeto={OBJETO} lugarDeDatos={LUGAR_DE_DATOS}/>;
     }
     return(
-        <div data-search={`${LUGAR_DE_DATOS.nombre}`} className="col-12 row mando text-white p-3 mb-3">
+        <div data-search={`${LUGAR_DE_DATOS.nombre}`} className="col-12 row mando p-3 mb-3">
             <ObjetiveData objeto={OBJETO} lugarDeDatos={LUGAR_DE_DATOS}/>
             {Indicadores}
         </div>
