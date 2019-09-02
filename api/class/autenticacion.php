@@ -179,8 +179,8 @@ class Autenticacion
      * @return array Regresara un array con los usuarios encontrados
      */
     public function view(){
+        $cConsultaDePuestos = "";
         if(!empty($this->cPuestos)){
-            $cConsultaDePuestos = "";
             $aPuestos = explode(",",$this->cPuestos);
             $cConsultaDePuestos .= "OR ";  
             $iConteoDePuestos = count($aPuestos);
