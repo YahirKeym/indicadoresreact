@@ -1,11 +1,12 @@
 <?php
 set_time_limit (99999999); 
-$cRuta = "/indicadoresreact/api";
+$cRuta = "/indicadresreact/api";
 require_once $_SERVER["DOCUMENT_ROOT"] . $cRuta . "/class/dependencias.php";
 require_once $_SERVER["DOCUMENT_ROOT"] . $cRuta . "/class/mandos.php";
 $cAccion = isset($_REQUEST['action']) ? $_REQUEST['action'] : '';   
 $cDatos = isset($_REQUEST['data']) ? $_REQUEST['data'] : '';
 $iIdMando = isset($_REQUEST['id']) ? $_REQUEST['id'] : 0;
+$iIdUser = isset($_REQUEST['user']) ? $_REQUEST['user'] : 0;
 $aDatos = json_decode($cDatos, true);
 $oAutentica->validarCookie($cToken);
 $oMandos = new Mandos($oAutentica, $oConexionMandos,$cRuta);
@@ -34,6 +35,9 @@ switch ($cAccion) {
     break;
     case 'heredado':
         $cRegreso = $oMandos->traeHeredado($iIdMando);
+    break;
+    case 'reasignation':
+        $cRegreso = $oMandos->resignation($iIdMando,$iIdUser);
     break;
     case 'heredadoedit':
         $cRegreso = $oMandos->editarHeredado($aDatos);

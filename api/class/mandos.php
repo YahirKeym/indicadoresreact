@@ -220,7 +220,7 @@ class Mandos
     {
         $idUsuario = $this->oAutentica->getId();
         $cQuery = "SELECT * FROM {$this->cTabla} WHERE Id={$iId} AND UsuarioCreo={$idUsuario}";
-        $cQuerySubIndicador = "SELECT DatosSubIndicador FROM general_subindicadores WHERE IdIndicador={$iId}";
+        $cQuerySubIndicador = "SELECT IdSubIndicador,DatosSubIndicador,IdUsuariosResponsables FROM general_subindicadores WHERE IdIndicador={$iId}";
         $oConsulta = $this->oConexion->query($cQuery);
         $oConsultaSubIndicador = $this->oConexion->query($cQuerySubIndicador);
         $aStatus = [
@@ -237,6 +237,8 @@ class Mandos
                 if(!empty($aSubindicador)){
                     $aDatosSubIndicador = json_decode($aSubindicador['DatosSubIndicador'],true);
                     $aStatus['datos']['subindicadores'][$iContadorSubIndicadores]["id"] = $aDatosSubIndicador['id'];
+                    $aStatus['datos']['subindicadores'][$iContadorSubIndicadores]["idReal"] = $aSubindicador['IdSubIndicador'];
+                    $aStatus['datos']['subindicadores'][$iContadorSubIndicadores]["idUsuario"] = $aSubindicador['IdUsuariosResponsables'];
                     $aStatus['datos']['subindicadores'][$iContadorSubIndicadores]["nombre"] = $aDatosSubIndicador['nombre'];
                     $aStatus['datos']['subindicadores'][$iContadorSubIndicadores]["variables"] = $aDatosSubIndicador['variables'];                    
                     $iContadorSubIndicadores++;
@@ -245,6 +247,17 @@ class Mandos
                 }
             }
             $aStatus['datos']['id'] = $aDatos['Id'];
+        }
+        return json_encode($aStatus);
+    }
+    public function resignation($iIdIndicador, $iIdUser){
+        $cQuery = "UPDATE general_subindicadores SET IdUsuariosResponsables={$iIdUser} WHERE IdSubIndicador={$iIdIndicador}";
+        $oConsulta = $this->oConexion->query($cQuery);
+        $aStatus = [
+            'status' => false
+        ];
+        if($oConsulta !== false){
+            $aStatus['status'] = true;
         }
         return json_encode($aStatus);
     }
