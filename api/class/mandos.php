@@ -394,7 +394,7 @@ class Mandos
             $aStatus['type'] = true;
             if($lMueveArchivo){
                 $aStatus['status'] = true;
-                $aStatus['ruta'] = "http://172.16.100.94{$this->cRuta}/files/{$cIdUnico}.{$cExtencion}";
+                $aStatus['ruta'] = "http://172.16.100.196{$this->cRuta}/files/{$cIdUnico}.{$cExtencion}";
             }
         }
         return json_encode($aStatus);
