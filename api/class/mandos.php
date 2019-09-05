@@ -118,6 +118,9 @@ class Mandos
         OR IdUsuario LIKE  '%{$idUsuario}%' 
         OR IdUsuario LIKE '%{$idUsuario}'
         OR UsuarioCreo={$idUsuario}";
+        if($this->oAutentica->getPermisoDirectorGeneral()){
+            $cQuery = "SELECT * FROM {$this->cTabla}";
+        }
         $oConsulta = $this->oConexion->query($cQuery);
         $aStatus =[
             'status' => false,

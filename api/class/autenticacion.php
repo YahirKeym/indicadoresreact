@@ -109,7 +109,7 @@ class Autenticacion
         if (!$lEsEmail) {
             $cCondicion = "UserName='{$aDatos['usuario']}'";
         }
-        $cQuery = "SELECT IdEmpleado, Password FROM general_empleado WHERE {$cCondicion}";
+        $cQuery = "SELECT IdEmpleado, Password, UserName FROM general_empleado WHERE {$cCondicion}";
         $aDatos['condicionDb'] = $cCondicion;
         $aDatosDeLaBaseDeDatos = $this->oNewConexion->query($cQuery);
         return $this->comparadorDedatos($aDatosDeLaBaseDeDatos, $aDatos);
@@ -125,6 +125,7 @@ class Autenticacion
         $aStatus = [
             'status' => false,
             'cookie' => '',
+            'changePass' => false
         ];
         if($aDatosBaseDeDatos != false)
         {
@@ -137,6 +138,10 @@ class Autenticacion
                     $this->oNewConexion->query($cQuery);
                     setcookie('indicadores_i', $cookieParaUsuario, time() + 365 * 24 * 60 * 60, "/");
                     $aStatus['status'] = true;
+                    if($aUsuario['UserName'] === $aUsuario['Password']){
+                        $aStatus['changePass'] = true;
+                        $aStatus['idUs'] = $aUsuario['IdEmpleado'];
+                    }
                     $aStatus['cookie'] = $cookieParaUsuario;
                 }
             }
@@ -358,6 +363,28 @@ class Autenticacion
                 $aStatus['datos'][$iContadorUsers]['id'] = $aUsuario['IdEmpleado'];
                 $iContadorUsers++;
             }
+        }
+        return $aStatus;
+    }
+    /**
+     * Cambiara el password si este es el mismo que se tiene como nombre de usuario
+     *
+     * @param string $cPwd
+     * @return array Regresa el estado si el password fue cambiado de manera correcta
+     */
+    public function changePassword($cPwd = "",$iId = 0){
+        $cQuery = "UPDATE general_empleado SET Password='{$cPwd}' WHERE IdEmpleado={$iId}";
+        $oConsulta  = $this->oNewConexion->query($cQuery);
+        $aStatus=[
+            'status' => false,
+            'changePass' => true
+        ];
+        // echo '<pre>';
+        // var_dump($this->oNewConexion->errorInfo());
+        // echo '</pre>';
+        if($oConsulta !== false){
+            $aStatus['status']  = true;
+            $aStatus['changePass'] = false;    
         }
         return $aStatus;
     }

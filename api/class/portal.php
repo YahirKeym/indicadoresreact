@@ -86,7 +86,11 @@ class Portal
                 [
                     'nombre' => 'Indicadores',
                     'path' => 'mandos'
-                ]
+                ],
+                [
+                    'nombre' => 'Acerca De',
+                    'path' => 'about'
+                ],
             ]
         ];
     }
@@ -115,7 +119,11 @@ class Portal
                 [
                     'nombre' => 'General',
                     'path' => 'general'
-                ]
+                ],
+                [
+                    'nombre' => 'Acerca De',
+                    'path' => 'about'
+                ],
             ]
         ];
     }
