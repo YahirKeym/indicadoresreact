@@ -10,6 +10,7 @@ import MandoDatos from "../../components/Mandos/MandoDatos.js";
 import CambiarEtapas from "../../components/Mandos/CambiarEtapas.js";
 import TraeDatos from "../../components/TraeDatos.js";
 import CodificaMalos from "../../components/Generales/CodificaMalos.js";
+import Select from "../../components/Formulario/Select.js";
 /**
  * Exportaremos la calse del perfil del mando/indicador el cual armara toda la vista del perfil principal de cada indicador y subindicador
  */
@@ -25,7 +26,9 @@ export default class MandosProfile extends React.Component {
             etapasChart: [],
             editar: false,
             update: undefined,
-            guardar: false
+            guardar: false,
+            usuarios: [],
+            idUsuario:0,
         };
     }
     /**
@@ -42,6 +45,7 @@ export default class MandosProfile extends React.Component {
                 }    
             })
         }
+        TraeDatos({url: this.props.urlAutentica,_self: this}, "usuarios");
     }
     /**
      * Traera los datos de un indicador principal, aún no lo meto a la función global de traer datos.
@@ -491,29 +495,54 @@ export default class MandosProfile extends React.Component {
                             />
                             {this.state.data.subindicadores.map(subindicador => {
                                 return(
-                                    <VariablesMando
-                                        key={subindicador.id}
-                                        onChange={e => {
-                                            CambiarEtapas(
-                                                e,
-                                                this,
-                                                subindicador.variables,
-                                                this.state.data,
-                                                this.state.data.datos.valorMinimo,
-                                                true
-                                            );
-                                            this.datosParaChart(this,this.state.data);
-                                            if(this.state.data.datos.formaDeIndicador === "AcumulativoI" || this.state.data.datos.formaDeIndicador === "AcumulativoD"){
-                                                this.datosParaChart(this,this.state.data, true);
-                                            }
-                                        }}
-                                        objeto={this}
-                                        lugarDeDatos={this.state.data}
-                                        etapa={this.state.data.datos.tipoDeEtapa}
-                                        editar={seEditaSecundarios}
-                                        variables={subindicador.variables}
-                                        porcentaje={porcentaje}
-                                    />
+                                    <React.Fragment key={subindicador.id}>
+                                        <VariablesMando
+                                            onChange={e => {
+                                                CambiarEtapas(
+                                                    e,
+                                                    this,
+                                                    subindicador.variables,
+                                                    this.state.data,
+                                                    this.state.data.datos.valorMinimo,
+                                                    true
+                                                );
+                                                this.datosParaChart(this,this.state.data);
+                                                if(this.state.data.datos.formaDeIndicador === "AcumulativoI" || this.state.data.datos.formaDeIndicador === "AcumulativoD"){
+                                                    this.datosParaChart(this,this.state.data, true);
+                                                }
+                                            }}
+                                            objeto={this}
+                                            lugarDeDatos={this.state.data}
+                                            etapa={this.state.data.datos.tipoDeEtapa}
+                                            editar={seEditaSecundarios}
+                                            variables={subindicador.variables}
+                                            porcentaje={porcentaje}
+                                            cede={subindicador.nombre}
+                                        />
+                                        <div className="col-12 mt-3 row">
+                                            <Select
+                                                datos={
+                                                    {
+                                                        "_self": this, 
+                                                        "lugar": this.state.data.subindicadores[subindicador.id -1],
+                                                        "zona":"idUsuario"
+                                                    }} 
+                                                plhold="Agregar responsable"
+                                                elementos={this.state.usuarios}
+                                                valor="id"
+                                                opcion="nombre"
+                                                className="col-4"
+                                            />
+                                            <button className="btn btn-success" idReal={subindicador.idReal} idUser={subindicador.idUsuario} onClick={
+                                                async e=>{
+                                                e.preventDefault();
+                                                let idReal = e.target.getAttribute('idReal'),
+                                                idUser = subindicador.idUsuario;
+                                                let req = await fetch(`${this.props.url}&action=reasignation&id=${idReal}&user=${idUser}`),
+                                                response = await req.json();
+                                            }}>Reasignar</button>
+                                        </div>
+                                    </React.Fragment>
                                 )
                             })}
                         </div>
@@ -608,7 +637,7 @@ export default class MandosProfile extends React.Component {
                                                 .handleChangeAnalisisDeInformacion
                                         }
                                         className="form-control"
-                                        defaultValue={analisisDeInformacion}
+                                        defaultValue={DecodificaMalos(analisisDeInformacion)}
                                     />
                                 </div>
                             </React.Fragment>
@@ -620,8 +649,8 @@ export default class MandosProfile extends React.Component {
                                 </div>
                                 <div className="col-12 p-2 mando-text">
                                     {
-                                        this.state.data.datos
-                                            .analisisDeInformacion
+                                        DecodificaMalos(this.state.data.datos
+                                            .analisisDeInformacion)
                                     }
                                 </div>
                             </React.Fragment>

@@ -19,7 +19,8 @@ function definePorcentaje(valor, etapa){
 }
 function MandosVista(props){
     const OBJETO = props.objeto,
-    LUGAR_DE_DATOS = props.lugarDeDatos;
+    LUGAR_DE_DATOS = props.lugarDeDatos,
+    className = props.className;
     let heredado = props.heredado;
     if(heredado === undefined){
         heredado="";
@@ -73,24 +74,46 @@ function MandosVista(props){
                             if(mando.datos.formaDeIndicador === "decremento" || mando.datos.formaDeIndicador === "acumulativoD" ){
                                 porcentajeIndicador = IndicadorReductor(primerVariableDelIndicador,0,segundaVariableDelIndicador);
                             }
-                            if(porcentajeIndicador < AceptacionBuena){
-                                color = "bg-warning"
-                            }
-                            if(porcentajeIndicador < AceptacionMedio){
-                                color = "bg-danger"
-                            }
-                            porcentajeIndicador = Math.round(porcentajeIndicador * 100) /100;
+                        }else{
+                            porcentajeIndicador = mando.variables[0].valorTotal;
                         }
+                        let textColor = "dark";
+                        if(porcentajeIndicador < AceptacionBuena){
+                            color = "bg-warning"
+                        }
+                        if(porcentajeIndicador < AceptacionMedio){
+                            color = "bg-danger";
+                            textColor = "text-white";
+                        }
+                        let porcentajeText = "%";
+                        if(mando.variables.length === 1){
+                            porcentajeText = "";
+                        }
+                        porcentajeIndicador = Math.round(porcentajeIndicador * 100) /100;
                         return (
-                            <div data-search={`${titulo}`} className="mando">
-                                <Card className="mando" key={idEvent}>
+                            <div data-search={`${titulo}`} className={`mando ${className}`} key={idEvent}>
+                                <Card className={`mando`} >
                                     <Accordion.Toggle as={Card.Header} eventKey={idEvent}>
                                         <div className="col-12 row">
                                             <h5 className="col-6">
                                                 {DecodificaMalos(titulo)}
                                             </h5>
-                                            <div className={`col-3 ${color} m-0 p-0 d-flex justify-content-center`}>
-                                                {porcentajeIndicador}%
+                                            <div className={`col-2 ${color} etapa m-0 p-0 d-flex justify-content-center border border-white redondo ${textColor} `}>
+                                                <p>
+                                                    {porcentajeIndicador}{porcentajeText}
+                                                </p>
+                                            </div>
+                                            <div className={`col-2 ${color} etapa m-0 p-0 ml-1 d-flex justify-content-center border border-white redondo ${textColor} `}>
+                                                <p>
+                                                {mando.variables.map(variable => {
+                                                    return(
+                                                        <span>
+                                                            {Math.round(variable.valorTotal*100)/100}/
+                                                        </span>
+                                                            )
+                                                        })
+                                                    }
+                                                </p>
                                             </div>
                                         </div>    
                                     </Accordion.Toggle>
@@ -100,7 +123,7 @@ function MandosVista(props){
                                         <VariablesMando
                                             variables={mando.variables}
                                             porcentaje={porcentaje}
-                                            etapa={mando.datos.tipoDeEtapa}
+                                            etapa={DecodificaMalos(mando.datos.tipoDeEtapa)}
                                             muestraPorcentaje={true}
                                             />
                                         {mando.subindicadores.map(subindicador => {

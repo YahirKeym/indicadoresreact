@@ -24,17 +24,17 @@ function Select(props){
     {elementos.map((elemento,xId) => {
         let seMuestra;
         seMuestra = elemento[opcion]
-        if(elemento.titulo !== undefined){
-            seMuestra = elemento.titulo;
-        }
         if(titulo === undefined){
             titulo = "";
         }
         if(titulo.length === 0){
             titulo = "titulo";
         }
+        if(elemento.titulo !== undefined){
+            seMuestra = elemento[titulo];
+        }
         return (
-            <option value={elemento[valor]} key={xId}>{elemento[titulo]}</option>
+            <option value={elemento[valor]} key={xId}>{seMuestra}</option>
             )
         })
     }

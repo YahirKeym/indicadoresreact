@@ -47,7 +47,7 @@ class Objetivos extends React.Component
         this.buscadorTime = setTimeout(()=>{BuscadorIncremental({claseCorrecta: "d-block",claseIncorrecta:"d-none",buscador: "buscaObjetivos",seBusca:"objetives"})},1000);
         return ( // Si todo salió bien, renderizaremos los objetivos del usuario
             <div className="col-12 row">
-                <ButtonDirectTop to="/objetivos/add" text="Añadir objetivo" />
+                <ButtonDirectTop to="/objetivos/add" text="Agregar objetivo" />
                 <div className="col-12 row d-flex justify-content-between">
                     {this.state.data.length === 0 && ( // En caso de que el usuario no cuente con datos, le mandaremos el componente de que no cuenta con datos
                         <SinDatos />

@@ -17,12 +17,18 @@
 .btn-success-suez{
   background: #99ca3c !important;
   border: 1px solid #337d25 !important;
-  color: rgba(70,70,70,.8) !important;
+  color: #000d42 !important;
   font-weight: 700 !important
 }
 .btn-success-suez:hover{
   background: #28a745 !important;
   border: 1px solid #28a745 !important;
+}
+.btn{
+  width: 8em !important;
+}
+.redondo{
+  border-radius: .80rem !important;
 }
 /* width */
 ::-webkit-scrollbar {
@@ -44,5 +50,5 @@
   background: #555; 
 }
 .form-bg{
-  background: #7d7f88;
+  background: #dcdce8;
 }

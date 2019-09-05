@@ -46,11 +46,12 @@ function VariablesMando(props)
                                 if(etapa.file === undefined){
                                     etapa.file = "";
                                 }
+                                let uploadFile, displayText;
                                 if (etapa.file.length !== 0){
                                     etapa.file = etapa.file.replace(" ","");
                                     etapa.file = etapa.file.replace('\t',"");
+                                    displayText="block";
                                 }
-                                let uploadFile;
                                 if(etapa.file.length === 0 && perfil){
                                     uploadFile = (
                                         <React.Fragment>
@@ -90,13 +91,13 @@ function VariablesMando(props)
                                             <div className="input-group col-2 text-center ">
                                                 <div className="input-group-prepend">
                                                     <div className="input-group-text p-0">
-                                                        <button className="btn btn-success p-0" onClick={e=>{
+                                                        {/* <button className="btn btn-success p-0" onClick={e=>{
                                                             OBJETO.acceptEtapa(e,etapa.idEtapa-1,idVariable-1, OBJETO)
                                                         }
-                                                        }><FontAwesomeIcon icon={faCheck}/></button>
+                                                        }><FontAwesomeIcon icon={faCheck}/></button> */}
                                                     </div>
                                                 </div>
-                                                <input type="number" name={etapa.id} idetapa={etapa.idEtapa} idvariable={idVariable} onChange={onChange} className={`${color} col-10`} defaultValue={etapa.valor} />
+                                                <input type="number" name={etapa.id} idetapa={etapa.idEtapa} idvariable={idVariable} onChange={onChange} className={`${color} col-10 etapa__input mt-2`} defaultValue={etapa.valor} />
                                             </div>
                                         </React.Fragment>
                                     )
@@ -114,11 +115,11 @@ function VariablesMando(props)
                                 return(
                                     <div className={`col-${col} text-center`} key={xId}>
                                         {variable.id === 1 && (
-                                                <div className="col-12 variable_nombre">
+                                                <div className="col-12 variable_nombre p-0">
                                                     {DecodificaMalos(etapa.nombre)}
                                                 </div>
                                             )}
-                                        <div className={`etapa ${color} text-white`}>
+                                        <div className={`etapa ${color} text-white`} style={{display:displayText}}>
                                             <p>{valor}</p>                                                   
                                                 {uploadFile}
                                                 {

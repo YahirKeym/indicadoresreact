@@ -6,7 +6,10 @@ class UserLogin extends React.Component
         super(props);
         this.state={
             usuario: '',
-            password: ''
+            password: '',
+            changePass: false,
+            newPassword: '',
+            id:0
         }
     }
     /**
@@ -26,12 +29,24 @@ class UserLogin extends React.Component
     {
         e.preventDefault();
         const datosState = JSON.stringify(this.state);
-        const req = await fetch(`${this.props.url}&action=valida&data=${datosState}`);
+        let req;
+        if(this.state.changePass){
+            req = await fetch(`${this.props.url}&action=changePassword&pwd=${this.state.newPassword}&id=${this.state.id}`);
+        }else{
+            req = await fetch(`${this.props.url}&action=valida&data=${datosState}`);
+        }
         const response = await req.json();
         if(response.status)
         {
-            document.cookie = `indicadores_i=${response.cookie}; expires=Thu, 01 Jan 2030 00:00:00 UTC; path=/;`; 
-            window.location.reload();
+            document.cookie = `indicadores_i=${response.cookie}; expires=Thu, 01 Jan 2030 00:00:00 UTC; path=/;`;
+            if(response.changePass){
+                this.setState({
+                    changePass: true,
+                    id: response.idUs
+                })
+            }else{
+                window.location.reload();
+            }                
         }
     }
     /**
@@ -39,20 +54,42 @@ class UserLogin extends React.Component
      */
     render()
     {
+        let accion,texto,primerInput,segundoInput,buttonText;
+        accion = this.handleChange;
+        if(this.state.changePass){
+            texto = "Cambia tu contraseña";
+            buttonText = "Cambiar contraseña"
+            primerInput = (
+                <React.Fragment>
+                    <p className="col-12">Nueva contraseña</p>
+                    <input name="newPassword" onChange={accion} className="form-control col-10" placeholder="Nueva contraseña" type="text" defaultValue=""/>
+                </React.Fragment>
+            );
+            segundoInput = ""
+        }else{
+            texto = "Inicia sesión";
+            buttonText = "Iniciar sesión"
+            primerInput = (
+                <input name="usuario" onChange={accion} className="form-control col-10" placeholder="Usuario" type="text" />
+            );
+            segundoInput = (
+                <input name="password" onChange={accion} className="form-control col-10" placeholder="Password" type="password" />
+            )
+        }
         return (
             <React.Fragment>
                 <form className="p-3 row col-12 col-lg-3 mx-auto">
                     <div className="col-12 d-flex justify-content-center">
-                        <h4>Inicia sesión</h4>
+                        <h4>{texto}</h4>
                     </div>
-                    <div className="col-12 d-flex justify-content-center">
-                        <input name="usuario" onChange={this.handleChange} className="form-control col-10" placeholder="Usuario" type="text" />
+                    <div className="col-12 d-flex justify-content-center row">
+                        {primerInput}
+                    </div>
+                    <div className="col-12 mt-3 d-flex justify-content-center row">
+                        {segundoInput}
                     </div>
                     <div className="col-12 mt-3 d-flex justify-content-center">
-                        <input name="password" onChange={this.handleChange} className="form-control col-10" placeholder="Password" type="password" />
-                    </div>
-                    <div className="col-12 mt-3 d-flex justify-content-center">
-                        <button  onClick={this.handleSubmit} className="btn btn-success">Iniciar Sesión</button>
+                        <button  onClick={this.handleSubmit} className="btn btn-success">{buttonText}</button>
                     </div>
                 </form>
             </React.Fragment>

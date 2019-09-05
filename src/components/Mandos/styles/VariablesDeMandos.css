@@ -10,3 +10,10 @@
     opacity: 0;
     width: 75%;
 }
+.etapa__input{
+    border-radius: 10px;
+    border:none;
+}
+.input-group-prepend, .input-group-text{
+    border: none !important;
+}

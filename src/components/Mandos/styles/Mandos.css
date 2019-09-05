@@ -17,8 +17,21 @@
     border-radius: 10px;
 }
 .mando .etapa{
+    display: flex;
     border: 1px solid #000d42;
+    border-radius: 10px;
     background: #376f37;
+}
+.mando .etapa p{
+    margin: auto;
+    text-align: center;
+}
+.mando .etapa a{
+    display: block;
+    text-align: center;
+}
+.mando .etapa p span:nth-child(3n){
+    display: inline-block
 }
 .mando .btn-success{
     background: #99ca3c  !important;
@@ -36,4 +49,7 @@
 }
 .card{
     background: #dcdce8 !important;
+}
+.no-border{
+    border: none !important;
 }

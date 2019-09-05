@@ -18,6 +18,7 @@ function DecodificaMalos(cadena){
         cadena = cadena.replace(/u00DA/gi, "Ú");
         cadena = cadena.replace(/u00F1/gi, "ñ");
         cadena = cadena.replace(/u00D1/gi, "Ñ");
+        cadena = cadena.replace(/u00b4/gi, "´");
         cadena = cadena.replace(/_/gi, " ");
         cadena = cadena.replace(/spaceString;/gi," ");
     }

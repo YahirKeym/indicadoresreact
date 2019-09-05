@@ -20,7 +20,7 @@ export default class DeleteAction extends React.Component
     // Renderizamos el Botón de eliminar
     render(){
         return (
-                <button className="btn btn-danger ml-3" onClick={this.handleDelete}>eliminar</button>
+                <button className="btn btn-danger ml-3" onClick={this.handleDelete}>Eliminar</button>
             )
     }
 }

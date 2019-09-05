@@ -7,6 +7,7 @@ import VariablesMando from '../../components/Mandos/VariablesMando';
 import GeneraDatosParaChart from '../../components/Mandos/GeneraDatosParaChart';
 import BuscadorIncremental from '../../components/Generales/BuscadorIncremental';
 import IndicadorReductor from '../../components/Mandos/IndicadorReductor';
+import MandosVista from '../../components/Mandos/MandosVista';
 // Serán los mini badges que guardaran un pequeño fragmento de información
 // Ejemplo: Tipo de indicador, alcance, país, etc.
 function BadgeOfInformation(props){
@@ -118,65 +119,10 @@ function IndicadorData(props){
                 <h4>Indicadores</h4>
             </div>
             <Accordion className="col-12 p-0">
-                {LUGAR_DE_DATOS.indicadores !== undefined && LUGAR_DE_DATOS.indicadores.map((indicador,xId) =>{
-                let AceptacionBuena, AceptacionMedio;
-                if(indicador.datos.AceptacionBuena === undefined || indicador.datos.AceptacionBuena === 0 ){
-                    AceptacionBuena = 94;
-                }else{
-                    AceptacionBuena = indicador.datos.AceptacionBuena;
-                }
-                if(indicador.datos.AceptacionMedia=== undefined || indicador.datos.AceptacionMedia === 0 ){
-                    AceptacionMedio = 80;
-                }else{
-                    AceptacionMedio = indicador.datos.AceptacionMedia;
-                }
-                const porcentaje = {
-                    porcentajeBueno: AceptacionBuena,
-                    porcentajeMedio: AceptacionMedio 
-                };
-                const primerVariableDelIndicador = indicador.variables[0].valorTotal;
-                        let color = "bg-success",
-                        porcentajeIndicador;
-                if(indicador.variables[1] !== undefined){
-                    const segundaVariableDelIndicador = indicador.variables[1].valorTotal;
-                    if(indicador.datos.formaDeIndicador === "incremento" || indicador.datos.formaDeIndicador === "acumulativoI"){
-                        porcentajeIndicador = definePorcentaje(primerVariableDelIndicador,segundaVariableDelIndicador);
-                    }else{
-                        porcentajeIndicador = IndicadorReductor(primerVariableDelIndicador,0,segundaVariableDelIndicador);
-                    }
-                    if(porcentajeIndicador < AceptacionBuena){
-                        color = "bg-warning"
-                    }
-                    if(porcentajeIndicador < AceptacionMedio){
-                        color = "bg-danger"
-                    }
-                    porcentajeIndicador = Math.round(porcentajeIndicador * 100) /100;
-                }
-                let subindicadores;
-                if(indicador.subindicadores !== undefined){
-                    subindicadores = (
-                        <React.Fragment>
-                            {indicador.subindicadores.map(subindicador =>
-                                <VariablesMando
-                                key={subindicador.id}
-                                variables={subindicador.variables}
-                                porcentaje={porcentaje}
-                                etapa={indicador.datos.tipoDeEtapa}
-                                muestraPorcentaje={true} />
-                            )}
-                        </React.Fragment>
+                {LUGAR_DE_DATOS.indicadores !== undefined && (
+                        <MandosVista objeto={OBJETO} lugarDeDatos={LUGAR_DE_DATOS.indicadores} heredado={false} className="no-border"/>
                     )
                 }
-                   return( <AccordionIndicador key={xId} id={xId} datos={indicador} color={color} porcentaje={porcentajeIndicador}>
-                        <VariablesMando
-                                    variables={indicador.variables}
-                                    porcentaje={porcentaje}
-                                    etapa={indicador.datos.tipoDeEtapa}
-                                />
-                        {subindicadores}
-                    </AccordionIndicador>)
-                }
-                )}
             </Accordion>
         </div>
     )

@@ -29,6 +29,7 @@ import PaisesDelete from '../pages/Paises/PaisesDeleted.js';
 import UserLogin from "../pages/UserLogin.js";
 import BrouserName from "./Generales/BrouserName.js";
 import AllObjetives from "../pages/Objetivos/AllObjetives.js";
+import About from "../pages/About.js";
 /**
  * La clase app será la clase principal la cual mandara a llamar cada parte de la web que solicitemos.
  */
@@ -147,6 +148,9 @@ class App extends React.Component {
                                 path="/"
                                 component={() => <Inicio />}
                             />
+                            {this.state.changePass && (
+                                <h3>Change your password</h3>
+                            )}
                             {/* En este lugar empezaremos a manejar lo que son las rutas de los objetivos */}
                             <Route
                                 exact
@@ -238,6 +242,7 @@ class App extends React.Component {
                                         match={match}
                                         url={this.urlMandos}
                                         urlObjetivos={this.urlObjetivos}
+                                        urlAutentica={this.urlAutentica}
                                     />
                                 )}
                             />
@@ -394,6 +399,18 @@ class App extends React.Component {
                                 path="/jerarquia/:rangoId"
                                 component={({ match, history }) => (
                                     <JerarquiaRangoEdit
+                                        history={history}
+                                        match={match}
+                                        url={this.urlRango}
+                                        urlJerarquias = {this.urlJerarquias}
+                                    />
+                                )}
+                            />
+                            <Route
+                                exact
+                                path="/about"
+                                component={({ match, history }) => (
+                                    <About
                                         history={history}
                                         match={match}
                                         url={this.urlRango}
