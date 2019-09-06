@@ -224,7 +224,7 @@ class Mandos
         $idUsuario = $this->oAutentica->getId();
         $cQuery = "SELECT * FROM {$this->cTabla} WHERE Id={$iId} AND UsuarioCreo={$idUsuario}";
         if($this->oAutentica->getPermisoDirectorGeneral()){
-            $cQuery = "SELECT * FROM {$this->cTabla}";
+            $cQuery = "SELECT * FROM {$this->cTabla} WHERE Id={$iId}";
         }
         $cQuerySubIndicador = "SELECT IdSubIndicador,DatosSubIndicador,IdUsuariosResponsables FROM general_subindicadores WHERE IdIndicador={$iId}";
         $oConsulta = $this->oConexion->query($cQuery);
