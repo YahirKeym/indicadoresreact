@@ -1,3 +1,8 @@
+/**
+ * La función BrouserName nos indicara el nombre del 
+ * navegador que estamos usando en el momento. Bien,
+ * esto se hizo para detectar Internet Explroer
+ */
 function BrouserName(){
     let UserAgent= navigator.userAgent, tem, 
     M= UserAgent.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];

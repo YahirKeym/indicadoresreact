@@ -1,5 +1,9 @@
-// Codifica malos se encargara de codificar a nuestro punto los caracteres especiales que envian por cadenas.
-// Así cuando lo recibamos el sistema lo podra interpretas de manera correcta.
+/**
+ * La función CodificaMalos traspasará elementos que afecten a la estructura de la web
+ * a una codificiación ingresada por uno mismo. Esto se hace para evitar fallos de 
+ * interpretación.
+ * @param {string} cCadena Será la codificación que usaremos. 
+ */
 function CodificaMalos(cCadena ){
     cCadena = cCadena.replace(/"/gi,"comiDouble;");
     cCadena = cCadena.replace(/'/gi,"comiSingle;");

@@ -1,8 +1,6 @@
 // Se quedara así hasta que creer un inyectador de dependencias :(
 import React from "react";
 import CuerpoObjetivosMandos from "../../components/Mandos/CuerpoObjetivosMandos.js";
-import { Chart } from "react-google-charts";
-import Loader from "../../components/Generales/Loader.js";
 import { Helmet } from "react-helmet";
 import DecodificaMalos from "../../components/Generales/DecodificaMalos.js";
 import VariablesMando from "../../components/Mandos/VariablesMando.js";
@@ -11,6 +9,8 @@ import CambiarEtapas from "../../components/Mandos/CambiarEtapas.js";
 import TraeDatos from "../../components/TraeDatos.js";
 import CodificaMalos from "../../components/Generales/CodificaMalos.js";
 import Select from "../../components/Formulario/Select.js";
+import Grafica from "../../components/Mandos/Grafica.js";
+import Cabezera from "../../components/Generales/Cabezera.js";
 /**
  * Exportaremos la calse del perfil del mando/indicador el cual armara toda la vista del perfil principal de cada indicador y subindicador
  */
@@ -124,7 +124,13 @@ export default class MandosProfile extends React.Component {
                             if(lEsAcumulativo){
                                 valor = parseInt(variable.etapas[index].valorReal);
                             }else{
-                                valor = parseInt(variable.etapas[index].valor);
+                                console.log(variable.etapas[index])
+                                try {
+                                    valor = parseInt(variable.etapas[index].valor);
+                                } catch (error) {
+                                    valor = 100;
+                                }
+                                console.log(valor)
                             }
                             suma = suma+valor;
                             guardaValores.push(valor)
@@ -318,55 +324,21 @@ export default class MandosProfile extends React.Component {
             chartReal;
         if(this.state.data.datos.formaDeIndicador === "acumulativoI" || this.state.data.datos.formaDeIndicador === "acumulativoD"){
             chartReal = (
-                <Chart
-                        width="100%"
-                        height={300}
-                        chartType="ColumnChart"
-                        loader={<Loader />}
-                        data={this.state.etapasChartReal}
-                        options={{
-                            title: DecodificaMalos(
-                                this.state.data.datos.titulo
-                            ),
-                            chartArea: {
-                                width: "80%",
-                                backgroundColor: "rgba(0,0,0,0)"
-                            },
-                            backgroundColor: {
-                                fill: "#000",
-                                fillOpacity: 0
-                            },
-                            hAxis: {
-                                title: "Etapas",
-                                minValue: 0
-                            },
-                            vAxis: {
-                                title: DecodificaMalos(
-                                    this.state.data.datos.unidadDeMedida
-                                ),
-                                minValue: this.state.data.datos.minimaEscala,
-                                maxValue: this.state.data.datos.maximaEscala
-                            },
-                            colors: [
-                                "#289c7c",
-                                "#007bff",
-                                "#dc3545",
-                                "#000d42",
-                                "#000",
-                                "#633836",
-                                "#485051",
-                                "#a3371f",
-                                "#c5674a",
-                                "#6b3e3e",
-                                "#472019",
-                                "#f2dede",
-                                "#438efa",
-                                "#1f8c9d",
-                                "#de2a97",
-                                "#3b3b3b"
-                            ]
-                        }}
-                        legendToggle
+                <Grafica 
+                        aGeneral = {
+                            {
+                                'aDatos': this.state.etapasChartReal,
+                                'cTitulo': this.state.data.datos.titulo,
+                                'cUDM' : this.state.data.datos.unidadDeMedida
+                            }
+                        }
+                        aEscala = {
+                            {
+                                'iMinima' : this.state.data.datos.minimaEscala,
+                                'iMaxima' : this.state.data.datos.maximaEscala
+                            }
+                        }
+                        iVariables = {this.state.iVariables}
                     />
             )   
         }
@@ -415,15 +387,12 @@ export default class MandosProfile extends React.Component {
         descripcion = DecodificaMalos(descripcion);
         return (
             <React.Fragment>
-                <Helmet>
-                    <title>
-                        Indicadores - {this.state.data.objetivosData.titulo}
-                    </title>
-                </Helmet>
+                <Cabezera 
+                    cTitulo={`Indicadores - ${this.state.data.objetivosData.titulo}`}
+                />
                 <div className="col-12 d-flex justify-content-center">
                     <CuerpoObjetivosMandos
                         textSuccess="Guardar"
-                        url=""
                         titulo={DecodificaMalos(this.state.data.datos.titulo)}
                         subtitulo={DecodificaMalos(
                             this.state.data.objetivosData.titulo
@@ -658,70 +627,21 @@ export default class MandosProfile extends React.Component {
                     </CuerpoObjetivosMandos>
                 </div>
                 <div className="col-12 mb-5 row d-flex justify-content-center">
-                    <Chart
-                        width="100%"
-                        height={300}
-                        chartType="ComboChart"
-                        loader={<Loader />}
-                        data={this.state.etapasChart}
-                        options={{
-                            title: DecodificaMalos(
-                                this.state.data.datos.titulo
-                            ),
-                            chartArea: {
-                                width: "80%",
-                                backgroundColor: "rgba(0,0,0,0)"
-                            },
-                            backgroundColor: {
-                                fill: "#000",
-                                fillOpacity: 0
-                            },
-                            hAxis: {
-                                title: "Etapas",
-                                minValue: 0
-                            },
-                            vAxis: {
-                                title: DecodificaMalos(
-                                    this.state.data.datos.unidadDeMedida
-                                ),
-                                minValue: this.state.data.datos.minimaEscala,
-                                maxValue: this.state.data.datos.maximaEscala
-                            },
-                            animation: {
-                                startup: true,
-                                easing: 'linear',
-                                duration: 1500,
-                              },
-                            seriesType: 'bars',
-                            series: { [this.state.iVariables]: { type: 'line' } },
-                            colors: [
-                                "#289c7c",
-                                "#007bff",
-                                "#dc3545",
-                                "#000d42",
-                                "#000",
-                                "#633836",
-                                "#485051",
-                                "#a3371f",
-                                "#c5674a",
-                                "#6b3e3e",
-                                "#472019",
-                                "#f2dede",
-                                "#438efa",
-                                "#1f8c9d",
-                                "#de2a97",
-                                "#3b3b3b"
-                            ]
-                        }}
-                        chartEvents={[
+                    <Grafica 
+                        aGeneral = {
                             {
-                              eventName: 'animationfinish',
-                              callback: () => {
-                                console.log('Animation Finished')
-                              },
-                            },
-                          ]}
-                        legendToggle
+                                'aDatos': this.state.etapasChart,
+                                'cTitulo': this.state.data.datos.titulo,
+                                'cUDM' : this.state.data.datos.unidadDeMedida
+                            }
+                        }
+                        aEscala = {
+                            {
+                                'iMinima' : this.state.data.datos.minimaEscala,
+                                'iMaxima' : this.state.data.datos.maximaEscala
+                            }
+                        }
+                        iVariables = {this.state.iVariables}
                     />
                     {chartReal}
                 </div>

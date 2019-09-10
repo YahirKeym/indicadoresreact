@@ -1,4 +1,8 @@
 import React from 'react';
+/**
+ * El componente de CerrarSesión creara un botón el cuál su funcióm
+ * será cerrar de manera literal la sesión que hay.
+ */
 export default class CerrarSesion extends React.Component{
     /**
      * Cerrara la sesión y cambiara la cookie automaticamente

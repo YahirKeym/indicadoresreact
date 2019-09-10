@@ -1,3 +1,8 @@
+/**
+ * La función meses mandara a llamar un arreglo con el nombre de los 
+ * meses del año, estos serán agregados al nombre de las etapas cuando
+ * el usuario tecle "meses" en el campo de tipo de etapa.
+ */
 function Meses(){
     return [
         {

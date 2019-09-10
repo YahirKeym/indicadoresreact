@@ -4,7 +4,10 @@ import './styles/VariablesDeMandos.css';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faCheck} from '@fortawesome/free-solid-svg-icons'
 
-// Generara las variables que tenga el mando con las etapas que tenga la variable
+/**
+ * 
+ * @param {properties} props 
+ */
 function VariablesMando(props)
 {
     const {porcentajeBueno, porcentajeMedio} = props.porcentaje,

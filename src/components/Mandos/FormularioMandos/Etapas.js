@@ -5,7 +5,14 @@ import DecodificaMalos from '../../Generales/DecodificaMalos';
 import Meses from '../../Fechas/Meses';
 import OtorgaNombres from './OtorgaNombre';
 import Bimestres from '../../Fechas/Bimestres';
-// Será el tipo de etapas y la cantidad de ellas que manejaremos. Ejemplo: meses : 12 
+/**
+ * El componente TipoDeEtapas se encargara de darle un configuración a las etapas de
+ * los indicadores.
+ * @param {properties} props Son las propiedades del componente
+ * @param {object} objeto  Será el objeto del componente padre (this)
+ * @param {array} lugarDeDatos Es el lugar donde los datos se encuentran de manerá
+ * principal y que tiene como minimo una key de acciones.
+ */
 function TipoDeEtapas(props){
     const objeto = props.objeto,
     lugarDeDatos = props.lugarDeDatos;
@@ -37,7 +44,14 @@ function TipoDeEtapas(props){
         </div>
     )
 }
-// Replicara las etapas mediante su cantidad, así le podremos dar un nombre a cada una
+/**
+ * El componente NombreDeEtapas se encargara de poder darle un nombre personalizado a 
+ * cada etapa del indicador.
+ * @param {properties} props Son las propiedades del componente
+ * @param {object} objeto  Será el objeto del componente padre (this)
+ * @param {array} lugarDeDatos Es el lugar donde los datos se encuentran de manerá
+ * principal y que tiene como minimo una key de acciones.
+ */
 function NombreDeEtapas(props){
     const objeto = props.objeto,
     lugarDeDatos = props.lugarDeDatos;
@@ -53,7 +67,14 @@ function NombreDeEtapas(props){
         </div>
     )
 }
-// Serán los campos para darle un valor a cada etapa.
+/**
+ * El componente ValoresEtapas se encargara de crear las etapas que hayan pedido
+ * así mismo podrá darle un valor unico a cada etapa.
+ * @param {properties} props Son las propiedades del componente
+ * @param {object} objeto  Será el objeto del componente padre (this)
+ * @param {array} lugarDeDatos Es el lugar donde los datos se encuentran de manerá
+ * principal y que tiene como minimo una key de acciones.
+ */
 function ValoresEtapas(props){
     const objeto = props.objeto,
     lugarDeDatos = props.lugarDeDatos;
@@ -88,7 +109,13 @@ function ValoresEtapas(props){
         </div>
     )
 }
-// Será el componente que juntara la parte de las etapas.
+/**
+ * Uniremos los componentes para poder formar el componente de Etapas en general.
+ * @param {properties} props Son las propiedades del componente
+ * @param {object} objeto  Será el objeto del componente padre (this)
+ * @param {array} lugarDeDatos Es el lugar donde los datos se encuentran de manerá
+ * principal y que tiene como minimo una key de acciones.
+ */
 function Etapas(props){
     const objeto = props.objeto,
     lugarDeDatos = props.lugarDeDatos;

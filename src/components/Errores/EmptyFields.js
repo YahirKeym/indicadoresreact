@@ -1,5 +1,8 @@
 import React from 'react';
-// Será el aviso de que hay campos vacios
+/**
+ * El componente EmptyFields será un mensaje de alerta el cual nos dirá que hay 
+ * campos vacios en los formularios donse se solicite.
+ */
 function EmptyFields(){
         return(
             <div className="col-12 d-flex justify-content-center">

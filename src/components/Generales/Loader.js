@@ -1,4 +1,7 @@
 import React from 'react';
+/**
+ * Será el componente que marcara un spinner para saber que la web está trabajando
+ */
  function Loader()
  {
      return (

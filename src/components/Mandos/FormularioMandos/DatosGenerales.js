@@ -1,6 +1,14 @@
 import React from 'react';
 import {Input,Select} from '../../Formulario/ModulosFormulario';
-// Serpa el input de la unidad de medida
+/**
+ * El componente UnidadDeMedida guardara el estilo que se muestra
+ * en el input donde le indicaremos el tipo de unidad de medida que
+ * se utilizara en el indicador.
+ * @param {properties} props Son las propiedades del componente
+ * @param {object} objeto  Será el objeto del componente padre (this)
+ * @param {array} lugarDeDatos Es el lugar donde los datos se encuentran de manerá
+ * principal y que tiene como minimo una key de acciones.
+ */
 function UnidadDeMedida(props){
     const objeto=props.objeto,
     lugarDeDatos = props.lugarDeDatos;
@@ -13,7 +21,17 @@ function UnidadDeMedida(props){
         </div>
     )
 }
-// Serán los inputs de aceptación, recordando que arriba de buena es buena aceptacion, abajo de buena es media y abajo de media es mala
+/**
+ * El componente Aceptación guardara el tipo de aceptación minima que el indicador
+ * debe de tener. 
+ * default:
+ * Si la aceptación es mayor a 94% es buena, si es menor es media, y si es menor a 
+ * 80% es mala. 
+ * @param {properties} props Son las propiedades del componente
+ * @param {object} objeto  Será el objeto del componente padre (this)
+ * @param {array} lugarDeDatos Es el lugar donde los datos se encuentran de manerá
+ * principal y que tiene como minimo una key de acciones.
+ */
 function Aceptacion(props){
     const objeto=props.objeto,
     lugarDeDatos = props.lugarDeDatos;
@@ -31,7 +49,16 @@ function Aceptacion(props){
         </div>
     )
 }
-// Será el tipo de indicador y la forma que este tendra. Ejemplo: Tipo: Resultados, Forma: incremento
+/**
+ * El componente TipoDeIndicador guardara la configuración del tipo de indicador que se maneja
+ * y la naturaleza que este tiene:
+ * Tipo de indicador: - Comportamentable
+ * Forma de indicador: - Incremento
+ * @param {properties} props Son las propiedades del componente
+ * @param {object} objeto  Será el objeto del componente padre (this)
+ * @param {array} lugarDeDatos Es el lugar donde los datos se encuentran de manerá
+ * principal y que tiene como minimo una key de acciones.
+ */
 function TipoDeIndicador(props){
     const objeto=props.objeto,
     lugarDeDatos = props.lugarDeDatos;
@@ -52,7 +79,14 @@ function TipoDeIndicador(props){
         </div>
     )
 }
-// Será el componente que guardara los datos generales del indicador
+/**
+ * El componente DatosGenerales se encarga de guardar la unidad de medida del indicador,
+ * la aceptación en porcentaje que este tendrá, y el tipo de indicador que se manejara.
+ * @param {properties} props Son las propiedades del componente
+ * @param {object} objeto  Será el objeto del componente padre (this)
+ * @param {array} lugarDeDatos Es el lugar donde los datos se encuentran de manerá
+ * principal y que tiene como minimo una key de acciones.
+ */
 function DatosGenerales(props){
     const objeto=props.objeto,
     lugarDeDatos = props.lugarDeDatos;

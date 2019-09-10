@@ -1,4 +1,8 @@
-// Guardaremos el nombre de cada bimestre
+/**
+ * La función Bimestres ayuda a dar el nombre que llevara
+ * cada etapa una vez sea mandada a llamar la palabra
+ * Bimestre. Solo son 6, pueden ser más.
+ */
 function Bimestres(){
     return [
         {

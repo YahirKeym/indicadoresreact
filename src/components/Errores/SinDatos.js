@@ -1,5 +1,9 @@
 import React from 'react';
-// Se encargara de mostrar el mensaje que nos dira si una web se encuentra sin datos.
+/**
+ * En caso de que el usuario no cuente con datos, el componente
+ * SinDatos será mandado a llamar dandole una alerta de que por el momento
+ * el usuario no cuenta con dato que mostrar.
+ */
 function SinDatos()
 {
     return (

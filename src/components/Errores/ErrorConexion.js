@@ -1,6 +1,10 @@
 import React from 'react';
 import Loader from '../Generales/Loader';
-// Se encargara del mensaje de desconexión, mostrando un loader para que parezca que la web está haciendo algo
+/**
+ * El componente ErrorConexion será un mensaje de alerta el cual nos dirá que hay 
+ * un error con la conexión del usuario, si este fue desconectado de la red o no se logra 
+ * una conexión concreta con la api de la app.
+ */
 function ErrorConexion(){
     return(
         <div className="col-12 d-flex justify-content-center">
