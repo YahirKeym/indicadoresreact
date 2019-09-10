@@ -1,5 +1,6 @@
-<?php 
-$cRuta = "/indicadoresreact/api";
+<?php
+header("Access-Control-Allow-Origin: *");
+$cRuta = "/api";
 require_once $_SERVER["DOCUMENT_ROOT"] . $cRuta . "/class/dependencias.php";
 require_once $_SERVER["DOCUMENT_ROOT"] . $cRuta . "/class/portal.php";
 $cAction = isset($_REQUEST['action']) ? $_REQUEST['action'] : '';

@@ -1,6 +1,7 @@
 <?php
+header("Access-Control-Allow-Origin: *");
 set_time_limit (99999999); 
-$cRuta = "/indicadoresreact/api";
+$cRuta = "/api";
 require_once $_SERVER["DOCUMENT_ROOT"] . $cRuta . "/class/dependencias.php";
 require_once $_SERVER["DOCUMENT_ROOT"] . $cRuta . "/class/mandos.php";
 $cAccion = isset($_REQUEST['action']) ? $_REQUEST['action'] : '';   

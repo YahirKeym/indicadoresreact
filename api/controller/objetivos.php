@@ -1,5 +1,6 @@
 <?php
-$cRuta = "/indicadoresreact/api";
+header("Access-Control-Allow-Origin: *");
+$cRuta = "/api";
 require_once $_SERVER["DOCUMENT_ROOT"] . $cRuta . "/class/dependencias.php";
 require_once $_SERVER["DOCUMENT_ROOT"] . $cRuta . "/class/objetivos.php";
 $cToken = isset($_REQUEST['token']) ? $_REQUEST['token'] :'';
